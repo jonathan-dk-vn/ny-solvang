@@ -234,10 +234,10 @@
   --color-icon-dock-primary: #e6f0fa;
 
   /* Heading backgrounds — navy đậm dần theo cấp */
-  --bg-h1: rgba(7,  22,  56, 0.08);
-  --bg-h2: rgba(13, 32,  64, 0.07);
-  --bg-h3: rgba(16, 40,  72, 0.06);
-  --bg-h4: rgba(22, 51,  88, 0.05);
+  --bg-h1: rgba(7, 22, 56, 0.08);
+  --bg-h2: rgba(13, 32, 64, 0.07);
+  --bg-h3: rgba(16, 40, 72, 0.06);
+  --bg-h4: rgba(22, 51, 88, 0.05);
   --bg-h5: rgba(30, 64, 104, 0.04);
   --bg-h6: rgba(40, 78, 120, 0.03);
 
@@ -1042,13 +1042,13 @@ mark.search-hit {
 
 /* --- 5.5 Player Dock --- */
 #floating-dock-container {
-    position: fixed;
-    bottom: 10px;
-    left: 60vw;
-    width: 35vw;
-    z-index: 50;
-    transition: none;
-    font-size: 16px !important;
+  position: fixed;
+  bottom: 10px;
+  left: 60vw;
+  width: 35vw;
+  z-index: 50;
+  transition: none;
+  font-size: 16px !important;
 }
 
 #player-dock {
@@ -1552,7 +1552,7 @@ input[type="checkbox"] + label:hover {
     border-right: 1px solid var(--color-border);
     padding: 0;
   }
-  
+
   #toc-modal .sidebar-content-wrapper {
     height: 100%;
     max-height: none !important;
@@ -1607,28 +1607,19 @@ input[type="checkbox"] + label:hover {
     border-right-color: var(--border-right-active) !important;
   }
 
-  /* Right Sidebar: Grammar List */
-  /* Right Sidebar: Grammar List */
-  #dynamic-grammar-sidebar {
-    position: fixed !important;
-    top: 60px;
-    right: 0;
-    bottom: 0;
-    width: 45vw; /* Sửa từ 25vw thành 40vw */
-    min-width: 300px;
-    z-index: 10;
-    background-color: transparent;
-  }
-
   /* Center Area: Main Content */
   #main-content {
-    /* Cập nhật thông số 15vw và min-width của cột trái */
-    margin-left: max(10vw); 
-    /* Cập nhật thông số 40vw và min-width của cột phải */
-    margin-right: max(40vw, 100px); 
+    /* Chừa chỗ cho TOC (Table of Contents) bên trái: 10vw hoặc tối thiểu 200px */
+    margin-left: max(10vw, 200px);
+
+    /* Bỏ khoảng trống bên phải của grammar sidebar cũ */
+    margin-right: 0;
+
     width: auto !important;
-    /* Cập nhật tổng số chiều rộng phần tử con */
-    max-width: calc(100% - max(10vw, 100px) - max(43vw, 300px)); 
+
+    /* Mở rộng chiếm trọn phần diện tích còn lại */
+    max-width: calc(100% - max(10vw, 200px));
+
     flex: 1;
     min-width: 0;
     padding-left: 2rem;
