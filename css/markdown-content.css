@@ -1,0 +1,1844 @@
+/* ========================================================================== */
+/* MARKDOWN CONTENT BASE STYLES                                               */
+/* ========================================================================== */
+
+.markdown-content {
+  font-family: var(--font-family-sans);
+  color: var(--color-text-body);
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: normal;
+  margin-bottom: 31.25rem;
+  padding: 1.25rem;
+  line-height: var(--lh-relaxed);
+}
+
+/* ── DEFAULT THEME (Sage / Olive) ── */
+.markdown-content {
+  /* Bullet/badge màu — ánh xạ với accent heading tương ứng */
+  --li-c1-a: #7ab862; /* UL cấp 1 (= border-left-h2 sage)   */
+  --li-c1-b: #5a9844;
+  --li-c1-glow: rgba(175, 211, 161, 0.35);
+
+  --li-c2-a: #1976d2; /* UL cấp 2 (= border-left-h3 blue)   */
+  --li-c2-b: #2196f3;
+  --li-c2-glow: rgba(33, 150, 243, 0.3);
+
+  --li-c3-a: #f57c00; /* UL cấp 3 (= border-left-h4 orange) */
+  --li-c3-b: #ffa726;
+  --li-c3-glow: rgba(255, 167, 38, 0.3);
+
+  --li-ol1-a: var(
+    --color-text-link,
+    #2d7a48
+  ); /* OL cấp 1 (= link color)        */
+  --li-ol1-b: var(--color-text-link-hover, #1e5a32);
+  --li-ol1-glow: rgba(45, 122, 72, 0.35);
+  --li-ol1-txt: #ffffff;
+
+  --li-ol2-a: #c2185b; /* OL cấp 2 (= border-left-h5 pink)   */
+  --li-ol2-b: #e91e63;
+  --li-ol2-glow: rgba(233, 30, 99, 0.3);
+
+  --li-ol3-a: #512da8; /* OL cấp 3 (= border-left-h6 purple) */
+  --li-ol3-b: #673ab7;
+  --li-ol3-glow: rgba(103, 58, 183, 0.3);
+
+  /* Surfaces — dùng biến system, hoạt động trên nền sáng */
+  --li-bg: rgba(155, 194, 133, 0.07); /* sage-500 alpha rất nhạt   */
+  --li-border: rgba(42, 56, 36, 0.1); /* olive-800 alpha nhẹ       */
+  --li-hover-bg: var(--color-bg-interactive-hover, rgba(230, 225, 207, 0.4));
+  --li-nested-line: rgba(42, 56, 36, 0.12); /* đường kẻ lồng nhau        */
+
+  /* Type */
+  --li-line-height: 1.75;
+  --li-transition: 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ── DARK THEME (.theme-luxe) — dùng neon accent từ dark vars ── */
+html.theme-luxe .markdown-content {
+  --li-c1-a: #10b981; /* emerald (= border-left-h2 dark)    */
+  --li-c1-b: #34d399;
+  --li-c1-glow: rgba(16, 185, 129, 0.4);
+
+  --li-c2-a: #06b6d4; /* cyan (= border-left-h3 dark)       */
+  --li-c2-b: #22d3ee;
+  --li-c2-glow: rgba(6, 182, 212, 0.35);
+
+  --li-c3-a: #fb923c; /* orange (= border-left-h4 dark)     */
+  --li-c3-b: #fdba74;
+  --li-c3-glow: rgba(251, 146, 60, 0.35);
+
+  --li-ol1-a: #60a5fa; /* blue (= link dark)                 */
+  --li-ol1-b: #93c5fd;
+  --li-ol1-glow: rgba(96, 165, 250, 0.4);
+  --li-ol1-txt: #0f172a;
+
+  --li-ol2-a: #f472b6; /* pink (= border-left-h5 dark)       */
+  --li-ol2-b: #f9a8d4;
+  --li-ol2-glow: rgba(244, 114, 182, 0.35);
+
+  --li-ol3-a: #a78bfa; /* purple (= border-left-h6 dark)     */
+  --li-ol3-b: #c4b5fd;
+  --li-ol3-glow: rgba(167, 139, 250, 0.35);
+
+  --li-bg: rgba(255, 255, 255, 0.04);
+  --li-border: rgba(255, 255, 255, 0.08);
+  --li-hover-bg: rgba(255, 255, 255, 0.09);
+  --li-nested-line: rgba(255, 255, 255, 0.08);
+}
+
+/* ── WARM THEME (.theme-fullcolor) — earthy accents ── */
+html.theme-fullcolor .markdown-content {
+  --li-c1-a: #8a8510; /* olive gold (= border-left-h2 warm) */
+  --li-c1-b: #a8a218;
+  --li-c1-glow: rgba(181, 179, 116, 0.35);
+
+  --li-c2-a: #0b7c98; /* teal (= border-left-h3 warm)       */
+  --li-c2-b: #148fb0;
+  --li-c2-glow: rgba(11, 124, 152, 0.3);
+
+  --li-c3-a: #e86b1a; /* burnt orange (= border-left-h4)    */
+  --li-c3-b: #f07e35;
+  --li-c3-glow: rgba(232, 107, 26, 0.3);
+
+  --li-ol1-a: var(
+    --color-text-link,
+    #0b7c98
+  ); /* teal link warm                */
+  --li-ol1-b: var(--color-text-link-hover, #4d8b5f);
+  --li-ol1-glow: rgba(11, 124, 152, 0.35);
+  --li-ol1-txt: #ffffff;
+
+  --li-ol2-a: #a54580; /* magenta (= border-left-h5 warm)    */
+  --li-ol2-b: #bc5e97;
+  --li-ol2-glow: rgba(165, 69, 128, 0.3);
+
+  --li-ol3-a: #6b5d4f; /* stone (= border-left-h6 warm)      */
+  --li-ol3-b: #8a7968;
+  --li-ol3-glow: rgba(107, 93, 79, 0.3);
+
+  --li-bg: rgba(199, 58, 30, 0.04); /* rust tint rất nhạt               */
+  --li-border: rgba(201, 184, 154, 0.5); /* warm border                      */
+  --li-hover-bg: var(--color-bg-interactive-hover, #ffe8b8);
+  --li-nested-line: rgba(201, 184, 154, 0.4);
+}
+
+/* Trong markdown-content.css */
+
+/* --- HEADING STYLES UPDATED --- */
+
+/* Code chung cho tất cả heading */
+.markdown-content :is(h1, h2, h3, h4, h5, h6) {
+  font-family: inherit;
+  font-weight: 700;
+  letter-spacing: normal;
+  margin-top: 0.5rem; /* Tăng margin top để tách biệt rõ hơn */
+  padding: 0.5rem 1rem; /* Tạo khoảng thở cho chữ */
+  border-radius: 6px; /* Bo tròn góc nền */
+  width: 100%; /* Nền trải dài hết chiều ngang */
+  box-sizing: border-box; /* Đảm bảo padding không làm vỡ layout */
+}
+
+/* 1. H1: Phong cách nổi bật nhất (Center hoặc Gradient) */
+.markdown-content h1 {
+  font-size: 1.8em;
+  color: var(--color-text-h1);
+  background: var(--bg-h1); /* Dùng biến màu nền đã tạo */
+  border-bottom: none; /* Bỏ gạch chân cũ vì đã có nền */
+  border-left: 6px solid var(--color-text-link); /* Viền trái dày */
+  line-height: var(--lh-tight);
+}
+
+/* 2. H2: Style Highlight xanh lá */
+.markdown-content h2 {
+  font-size: 1.5em;
+  color: var(--color-text-h2);
+  background-color: var(--bg-h2);
+  border-left: 5px solid var(--border-left-h2);
+  line-height: var(--lh-tight);
+}
+
+/* 3. H3: Style Highlight xanh dương */
+.markdown-content h3 {
+  font-size: 1.25em;
+  color: var(--color-text-h3);
+  background-color: var(--bg-h3);
+  border-left: 4px solid var(--border-left-h3);
+  line-height: var(--lh-snug);
+}
+
+/* 4. H4: Style Highlight cam */
+.markdown-content h4 {
+  font-size: 1.125em;
+  color: var(--color-text-h4);
+  background-color: var(--bg-h4);
+  border-left: 4px solid var(--border-left-h4);
+  line-height: var(--lh-snug);
+}
+
+/* 5. H5: Style Highlight hồng */
+.markdown-content h5 {
+  font-size: 1em;
+  color: var(--color-text-h5);
+  background-color: var(--bg-h5);
+  border-left: 3px solid var(--border-left-h5);
+  line-height: var(--lh-snug);
+}
+
+/* 6. H6: Style Highlight xám */
+.markdown-content h6 {
+  font-size: 0.875em;
+  color: var(--color-text-h6);
+  background-color: var(--bg-h6);
+  border-left: 3px solid var(--border-left-h6);
+  line-height: var(--lh-snug);
+}
+
+.markdown-content :is(h1, h2, h3, h4, h5):hover {
+  cursor: default;
+}
+
+/* --- TEXT ELEMENTS --- */
+.markdown-content p {
+  color: var(--color-text-body);
+  margin: 1rem 0;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  line-height: var(--lh-relaxed);
+}
+
+.markdown-content a {
+  color: var(--color-text-link);
+  text-decoration: none;
+  font-weight: normal;
+  border-bottom: none;
+}
+.markdown-content a:hover {
+  color: var(--color-text-link-hover);
+  text-decoration: underline;
+}
+
+.markdown-content blockquote {
+  margin: 1em 0;
+  margin-left: 0;
+  padding-left: 1em;
+  color: var(--color-text-muted);
+  border-left: 0.25rem solid var(--color-border-blockquote);
+
+  font-weight: 400;
+  font-size: 1.125rem;
+  background-color: transparent;
+}
+
+/* --- IMAGES --- */
+.content-image {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.25rem;
+  border: none;
+  margin: 1em 0;
+  padding: 0;
+  box-shadow: none;
+}
+
+/* Trong file markdown-content.css */
+
+/* ========================================================================== */
+/* CODE BLOCKS (UPDATED)                                                      */
+/* ========================================================================== */
+
+.markdown-content pre {
+  background: var(--color-bg-pre);
+  border-radius: 0.375rem; /* Bo tròn mềm hơn một chút */
+  margin: 1.5rem 0; /* Tăng margin dọc để tách biệt với văn bản */
+  font-size: 0.95rem; /* Giảm nhẹ size chữ code để trông tinh tế */
+  padding: 4rem;
+  overflow-x: auto;
+  color: var(--color-text-pre-code);
+
+  /* Cải tiến mới */
+  position: relative;
+  tab-size: 2; /* Tab hiển thị bằng 2 ký tự khoảng trắng */
+  line-height: 2.5; /* Tăng độ thoáng dòng code */
+  border: 1px solid rgba(128, 128, 128, 0.1); /* Viền mờ rất nhẹ để code sắc nét hơn */
+}
+
+.markdown-content code {
+  font-family: var(--font-family-mono);
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* Inline Code */
+.markdown-content :not(pre) > code {
+  font-family: var(--font-family-mono);
+  color: var(--color-text-code);
+  background-color: var(--color-bg-code);
+  font-size: 0.9em;
+  padding: 0.15rem 0.3rem;
+  border-radius: 0.25rem;
+  border: 1px solid rgba(0, 0, 0, 0.05); /* Viền nhẹ cho inline code */
+}
+
+/* ========================================================================== */
+/* STANDARD TABLES (Not Parallel Translations)                                */
+/* ========================================================================== */
+
+.markdown-table-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 1em 0;
+}
+
+.markdown-content table:not(.parallel-translations) {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  margin: 1em 0;
+  font-size: 1.125rem;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+.markdown-content table:not(.parallel-translations) th,
+.markdown-content table:not(.parallel-translations) td {
+  border: 1px solid var(--color-border-table);
+  padding: 0.25rem;
+  text-align: left;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  hyphens: none;
+  font-size: 0.875rem;
+  line-height: 2;
+}
+
+.markdown-content table:not(.parallel-translations) th {
+  font-weight: 600;
+  color: var(--color-text-headings);
+  background-color: var(--color-bg-table-head);
+}
+
+.markdown-content table:not(.parallel-translations) td {
+  font-weight: 400;
+  color: var(--color-text-body);
+}
+
+.markdown-content table:not(.parallel-translations) tbody tr:nth-child(odd) {
+  background-color: transparent;
+}
+
+/* ========================================================================== */
+/* PARALLEL TRANSLATIONS - ZEBRA STRIPE LAYOUT (UPDATED)                      */
+/* ========================================================================== */
+
+.markdown-content table.parallel-translations {
+  /* --- LIGHT THEME VARIABLES --- */
+
+  /* Màu nền Dòng Chẵn (Sáng hơn) */
+  --pt-row-even: #ffffff;
+  /* Màu nền Dòng Lẻ (Đậm hơn một chút) */
+  --pt-row-odd: #f3f4f6;
+
+  /* Màu đường kẻ phân cách dọc */
+  --pt-separator: rgba(0, 0, 0, 0.1);
+
+  /* Layout */
+  display: block;
+  width: 100%;
+  border: none;
+  background: transparent;
+  border-spacing: 0;
+  margin: 5px 0;
+  transform: translateZ(0);
+}
+
+/* --- DARK THEME OVERRIDES --- */
+html.theme-luxe .markdown-content table.parallel-translations {
+  /* Dark Mode: Dòng chẵn (Màu nền cơ bản) */
+  --pt-row-even: #1e293b;
+  /* Dark Mode: Dòng lẻ (Đậm hơn/Đen hơn) */
+  --pt-row-odd: #0f172a;
+
+  --pt-separator: rgba(255, 255, 255, 0.1);
+}
+
+.markdown-content table.parallel-translations tbody {
+  display: block;
+  width: 100%;
+}
+
+/* --- STYLE CHO HÀNG (TR) --- */
+.markdown-content table.parallel-translations tr {
+  display: grid;
+  grid-template-columns: 4fr 3fr 3fr;
+  gap: 0;
+  margin-bottom: 0; /* Xóa margin bottom để các dòng dính liền nhau */
+}
+
+/* Logic Zebra: Dòng Lẻ (Odd) đậm hơn */
+.markdown-content table.parallel-translations tr:nth-child(odd) {
+  background-color: var(--pt-row-odd);
+}
+
+/* Logic Zebra: Dòng Chẵn (Even) sáng hơn */
+.markdown-content table.parallel-translations tr:nth-child(even) {
+  background-color: var(--pt-row-even);
+}
+
+/* Bo góc cho dòng đầu tiên và dòng cuối cùng của bảng (Thẩm mỹ) */
+.markdown-content table.parallel-translations tr:first-child {
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+}
+.markdown-content table.parallel-translations tr:last-child {
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+}
+
+/* --- STYLE CHO Ô (TD) --- */
+.markdown-content table.parallel-translations td {
+  display: block;
+  width: 100%;
+  padding: 0.85rem 1rem;
+  line-height: var(--lh-relaxed);
+  font-size: 0.95rem;
+  height: 100%;
+
+  /* QUAN TRỌNG: Nền trong suốt để thấy màu của TR */
+  background-color: transparent !important;
+
+  /* Xóa viền bao quanh, chỉ giữ đường kẻ dọc */
+  border: none !important;
+  border-radius: 0 !important;
+
+  transition: color 0.2s ease-out;
+}
+
+/* Tạo đường kẻ dọc phân cách giữa các cột */
+.markdown-content table.parallel-translations td:not(:last-child) {
+  border-right: 1px solid var(--pt-separator) !important;
+}
+
+/* --- TEXT STYLING (Giữ nguyên logic màu chữ) --- */
+
+/* Cột 1: Vẫn giữ chữ đậm, màu heading */
+.markdown-content table.parallel-translations td:nth-child(1) {
+  color: var(--color-text-headings);
+  font-weight: 700;
+  opacity: 1;
+}
+
+/* Cột 2: Nhạt hơn */
+.markdown-content table.parallel-translations td:nth-child(2) {
+  color: var(--color-text-body);
+  font-weight: 400;
+  opacity: 0.5;
+}
+
+/* Cột 3: Nhạt nhất */
+.markdown-content table.parallel-translations td:nth-child(3) {
+  color: var(--color-text-muted);
+  font-weight: 400;
+  opacity: 0.4;
+}
+
+/* --- RESPONSIVE MOBILE --- */
+@media (max-width: 768px) {
+  .markdown-content table.parallel-translations tr {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-bottom: 1rem; /* Trên mobile tách rời từng block cho dễ nhìn */
+    border-radius: 10px !important; /* Bo tròn từng khối */
+
+    /* Trên mobile có thể thêm viền nhẹ bao quanh khối */
+    border: 1px solid var(--pt-separator);
+    padding: 5px;
+    overflow: hidden;
+  }
+
+  /* Reset đường kẻ dọc -> chuyển thành ngang */
+  .markdown-content table.parallel-translations td:not(:last-child) {
+    border-right: none !important;
+    border-bottom: 1px solid var(--pt-separator) !important;
+  }
+}
+
+/* ========================================================================== */
+/* COLUMN VISIBILITY LOGIC (GRID ADJUSTMENT)                                  */
+/* ========================================================================== */
+
+/* 1. Ẩn nội dung */
+body.hide-col-original
+  .markdown-content
+  table.parallel-translations
+  td[data-label="Original"],
+body.hide-col-trans1
+  .markdown-content
+  table.parallel-translations
+  td[data-label^="Translation 1"],
+body.hide-col-trans2
+  .markdown-content
+  table.parallel-translations
+  td[data-label^="Translation 2"] {
+  display: none;
+}
+
+/* 2. Điều chỉnh Grid Columns (Khi còn 2 hoặc 3 cột) */
+body.hide-col-original .markdown-content table.parallel-translations tr {
+  grid-template-columns: 1fr 1fr;
+}
+body.hide-col-trans1 .markdown-content table.parallel-translations tr {
+  grid-template-columns: 1.3fr 1fr;
+}
+body.hide-col-trans2 .markdown-content table.parallel-translations tr {
+  grid-template-columns: 1.3fr 1fr;
+}
+
+/* 3. [UPDATED] Single Column Mode (Khi chỉ còn 1 cột) */
+/* Reset Grid */
+body.hide-col-trans1.hide-col-trans2
+  .markdown-content
+  table.parallel-translations
+  tr,
+body.hide-col-original.hide-col-trans2
+  .markdown-content
+  table.parallel-translations
+  tr,
+body.hide-col-original.hide-col-trans1
+  .markdown-content
+  table.parallel-translations
+  tr {
+  grid-template-columns: 1fr;
+  margin-bottom: 1rem; /* Giảm khoảng cách giữa các hàng để liền mạch hơn */
+  gap: 0;
+}
+
+/* Xóa Style dạng Bảng/Thẻ để trông như văn bản thường */
+:is(
+    body.hide-col-trans1.hide-col-trans2,
+    body.hide-col-original.hide-col-trans2,
+    body.hide-col-original.hide-col-trans1
+  )
+  .markdown-content
+  table.parallel-translations
+  td {
+  border: none !important;
+  box-shadow: none !important;
+  background-color: transparent !important;
+  padding: 0;
+  border-radius: 0;
+  color: var(--color-text-body); /* Reset màu text về mặc định */
+}
+
+/* Reset riêng cho Heading trong chế độ 1 cột nếu cần */
+:is(
+    body.hide-col-trans1.hide-col-trans2,
+    body.hide-col-original.hide-col-trans2,
+    body.hide-col-original.hide-col-trans1
+  )
+  .markdown-content
+  table.parallel-translations
+  td
+  :is(h1, h2, h3, h4, h5, h6) {
+  margin-top: 1rem; /* Trả lại margin top để tách đoạn */
+}
+
+/* ========================================================================== */
+/* RESPONSIVE STYLES                                                          */
+/* ========================================================================== */
+
+@media (max-width: 768px) {
+  .markdown-content table.parallel-translations tr {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px dashed var(--color-border);
+    padding-bottom: 2rem;
+  }
+
+  .markdown-content table.parallel-translations tr:last-child {
+    border-bottom: none;
+  }
+
+  /* Reset mobile border styles */
+  .markdown-content table.parallel-translations td,
+  .markdown-content table.parallel-translations td:nth-child(2),
+  .markdown-content table.parallel-translations td:nth-child(3) {
+    width: 100%;
+    border: none;
+    background-color: transparent;
+    padding: 0.5rem 0;
+  }
+
+  /* Khi ở chế độ 1 cột trên Mobile -> Ẩn luôn border bottom separator */
+  :is(
+      body.hide-col-trans1.hide-col-trans2,
+      body.hide-col-original.hide-col-trans2,
+      body.hide-col-original.hide-col-trans1
+    )
+    .markdown-content
+    table.parallel-translations
+    tr {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .markdown-content table:not(.parallel-translations) {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+  }
+}
+
+/* ========================================================================== */
+/* FIX HEADING INSIDE PARALLEL TRANSLATIONS                                   */
+/* ========================================================================== */
+
+/* Reset margin của Heading khi nằm trong bảng để tránh vỡ layout grid */
+.markdown-content table.parallel-translations :is(h1, h2, h3, h4, h5, h6) {
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+  line-height: 1.3;
+}
+
+/* Đảm bảo màu sắc Heading */
+.markdown-content table.parallel-translations td h1 {
+  color: var(--color-text-h1);
+}
+.markdown-content table.parallel-translations td h2 {
+  color: var(--color-text-h2);
+}
+.markdown-content table.parallel-translations td h3 {
+  color: var(--color-text-h3);
+}
+.markdown-content table.parallel-translations td h4 {
+  color: var(--color-text-h4);
+}
+.markdown-content table.parallel-translations td h5 {
+  color: var(--color-text-h5);
+}
+.markdown-content table.parallel-translations td h6 {
+  color: var(--color-text-h6);
+}
+
+/* ========================================================================== */
+/* DESKTOP: OPTIMIZED SMART BLUR TRANSLATIONS                                 */
+/* ========================================================================== */
+
+@media (min-width: 769px) {
+  /* 1. Thay đổi con trỏ chuột thành ngón tay khi hover vào bảng */
+  .markdown-content table.parallel-translations {
+    cursor: pointer;
+  }
+
+  /* 2. Logic làm mờ cơ bản: Mặc định làm mờ cột 2 và 3 (Trans 1 và Trans 2) */
+  /* Sử dụng TEXT-SHADOW thay vì FILTER:BLUR để tối ưu hiệu năng */
+  body.blur-translations-enabled
+    .markdown-content
+    table.parallel-translations:not(:hover)
+    td:nth-child(2),
+  body.blur-translations-enabled
+    .markdown-content
+    table.parallel-translations:not(:hover)
+    td:nth-child(3) {
+    color: transparent !important;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Hiệu ứng blur text giả lập nhẹ hơn */
+    user-select: none; /* Ngăn người dùng bôi đen */
+  }
+
+  /* Cải thiện hiển thị blur cho Dark Mode */
+  html.theme-luxe
+    body.blur-translations-enabled
+    .markdown-content
+    table.parallel-translations:not(:hover)
+    td:nth-child(2),
+  html.theme-luxe
+    body.blur-translations-enabled
+    .markdown-content
+    table.parallel-translations:not(:hover)
+    td:nth-child(3) {
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+  }
+
+  /* 3. LOGIC THÔNG MINH: Xác định cột gốc */
+
+  /* Trường hợp A: Nếu ẩn cột Original -> Cột Trans 1 (nth-child 2) trở thành cột gốc -> BỎ làm mờ cột 2 */
+  body.blur-translations-enabled.hide-col-original
+    .markdown-content
+    table.parallel-translations:not(:hover)
+    td:nth-child(2) {
+    color: var(--color-text-body) !important;
+    text-shadow: none;
+    user-select: auto;
+  }
+
+  /* Trường hợp B: Nếu ẩn cả Original VÀ Trans 1 -> Cột Trans 2 (nth-child 3) trở thành cột gốc -> BỎ làm mờ cột 3 */
+  body.blur-translations-enabled.hide-col-original.hide-col-trans1
+    .markdown-content
+    table.parallel-translations:not(:hover)
+    td:nth-child(3) {
+    color: var(--color-text-muted) !important;
+    text-shadow: none;
+    user-select: auto;
+  }
+}
+
+/* ... (Code cũ giữ nguyên) ... */
+
+/* ========================================================================== */
+/* [NEW] INTERACTIVE EXERCISE STYLES                                          */
+/* ========================================================================== */
+
+/* 1. Exercise Card (Vùng bao quanh mỗi Opgave) */
+.exercise-card {
+  background-color: var(--color-bg-code); /* Hoặc màu nền nhẹ khác */
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.exercise-card:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  border-color: var(--color-text-link);
+}
+
+/* Tiêu đề bài tập trong Card */
+.exercise-card h2 {
+  margin-top: 0;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px dashed var(--color-border);
+  color: var(--color-text-link);
+  font-size: 1.25rem;
+}
+
+/* 2. Interactive Inputs (Thay thế dấu _____) */
+.exercise-input {
+  display: inline-block;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid var(--color-text-muted);
+  color: var(--color-text-link); /* Màu chữ khi nhập */
+  font-family: var(--font-ibm-plex-mono);
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0 4px;
+  margin: 0 4px;
+  width: 120px; /* Độ rộng mặc định */
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.exercise-input:focus {
+  outline: none;
+  border-bottom-color: var(--color-btn-play);
+  background-color: rgba(var(--color-btn-play-rgb), 0.05);
+  width: 150px; /* Nở rộng khi focus */
+}
+
+/* Điều chỉnh list bên trong bài tập cho thoáng hơn */
+.exercise-card ol,
+.exercise-card ul {
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.exercise-card li {
+  margin-bottom: 0.75rem;
+  line-height: 1.6; /* Tăng chiều cao dòng để input không bị dính */
+}
+
+/* 3. Instruction Box (Holdrunde, Group Work) */
+.instruction-box {
+  background-color: rgba(255, 165, 0, 0.1); /* Màu cam nhạt */
+  border-left: 4px solid orange;
+  padding: 1rem;
+  margin: 1rem 0;
+  border-radius: 0 8px 8px 0;
+
+  color: var(--color-text-body);
+}
+
+.instruction-box strong {
+  color: #ea580c; /* Màu cam đậm */
+  font-style: normal;
+  text-transform: uppercase;
+  font-size: 0.85em;
+  letter-spacing: 0.5px;
+  margin-right: 0.5rem;
+}
+
+/* Dark mode overrides (nếu cần) */
+:root.theme-luxe .exercise-card {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+/* Style cho khối phân tích ngữ pháp (đã bỏ thẻ code) */
+.grammar-block {
+  font-family: var(--font-ibm-plex-mono), monospace;
+  font-size: 0.95rem;
+
+  /* SỬA DÒNG NÀY: Tăng từ 1.3 lên 2.2 (hoặc 2.5) để tạo khoảng thở rộng rãi cho các highlight */
+  line-height: 3.2;
+
+  white-space: pre;
+  overflow-x: auto;
+
+  background-color: var(--color-bg-code);
+  color: var(--color-text-body);
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  margin: 1.5rem 0;
+}
+
+/* css/markdown-content.css */
+
+/* Style cho từng câu văn */
+.sentence-wrapper {
+  display: block; /* Quan trọng: Biến span thành khối để xuống dòng */
+  margin: 1rem 0px; /* Khoảng cách giữa các câu */
+  transition: all 0.2s ease;
+  line-height: normal;
+}
+
+/* Loại bỏ margin của câu cuối cùng trong đoạn */
+.sentence-wrapper:last-child {
+  margin-bottom: 0;
+}
+
+/* ========================================================================== */
+/* MARKDOWN LIST STYLES — HARMONIZED WITH DESIGN SYSTEM  [COMPACT · NO GLOW] */
+/* ========================================================================== */
+
+/* ========================================================================== */
+/* CONTAINER DANH SÁCH                                                         */
+/* ========================================================================== */
+.markdown-content ul,
+.markdown-content ol {
+  margin-top: 0.4rem;
+  margin-bottom: 0.75rem;
+  padding-left: 0;
+  list-style: none;
+}
+
+/* Lồng nhau */
+.markdown-content li > ul,
+.markdown-content li > ol {
+  margin-top: 0.2rem;
+  margin-bottom: 0.1rem;
+  padding-left: 0.75rem;
+  border-left: 2px solid var(--li-nested-line);
+}
+
+/* ========================================================================== */
+/* LIST ITEM BASE                                                              */
+/* ========================================================================== */
+.markdown-content li {
+  position: relative;
+  display: block;
+  white-space: normal;
+  word-wrap: break-word;
+  padding: 0px 2.5rem;
+  margin-bottom: 0.5rem;
+  border-radius: 7px;
+  /* border: 1px solid var(--li-border); */
+  /* background: var(--li-bg); */
+  line-height: var(--lh-relaxed);
+  color: var(--color-text-body);
+  transition:
+    background-color var(--li-transition),
+    border-color var(--li-transition),
+    box-shadow var(--li-transition),
+    /* FIX 1: thêm vào để inset bar mượt */ transform var(--li-transition);
+  animation: li-enter 0.3s ease both;
+}
+
+/* Stagger */
+.markdown-content li:nth-child(1) {
+  animation-delay: 0.04s;
+}
+.markdown-content li:nth-child(2) {
+  animation-delay: 0.08s;
+}
+.markdown-content li:nth-child(3) {
+  animation-delay: 0.12s;
+}
+.markdown-content li:nth-child(4) {
+  animation-delay: 0.16s;
+}
+.markdown-content li:nth-child(5) {
+  animation-delay: 0.2s;
+}
+.markdown-content li:nth-child(6) {
+  animation-delay: 0.24s;
+}
+.markdown-content li:nth-child(7) {
+  animation-delay: 0.28s;
+}
+.markdown-content li:nth-child(8) {
+  animation-delay: 0.32s;
+}
+.markdown-content li:nth-child(n + 9) {
+  animation-delay: 0.36s;
+}
+
+@keyframes li-enter {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ========================================================================== */
+/* HOVER BASE — dùng chung cho mọi li                                          */
+/* ========================================================================== */
+.markdown-content li::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0);
+  transition: background 0.2s ease;
+  pointer-events: none;
+}
+
+.markdown-content li:hover::after {
+  background: rgba(0, 0, 0, 0.05); /* chỉnh độ đậm ở đây */
+}
+
+/* ========================================================================== */
+/* FIX 2: GỘP HOVER — border-color + inset bar theo màu cấp                   */
+/* Thay vì lặp lại trong từng ul/ol > li:hover, khai báo tập trung ở đây      */
+/* ========================================================================== */
+
+/* UL cấp 1 */
+.markdown-content ul > li:hover {
+  border-color: color-mix(in srgb, var(--li-c1-a) 45%, transparent);
+  box-shadow: inset 3px 0 0 var(--li-c1-a);
+}
+/* UL cấp 2 */
+.markdown-content ul ul > li:hover {
+  border-color: color-mix(in srgb, var(--li-c2-a) 45%, transparent);
+  box-shadow: inset 3px 0 0 var(--li-c2-a);
+}
+/* UL cấp 3 */
+.markdown-content ul ul ul > li:hover {
+  border-color: color-mix(in srgb, var(--li-c3-a) 45%, transparent);
+  box-shadow: inset 3px 0 0 var(--li-c3-a);
+}
+/* OL cấp 1 */
+.markdown-content ol > li:hover {
+  border-color: color-mix(in srgb, var(--li-ol1-a) 45%, transparent);
+  box-shadow: inset 3px 0 0 var(--li-ol1-a);
+}
+/* OL cấp 2 */
+.markdown-content ol ol > li:hover {
+  border-color: color-mix(in srgb, var(--li-ol2-a) 45%, transparent);
+  box-shadow: inset 3px 0 0 var(--li-ol2-a);
+}
+/* OL cấp 3 */
+.markdown-content ol ol ol > li:hover {
+  border-color: color-mix(in srgb, var(--li-ol3-a) 45%, transparent);
+  box-shadow: inset 3px 0 0 var(--li-ol3-a);
+}
+
+/* ========================================================================== */
+/* UNORDERED LIST — BULLET                                                     */
+/* ========================================================================== */
+
+/* Ẩn bullet/badge khi li chứa checkbox — tránh đè lên nhau */
+.markdown-content li:has(> input[type="checkbox"])::before {
+  display: none;
+}
+
+/* ── Cấp 1: tròn ── */
+.markdown-content ul > li::before {
+  content: "";
+  position: absolute; /* FIX 3: khai báo rõ ở mọi cấp */
+  left: 0.65rem;
+  top: 0.55rem;
+  display: block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--li-c1-a), var(--li-c1-b));
+  transition:
+    transform var(--li-transition),
+    border-radius var(--li-transition);
+}
+.markdown-content ul > li:hover::before {
+  transform: scale(1.3) rotate(45deg);
+  border-radius: 3px;
+}
+
+/* ── Cấp 2: kim cương ── */
+.markdown-content ul ul > li::before {
+  content: "";
+  position: absolute; /* FIX 3 */
+  left: 0.65rem;
+  top: 0.5rem;
+  display: block;
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
+  transform: rotate(45deg);
+  background: linear-gradient(135deg, var(--li-c2-a), var(--li-c2-b));
+  transition: transform var(--li-transition);
+}
+.markdown-content ul ul > li:hover::before {
+  transform: rotate(225deg) scale(1.35);
+}
+
+/* ── Cấp 3: chấm nhỏ ── */
+.markdown-content ul ul ul > li::before {
+  content: "";
+  position: absolute; /* FIX 3 */
+  left: 0.65rem;
+  top: 0.45rem;
+  display: block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--li-c3-a), var(--li-c3-b));
+  transition: transform var(--li-transition);
+}
+.markdown-content ul ul ul > li:hover::before {
+  transform: scale(1.4);
+}
+
+/* ========================================================================== */
+/* ORDERED LIST — BADGE SỐ                                                    */
+/* ========================================================================== */
+
+/* ── Cấp 1: số ── */
+.markdown-content ol {
+  counter-reset: ol-c1;
+}
+.markdown-content ol > li {
+  counter-increment: ol-c1;
+}
+
+.markdown-content ol > li::before {
+  content: counter(ol-c1);
+  position: absolute; /* FIX 3 */
+  left: 0.35rem;
+  top: 0.22rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  font-size: 0.65rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--li-ol1-txt);
+  border-radius: 6px;
+  background: linear-gradient(135deg, var(--li-ol1-a), var(--li-ol1-b));
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+  transition: transform var(--li-transition);
+}
+.markdown-content ol > li:hover::before {
+  transform: scale(1.08) rotate(-4deg);
+}
+
+/* ── Cấp 2: chữ thường ── */
+.markdown-content ol ol {
+  counter-reset: ol-c2;
+}
+.markdown-content ol ol > li {
+  counter-increment: ol-c2;
+}
+
+.markdown-content ol ol > li::before {
+  content: counter(ol-c2, lower-alpha);
+  position: absolute; /* FIX 3 */
+  left: 0.35rem;
+  top: 0.28rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.2rem;
+  height: 1.2rem;
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: #fff;
+  border-radius: 5px;
+  background: linear-gradient(135deg, var(--li-ol2-a), var(--li-ol2-b));
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  transition: transform var(--li-transition);
+}
+.markdown-content ol ol > li:hover::before {
+  transform: scale(1.08) rotate(4deg);
+}
+
+/* ── Cấp 3: số La Mã pill ── */
+.markdown-content ol ol ol {
+  counter-reset: ol-c3;
+}
+.markdown-content ol ol ol > li {
+  counter-increment: ol-c3;
+}
+
+.markdown-content ol ol ol > li::before {
+  content: counter(ol-c3, lower-roman);
+  position: absolute; /* FIX 3 */
+  left: 0.35rem;
+  top: 0.32rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  min-width: 1.15rem;
+  height: 1.1rem;
+  padding: 0 0.3rem;
+  font-size: 0.54rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: #fff;
+  border-radius: 20px;
+  background: linear-gradient(135deg, var(--li-ol3-a), var(--li-ol3-b));
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+}
+
+/* ========================================================================== */
+/* TASK LIST (CHECKBOX)                                                        */
+/* ========================================================================== */
+.markdown-content li.task-list-item {
+  list-style: none;
+}
+
+/* Ẩn bullet/badge ::before ở mọi cấp khi li chứa checkbox,
+   bất kể có class task-list-item hay không                  */
+.markdown-content li:has(> input[type="checkbox"])::before {
+  display: none;
+}
+
+.markdown-content li.task-list-item > input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  flex-shrink: 0;
+  width: 0.95rem;
+  height: 0.95rem;
+  margin-top: calc((1.65em - 0.95rem) / 2);
+  border: 2px solid color-mix(in srgb, var(--li-ol1-a) 50%, transparent);
+  border-radius: 3px;
+  background: transparent;
+  cursor: default;
+  position: relative;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.markdown-content li.task-list-item > input[type="checkbox"]:checked {
+  background: linear-gradient(135deg, var(--li-ol1-a), var(--li-ol1-b));
+  border-color: transparent;
+}
+
+.markdown-content li.task-list-item > input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: -1px;
+  width: 4px;
+  height: 8px;
+  border: 2px solid var(--li-ol1-txt, #fff);
+  border-top: none;
+  border-left: none;
+  transform: rotate(45deg);
+}
+
+.markdown-content li.task-list-item:has(input:checked) {
+  opacity: 0.62;
+}
+
+.markdown-content li.task-list-item:has(input:checked) > *:not(input) {
+  text-decoration: line-through;
+  color: var(--color-text-muted);
+}
+
+/* ========================================================================== */
+/* FIX: EXERCISE CARD override                                                 */
+/* ========================================================================== */
+.exercise-card .markdown-content li,
+.exercise-card li {
+  background: transparent;
+  border-color: transparent;
+  border-radius: 0;
+  padding-left: 0;
+  padding-right: 0;
+  backdrop-filter: none;
+  animation: none;
+}
+
+.exercise-card .markdown-content li:hover,
+.exercise-card li:hover {
+  background: color-mix(in srgb, var(--li-c1-a) 6%, transparent);
+  border-color: transparent;
+  box-shadow: none;
+  transform: none;
+}
+
+/* ========================================================================== */
+/* PARAGRAPH BÊN TRONG LI                                                     */
+/* ========================================================================== */
+.markdown-content li > p {
+  margin-top: 0.08rem;
+  margin-bottom: 0.08rem;
+  flex: 1;
+  min-width: 0;
+}
+
+/* ========================================================================== */
+/* SPACING CLEANUP                                                             */
+/* ========================================================================== */
+.markdown-content ul:last-child,
+.markdown-content ol:last-child {
+  margin-bottom: 0;
+}
+
+.markdown-content li:last-child {
+  margin-bottom: 0;
+}
+
+/* ========================================================================== */
+/* REDUCED MOTION                                                              */
+/* ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .markdown-content li,
+  .markdown-content li::before {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ========================================================================== */
+/* GLOBAL FANCY CHECKBOX                                                       */
+/* ========================================================================== */
+input[type="checkbox"] {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  flex-shrink: 0;
+  width: 1.1rem !important;
+  height: 1.1rem !important;
+  margin: 0;
+  margin-right: 0.6rem;
+  vertical-align: middle;
+  border: 2px solid color-mix(in srgb, var(--color-text-link) 40%, transparent) !important;
+  border-radius: 5px !important;
+  background: var(--color-bg-body) !important;
+  cursor: pointer;
+  position: relative;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease !important;
+}
+
+input[type="checkbox"]:hover {
+  border-color: var(--color-text-link) !important;
+}
+
+input[type="checkbox"]:checked {
+  background: linear-gradient(
+    135deg,
+    var(--color-text-link),
+    var(--color-text-link-hover)
+  ) !important;
+  border-color: transparent !important;
+}
+
+input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  left: 32%;
+  top: 15%;
+  width: 32%;
+  height: 55%;
+  border: 2px solid var(--color-text-inverse, #ffffff);
+  border-top: none;
+  border-left: none;
+  transform: rotate(45deg);
+}
+
+/* Card effect cho container chứa checkbox */
+:is(li, label, .checkbox-wrapper):has(> input[type="checkbox"]) {
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+:is(li, label, .checkbox-wrapper):has(> input[type="checkbox"]):hover {
+  background-color: var(--color-bg-interactive-hover);
+  transform: translateX(3px);
+}
+
+:is(li, label, .checkbox-wrapper):has(> input[type="checkbox"]:checked) {
+  background-color: color-mix(in srgb, var(--color-text-link) 6%, transparent);
+  border-color: color-mix(in srgb, var(--color-text-link) 30%, transparent);
+}
+
+/* ==========================================================================
+   PARALLEL TRANSLATIONS - MOBILE & BASE STYLES
+   ========================================================================== */
+
+/* Khối bọc từng câu */
+.pt-block {
+  display: inline;
+  line-height: 2;
+}
+
+.pt-block::after {
+  content: "";
+  display: block;
+}
+
+/* Từ vựng/Câu gốc (Trigger) */
+.pt-trigger {
+  position: relative;
+  display: inline;
+  cursor: pointer;
+  color: var(--color-text-body);
+  background-color: var(--pt-trigger-bg);
+  border-radius: 4px;
+  padding: 2px 4px;
+  margin: 0 2px;
+}
+
+.pt-trigger:hover,
+.pt-trigger.pt-active,
+.pt-trigger:focus-within {
+  background-color: var(--pt-trigger-bg-on);
+  text-decoration-style: solid;
+}
+
+/* Tooltip Wrapper - Mặc định canh giữa cho Mobile */
+.pt-tooltip {
+  box-sizing: border-box;
+  position: absolute;
+  top: var(--pt-dyn-top, calc(100% + 11px)) !important;
+  left: 50%;
+  transform-origin: top center;
+  z-index: 9999;
+  width: max-content;
+  min-width: 210px;
+  max-width: 40vw;
+  border: 1px solid var(--pt-border);
+  border-radius: 10px;
+  box-shadow: var(--pt-shadow);
+  backdrop-filter: blur(500px) saturate(160%);
+  padding: 11px 13px 12px;
+  opacity: 0;
+  transform: translateX(-50%) translateY(-4px) scale(0.96);
+  pointer-events: none;
+  visibility: hidden;
+  transition:
+    opacity var(--pt-dur) var(--pt-ease) var(--pt-hide-delay),
+    transform var(--pt-dur) var(--pt-ease) var(--pt-hide-delay),
+    visibility 0ms calc(var(--pt-dur) + var(--pt-hide-delay));
+
+
+  /* [THÊM MỚI] Hiển thị thanh cuộn dọc nếu nội dung quá dài */
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+
+/* ==========================================================================
+   CẦU NỐI TÀNG HÌNH (HOVER BRIDGE) CHỐNG MẤT TOOLTIP
+   ========================================================================== */
+.pt-tooltip::before {
+  content: "";
+  position: absolute;
+  /* Kéo ngược lên trên 15px để lấp đầy toàn bộ khe hở 11px giữa chữ và tooltip */
+  top: -15px;
+  left: 0;
+  width: 100%; /* Trải dài bằng đúng chiều rộng của Tooltip (VD: 600px) */
+  height: 15px;
+  background: transparent; /* Hoàn toàn vô hình */
+  z-index: 1;
+}
+
+/* Hiển thị Tooltip */
+.pt-trigger:hover .pt-tooltip,
+.pt-trigger.pt-active .pt-tooltip,
+.pt-trigger:focus-within .pt-tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0) scale(1);
+  pointer-events: auto;
+  visibility: visible;
+  transition:
+    opacity var(--pt-dur) var(--pt-ease) var(--pt-show-delay),
+    transform var(--pt-dur) var(--pt-ease) var(--pt-show-delay),
+    visibility 0ms var(--pt-show-delay);
+  background: var(--li-c1-glow);
+}
+
+/* Mũi tên (Caret) trỏ xuống cho Mobile */
+.pt-arrow {
+  position: absolute;
+  bottom: -5.5px;
+  left: 50%;
+  margin-left: -6px;
+  width: 12px;
+  height: 12px;
+  background: var(--pt-arrow-fill);
+  border-right: 1px solid var(--pt-arrow-stroke);
+  border-bottom: 1px solid var(--pt-arrow-stroke);
+  transform: translateY(50%) rotate(45deg);
+  z-index: -1;
+  border-bottom-right-radius: 2px;
+}
+
+/* Nội dung bên trong Tooltip */
+.pt-item {
+  display: flex !important;
+  flex-direction: column;
+  gap: 3px;
+  visibility: visible !important;
+}
+
+.pt-item-label {
+  display: inline-flex !important;
+  align-items: center;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 2px 6px;
+  border-radius: 4px;
+  width: fit-content;
+  visibility: visible !important;
+}
+
+.pt-item--primary .pt-item-label {
+  background: var(--pt-badge1-bg);
+  color: var(--pt-badge1-fg) !important;
+}
+
+.pt-item--secondary .pt-item-label {
+  background: var(--pt-badge2-bg);
+  color: var(--pt-badge2-fg) !important;
+}
+
+.pt-item-text {
+  display: block !important;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: var(--color-text-body) !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  text-shadow: none !important; /* Xoá blur nếu có */
+}
+
+.pt-separator {
+  height: 1px;
+  background: var(--pt-sep);
+  margin: 10px 0;
+  width: 100%;
+}
+
+/* Fix hiển thị Grammar Stack trong Tooltip */
+.pt-tooltip .grammar-stack {
+  color: var(--color-text-body) !important;
+}
+
+/* ==========================================================================
+   TOOLTIP DESKTOP LAYOUT (>= 1024px)
+   Yêu cầu: Canh trái (đầu câu), dài 200px, khớp với lề main-content
+   ========================================================================== */
+
+@media (min-width: 1024px) {
+  .pt-trigger {
+    position: relative !important;
+    display: inline-block; /* Đảm bảo là block để canh lề chuẩn */
+  }
+
+  .pt-tooltip {
+    width: 600px !important;
+    min-width: 60vw !important;
+    max-width: 80vw !important;
+
+    /* Ép dính vào lề trái của text (đầu câu) */
+    left: 0 !important;
+    right: auto !important;
+
+    /* Ghi đè hiệu ứng canh giữa (translateX) */
+    transform: translateY(4px) scale(0.96) !important;
+    transform-origin: bottom left !important;
+  }
+
+  /* Hiệu ứng trượt lên nhẹ nhàng khi Hover trên Desktop */
+  .pt-trigger:hover .pt-tooltip,
+  .pt-trigger.pt-active .pt-tooltip,
+  .pt-trigger:focus-within .pt-tooltip {
+    transform: translateY(-5px) scale(1) !important;
+  }
+
+  /* Dời mũi tên (Arrow) về bên trái cho khớp với Tooltip mới */
+  .pt-tooltip .pt-arrow {
+    left: 24px !important;
+    margin-left: 0 !important;
+    transform: translateY(50%) rotate(45deg) !important;
+  }
+}
+
+/* ==========================================================================
+   REDUCED MOTION (Tắt animation nếu máy yếu)
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .pt-tooltip,
+  .pt-trigger:hover .pt-tooltip,
+  .pt-trigger:focus-within .pt-tooltip,
+  .pt-trigger.pt-active .pt-tooltip {
+    transition:
+      opacity 150ms ease,
+      visibility 0ms !important;
+  }
+
+  /* Giữ nguyên vị trí tĩnh khi tắt animation trên Desktop */
+  @media (min-width: 1024px) {
+    .pt-trigger:hover .pt-tooltip,
+    .pt-trigger.pt-active .pt-tooltip,
+    .pt-trigger:focus-within .pt-tooltip {
+      transform: translateY(0) scale(1) !important;
+    }
+  }
+}
+
+.pt-trigger .pt-trigger-text {
+  padding: 5px;
+  border-left: 1px solid var(--li-c1-a);
+}
+
+.pt-trigger:hover .pt-trigger-text {
+  background-color: var(--li-c1-glow);
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+  box-shadow: inset 0 0 0 2px var(--li-c1-a);
+}
+
+/* ==========================================================================
+   TOOLTIP GLOBAL OVERLAY (LỚP PHỦ LÀM MỜ FOCUS MODE)
+   ========================================================================== */
+
+#pt-global-overlay {
+  position: fixed;
+  inset: 0; /* Trải dài toàn màn hình (top, left, right, bottom = 0) */
+  background: rgba(0, 0, 0, 0.35); /* Màu đen mờ 35% */
+  backdrop-filter: blur(3px); /* Hiệu ứng Blur làm nhoè nội dung bên dưới */
+  -webkit-backdrop-filter: blur(3px);
+  z-index: 9990; /* Nằm ngay dưới Tooltip */
+
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.3s ease,
+    visibility 0.3s ease;
+  pointer-events: none; /* Xuyên qua lớp phủ khi đang ẩn */
+}
+
+/* Kích hoạt lớp phủ khi body có class pt-overlay-active */
+body.pt-overlay-active #pt-global-overlay {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto; /* Chặn click xuống nội dung bên dưới */
+}
+
+/* Tuỳ biến cho Dark Mode (Nền đen sâu hơn) */
+html.theme-luxe #pt-global-overlay {
+  background: rgba(0, 0, 0, 0.65);
+}
+
+/* ĐƯA CÂU VĂN VÀ TOOLTIP NỔI LÊN TRÊN LỚP PHỦ */
+.pt-trigger.pt-hovered,
+.pt-trigger.pt-active {
+  position: relative !important;
+  z-index: 2147483646 !important; 
+}
+
+/* Đưa Tooltip lên mức TỐI ĐA (Max Value) */
+.pt-tooltip {
+  z-index: 2147483647 !important; 
+}
+
+/* ==========================================================================
+   ĐỒNG BỘ CHIỀU RỘNG TOOLTIP BẰNG VỚI MARKDOWN CONTAINER
+   ========================================================================== */
+.pt-tooltip {
+  /* Nhận chiều rộng từ JS, mặc định 100% nếu JS chưa chạy */
+  width: var(--pt-dyn-width, 100%) !important;
+  max-width: none !important;
+
+  /* Lùi lại về mép trái của container */
+  left: var(--pt-dyn-left, 0) !important;
+
+  /* Bỏ đi hiệu ứng translateX(-50%) cũ của di động, giữ lại trượt dọc */
+  transform: translateY(4px) scale(0.96) !important;
+  transform-origin: top center !important;
+}
+
+.pt-trigger:hover .pt-tooltip,
+.pt-trigger.pt-active .pt-tooltip,
+.pt-trigger:focus-within .pt-tooltip {
+  transform: translateY(-5px) scale(1) !important;
+}
+
+/* Đảm bảo mũi tên luôn chạy theo và chĩa đúng vào cụm từ (trigger) */
+.pt-tooltip .pt-arrow {
+  left: var(--pt-dyn-arrow-left, 50%) !important;
+  margin-left: -6px !important; /* Dời nhẹ để mũi tên nằm chính giữa */
+}
+
+/* ==========================================================================
+   TOOLTIP GLOBAL OVERLAY & LÀM MỜ TRIGGER TEXT (ĐÃ NÂNG CẤP)
+   ========================================================================== */
+
+/* 1. CHỈNH MÀU LỚP PHỦ TỐI VÀ SÂU HƠN */
+#pt-global-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65) !important; /* Tăng độ đen từ 0.35 lên 0.65 */
+  backdrop-filter: blur(4px) !important; /* Tăng độ nhoè */
+  -webkit-backdrop-filter: blur(4px) !important;
+  z-index: 9990;
+
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.3s ease,
+    visibility 0.3s ease;
+  pointer-events: none;
+}
+
+body.pt-overlay-active #pt-global-overlay {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* Dark mode: Lớp phủ gần như đen tuyền */
+html.theme-luxe #pt-global-overlay {
+  background: rgba(0, 0, 0, 0.85) !important;
+}
+
+/* 2. ĐƯA CỤM TỪ NỔI LÊN ĐỂ BẮT SỰ KIỆN CHUỘT (CHỐNG LỖI FLICKER) */
+.pt-trigger.pt-hovered,
+.pt-trigger.pt-active {
+  position: relative !important;
+  z-index: 9995 !important;
+  /* Tắt các màu nền highlight mặc định để không bị chói */
+  background-color: transparent !important;
+  text-decoration: none !important;
+}
+
+.pt-tooltip {
+  z-index: 9999 !important;
+}
+
+/* 3. TẠO ẢO GIÁC "CHÌM DƯỚI LỚP PHỦ" CHO CÂU VĂN GỐC */
+.pt-trigger.pt-hovered .pt-trigger-text,
+.pt-trigger.pt-active .pt-trigger-text {
+  /* Xoá viền và màu nền của chữ */
+  background-color: transparent !important;
+  box-shadow: none !important;
+  border-color: transparent !important;
+
+  /* CỐT LÕI: Giảm độ sáng và làm nhoè chữ */
+  opacity: 0.35 !important; /* Chữ mờ đi, để lộ nền đen của overlay ở sau */
+  filter: blur(1.5px) !important; /* Hiệu ứng mất nét */
+
+  transition:
+    opacity 0.3s ease,
+    filter 0.3s ease,
+    background-color 0.3s ease !important;
+}
+
+/* Tạo hiệu ứng khôi phục mượt mà khi chuột rời đi */
+.pt-trigger .pt-trigger-text {
+  transition:
+    opacity 0.3s ease,
+    filter 0.3s ease,
+    background-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+/* ==========================================================================
+   STYLE CHO NÚT BUTTON (MỚI THÊM)
+   ========================================================================== */
+.pt-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 30px;
+  margin-right: 6px; /* Khoảng cách với chữ */
+  border-radius: 5px;
+  background-color: transparent;
+  color: var(--color-text-link, #2563eb);
+  border: 1.5px solid var(--color-text-link, #2563eb);
+  cursor: pointer;
+  vertical-align: middle;
+  transform: translateY(-2px); /* Canh chỉnh để nằm gọn trên dòng */
+  transition: all 0.2s ease;
+  padding: 0;
+}
+
+/* Hiệu ứng khi hover vào NÚT */
+.pt-btn:hover,
+.pt-btn:focus {
+  background-color: var(--color-text-link, #2563eb);
+  color: #ffffff;
+  outline: none;
+}
+
+/* ==========================================================================
+   LOẠI BỎ HIỆU ỨNG HOVER CŨ LÊN CẢ CÂU VÀ CSS HIỂN THỊ TOOLTIP MỚI
+   ========================================================================== */
+/* BỎ/XÓA CÁC ĐOẠN SAU TRONG FILE CŨ (Bỏ hover từ .pt-trigger):
+   .pt-trigger:hover .pt-tooltip, ...
+   .pt-trigger:hover .pt-trigger-text ... 
+*/
+
+/* 1. Reset câu văn để di chuột vào không có hiệu ứng mặc định */
+.pt-trigger {
+  cursor: text !important; /* Đổi con trỏ chuột thành hình văn bản (chữ I) */
+}
+
+.pt-trigger .pt-trigger-text {
+  padding: 2px 5px;
+  border-left: none; /* Bỏ border highlight cũ nếu muốn */
+  transition:
+    opacity 0.3s ease,
+    filter 0.3s ease;
+}
+
+/* 2. CHỈ HIỂN THỊ TOOLTIP DỰA VÀO CLASS ĐƯỢC JS KÍCH HOẠT */
+.pt-trigger.pt-hovered .pt-tooltip,
+.pt-trigger.pt-active .pt-tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0) scale(1) !important;
+  pointer-events: auto;
+  visibility: visible;
+  transition:
+    opacity var(--pt-dur) var(--pt-ease) var(--pt-show-delay),
+    transform var(--pt-dur) var(--pt-ease) var(--pt-show-delay),
+    visibility 0ms var(--pt-show-delay);
+  background: var(--li-c1-glow);
+}
+
+/* Dành cho Desktop (để đè lại hiệu ứng translateX-50% của điện thoại) */
+@media (min-width: 1024px) {
+  .pt-trigger.pt-hovered .pt-tooltip,
+  .pt-trigger.pt-active .pt-tooltip {
+    transform: translateY(-5px) scale(1) !important;
+  }
+}
+
+/* 3. LÀM MỜ VĂN BẢN (FOCUS MODE) KHI JS KÍCH HOẠT */
+.pt-trigger.pt-hovered .pt-trigger-text,
+.pt-trigger.pt-active .pt-trigger-text {
+  opacity: 0.35 !important;
+  filter: blur(1.5px) !important;
+  background-color: transparent !important;
+  text-decoration: none !important;
+  box-shadow: none !important;
+}
+
+/* ==========================================================================
+   1. TẮT HOÀN TOÀN HIỆU ỨNG KHI RÊ CHUỘT VÀO CÂU VĂN (.pt-trigger-text)
+   ========================================================================== */
+
+/* Ép buộc ẩn Tooltip khi di chuột vào chữ (Vô hiệu hoá CSS hover mặc định cũ) */
+.pt-trigger:hover .pt-tooltip,
+.pt-trigger:focus-within .pt-tooltip {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Tắt luôn hiệu ứng highlight (sáng màu nền) khi di chuột vào chữ */
+.pt-trigger:hover .pt-trigger-text {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+/* ==========================================================================
+   2. CHỈ HIỂN THỊ TOOLTIP KHI RÊ CHUỘT VÀO BUTTON (.pt-btn)
+   (JS sẽ cấp class .pt-hovered khi bạn thao tác đúng vào nút)
+   ========================================================================== */
+
+/* Sử dụng !important để đè lại lệnh ẩn bên trên */
+.pt-trigger.pt-hovered .pt-tooltip,
+.pt-trigger.pt-active .pt-tooltip {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  transform: translateX(-50%) translateY(0) scale(1) !important;
+  background: var(--li-c1-glow); /* Giữ lại màu nền tuỳ chỉnh nếu có */
+}
+
+/* Canh chỉnh vị trí Tooltip cho Desktop */
+@media (min-width: 1024px) {
+  .pt-trigger.pt-hovered .pt-tooltip,
+  .pt-trigger.pt-active .pt-tooltip {
+    transform: translateY(-5px) scale(1) !important;
+  }
+}
+
+/* ==========================================================================
+   3. CHỈ LÀM MỜ CHỮ (FOCUS MODE) KHI RÊ CHUỘT VÀO BUTTON
+   ========================================================================== */
+.pt-trigger.pt-hovered .pt-trigger-text,
+.pt-trigger.pt-active .pt-trigger-text {
+  opacity: 0.35 !important;
+  filter: blur(1.5px) !important;
+  background-color: transparent !important;
+  text-decoration: none !important;
+  box-shadow: none !important;
+}
+
+/* Ẩn mũi tên khi Tooltip hoạt động như một khối ở giữa màn hình */
+.pt-tooltip .pt-arrow {
+  display: none !important;
+}
+
+
+/* Gỡ bỏ mọi giới hạn overflow và transform từ các thẻ cha chứa tooltip */
+.pt-block,
+.markdown-rendered,
+#content,
+#main-content {
+  overflow: visible !important;
+  overflow-x: visible !important;
+  overflow-y: visible !important;
+  /* Nếu thẻ cha có transform, nó sẽ tạo ra không gian xếp chồng mới khoá z-index. Do đó cần tắt transform nếu có. */
+  transform: none !important; 
+}
+
+/* Đảm bảo bảng bọc ngoài không cắt nội dung Tooltip (nếu có) */
+.markdown-table-wrapper {
+  overflow: visible !important;
+}
+

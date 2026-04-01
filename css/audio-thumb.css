@@ -1,0 +1,105 @@
+/* ===============================
+   AUDIO PROGRESS THUMB (MATCHING RANGE-THUMB)
+   =============================== */
+
+/* 1. Base Setup */
+.audio-progress {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  flex-grow: 1; /* Quan trọng để thanh nhạc tự giãn trong Dock */
+  background: var(--color-border);
+  cursor: pointer;
+  
+  /* Vùng bấm rộng 24px để dễ thao tác */
+  height: 2px;
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  border-radius: 0;
+  border: none;
+  transition: none; /* Xoá transition cũ của container */
+}
+
+.audio-progress:focus {
+  outline: none;
+}
+
+/* ========================================= */
+/* 2. Webkit (Chrome, Safari, Edge)          */
+/* ========================================= */
+
+/* --- Track (Thanh trượt 1px) --- */
+.audio-progress::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 1px;
+  cursor: pointer;
+  background: var(--color-border);
+  border-radius: 0;
+  border: none;
+}
+
+/* --- Thumb (Nút kéo 12px) --- */
+.audio-progress::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  
+  /* Màu sắc */
+  background: var(--color-bg-section);
+  border: 2px solid var(--color-btn-play);
+  
+  /* Căn giữa: (1px - 12px) / 2 = -5.5px */
+  margin-top: -5.5px;
+  
+  cursor: pointer;
+  box-shadow: none;
+  
+  /* Chỉ transition màu, không scale */
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+/* Interaction: Active */
+.audio-progress:active::-webkit-slider-thumb {
+  cursor: grabbing;
+  border-color: var(--color-text-link);
+  background: var(--color-bg-body);
+}
+
+/* ========================================= */
+/* 3. Mozilla Firefox                        */
+/* ========================================= */
+
+/* --- Track (Thanh trượt 1px) --- */
+.audio-progress::-moz-range-track {
+  width: 100%;
+  height: 1px;
+  cursor: pointer;
+  background: var(--color-border);
+  border-radius: 0;
+  border: none;
+}
+
+/* --- Thumb (Nút kéo 12px) --- */
+.audio-progress::-moz-range-thumb {
+  height: 12px;
+  width: 12px;
+  border: 2px solid var(--color-btn-play);
+  border-radius: 50%;
+  background: var(--color-bg-section);
+  cursor: pointer;
+  box-shadow: none;
+  border: 2px solid var(--color-btn-play); /* Firefox cần khai báo lại border */
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+/* Interaction: Active */
+.audio-progress:active::-moz-range-thumb {
+  cursor: grabbing;
+  border-color: var(--color-text-link);
+  background: var(--color-bg-body);
+}

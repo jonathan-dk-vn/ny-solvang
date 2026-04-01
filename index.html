@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title></title>
+
+  <style>
+    body.reading-mode-active #rich-content-view {
+      display: none !important;
+    }
+
+    body.reading-mode-active #raw-content-view {
+      display: block !important;
+    }
+
+    #raw-content-view {
+      display: none;
+    }
+  </style>
+
+  <script>
+    (function () {
+      try {
+        const savedTheme = localStorage.getItem('theme');
+        const htmlEl = document.documentElement;
+        htmlEl.classList.remove('theme-luxe', 'theme-fullcolor');
+        if (savedTheme === 'luxe') {
+          htmlEl.classList.add('theme-luxe');
+        } else if (savedTheme === 'fullcolor') {
+          htmlEl.classList.add('theme-fullcolor');
+        } else if (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          htmlEl.classList.add('theme-luxe');
+        }
+      } catch (e) { }
+    })();
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/markdown-content.css" />
+  <link rel="stylesheet" href="css/audio-thumb.css" />
+  <link rel="stylesheet" href="css/range-thumb.css" />
+  <link rel="stylesheet" href="css/grammarLegend.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+</head>
+
+<body class="hide-grammar-abbr">
+  <div id="nav-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-[100] flex items-center justify-center p-4">
+    <div id="nav-modal-content"
+      class="bg-[var(--color-bg-section)] w-full max-w-2xl max-h-[60vh] md:max-h-[80vh] rounded-2xl shadow-2xl flex flex-col border border-[var(--color-border)]">
+      <div class="flex-shrink-0 p-4 border-b border-[var(--color-border)] space-y-2">
+        <div class="flex justify-between items-center">
+          <h2 class="text-xl font-bold text-[var(--color-text-headings)]">Categories</h2>
+          <button id="nav-modal-close-btn"
+            class="p-2 rounded-full hover:bg-[var(--color-bg-interactive-hover)] text-[var(--color-text-headings)]">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        <div id="nav-breadcrumb-container-modal" class="flex justify-start">
+          <div class="nav-breadcrumb">Home / Categories</div>
+        </div>
+      </div>
+      <div id="nav-modal-placeholder" class="flex-grow p-4 overflow-y-auto min-h-0"></div>
+    </div>
+  </div>
+
+  <div class="desktop-layout-container app-layout-wrapper">
+
+    <aside id="toc-modal"
+      class="hidden fixed inset-0 bg-black bg-opacity-60 z-[100] flex items-center justify-center p-4 lg:p-0 lg:block lg:static lg:bg-transparent lg:z-0">
+
+      <div
+        class="bg-[var(--color-bg-section)] w-full max-w-2xl max-h-[60vh] rounded-2xl shadow-2xl flex flex-col border border-[var(--color-border)] 
+                lg:w-full lg:max-w-none lg:h-full lg:max-h-none lg:rounded-none lg:shadow-none lg:border-0 lg:border-r sidebar-content-wrapper">
+
+        <div
+          class="flex-shrink-0 p-4 flex justify-between items-center border-b border-[var(--color-border)] lg:hidden">
+          <h3 class="text-xl font-bold text-[var(--color-text-headings)]">Indholdsfortegnelse</h3>
+          <button id="toc-modal-close-btn" class="p-2 rounded-full hover:bg-[var(--color-bg-interactive-hover)]">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <div
+          class="hidden lg:block p-4 border-b border-[var(--color-border)] bg-[var(--color-bg-section)] sticky top-0 z-10">
+          <h3 class="text-lg font-bold text-[var(--color-text-headings)]">Indholdsfortegnelse</h3>
+        </div>
+
+        <div class="flex-grow p-2 overflow-y-auto custom-scrollbar">
+          <ul id="toc-modal-list" class="space-y-1"></ul>
+        </div>
+      </div>
+    </aside>
+
+    <main id="main-content" class="min-w-0 relative flex-1">
+      <div id="content" class="markdown-content flex-shrink-0"></div>
+    </main>
+
+    <aside id="dynamic-grammar-sidebar"
+      class="hidden lg:block flex-shrink-0 p-6 overflow-y-auto border-l border-[var(--color-border)]">
+      <div
+        class="bg-[var(--color-bg-section)] rounded-xl border border-[var(--color-border)] shadow-sm overflow-hidden flex flex-col max-h-full">
+        <div
+          class="p-4 border-b border-[var(--color-border)] bg-opacity-50 backdrop-blur-md sticky top-0 z-10 bg-[var(--color-bg-section)]">
+          <h3 class="text-lg font-bold text-[var(--color-text-headings)] flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[var(--color-text-link)]" fill="none"
+              viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+            </svg>
+            Ordforrådsliste
+          </h3>
+          <p class="text-xs text-[var(--color-text-muted)] mt-1">Alt ordforråd er fremhævet i teksten.</p>
+        </div>
+
+        <div id="dynamic-grammar-container" class="overflow-x-auto overflow-y-auto custom-scrollbar flex-grow p-1">
+          <p class="text-center text-[var(--color-text-muted)] italic">Analyserer...</p>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+
+  <div id="bottom-nav-bar" title="Click to open Navigation">
+    <div id="bottom-left-controls"
+      class="hidden md:flex items-center gap-2 border-r border-[var(--color-border)] pr-4 mr-4">
+      <div id="desktop-font-controls"
+        class="font-size-controls items-center gap-2 border-r border-[var(--color-border)] pr-3 mr-1 h-6 flex">
+        <svg class="w-[12px] h-[12px] text-[var(--color-text-muted)]" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M4 22v-2h2.5l5-12h2l5 12H21v2h-3v-2h-1l-1.25-3h-6.5L8 22H7v2H4zm6.75-7h4.5L12.5 8.25 10.75 15z" />
+        </svg>
+        <input type="range" class="font-size-slider" min="80" max="140" value="100" step="20" list="font-marks"
+          title="Adjust font size">
+
+        <datalist id="font-marks">
+          <option value="80" label="Lillest"></option>
+          <option value="100" label="Standard"></option>
+          <option value="120" label="Medium"></option>
+          <option value="140" label="Størst"></option>
+        </datalist>
+        <svg class="w-[20px] h-[20px] text-[var(--color-text-headings)]" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M4 22v-2h2.5l5-12h2l5 12H21v2h-3v-2h-1l-1.25-3h-6.5L8 22H7v2H4zm6.75-7h4.5L12.5 8.25 10.75 15z" />
+        </svg>
+      </div>
+
+      <div class="controls-row flex items-center">
+        <button id="toc-toggle-btn" title="Indholdsfortegnelse" class="control-btn hidden">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd"
+              d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1z"
+              clip-rule="evenodd" />
+          </svg>
+        </button>
+        <button id="home-btn" title="Gå til kategorier" class="control-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+            <path
+              d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+          </svg>
+        </button>
+        <button id="playlist-toggle-btn" title="Vis spilleliste" class="control-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block" viewBox="0 0 20 20" fill="currentColor">
+            <path
+              d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3V7.82l8-1.6v5.894A4.37 4.37 0 0015 12c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3V3z">
+            </path>
+          </svg>
+        </button>
+        <button id="history-toggle-btn" title="Vis historik" class="control-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd"
+              d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+              clip-rule="evenodd" />
+          </svg>
+        </button>
+        <button id="global-settings-btn" class="control-btn" title="Afspilning">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+            <path
+              d="M10 6a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 6a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 6a2 2 0 1 1 0-4 2 2 0 0 1 0 4z" />
+          </svg>
+        </button>
+      </div>
+
+    </div>
+
+    <div id="bottom-nav-content">
+      <div id="nav-label-container">
+        <span class="nav-icon">☰</span>
+        <span class="nav-text">Kategorier > </span>
+      </div>
+
+      <div id="active-heading-display" class="heading-breadcrumb-wrapper" title="Current reading section">
+        <span id="active-heading-text"></span>
+      </div>
+    </div>
+  </div>
+
+  <div id="floating-dock-container" class="fixed inset-x-0 z-50 w-fit mx-auto">
+    <div id="player-dock">
+      <button id="dock-toggle-btn" class="control-btn" title="Thu gọn trình phát">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd"
+            d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z"
+            clip-rule="evenodd" />
+        </svg>
+      </button>
+      <div id="player-container">
+        <audio id="global-audio-element" preload="metadata"></audio>
+        <div id="dock-collapsible-content">
+          <button id="global-play-pause-btn" class="control-btn" title="Play/Pause"></button>
+          <button id="global-next-btn" class="control-btn" title="Next track">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                d="M4.555 5.168A1 1 0 0 0 3 6v8a1 1 0 0 0 1.555.832L10 11.202V14a1 1 0 0 0 1.555.832l6-4a1 1 0 0 0 0-1.664l-6-4A1 1 0 0 0 10 6v2.798L4.555 5.168z" />
+            </svg>
+          </button>
+          <div id="global-progress-container">
+            <p id="global-audio-title">Vælg en lydfil</p>
+            <div class="flex items-center space-x-1.5 text-[10px] text-[var(--color-text-body)]">
+              <span id="global-current-time" class="font-mono">00:00</span>
+              <input type="range" id="global-progress-bar"
+                class="audio-progress w-full h-[3px] rounded-full appearance-none cursor-pointer" value="0" min="0"
+                max="100" />
+              <span id="global-duration-time" class="font-mono">00:00</span>
+            </div>
+          </div>
+          <button id="mobile-controls-trigger" class="control-btn md:hidden" title="Flere handlinger">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path
+                d="M10 6a2 2 0 1 1 0-4 2 2 0 0 1 0 4zM10 12a2 2 0 1 1 0-4 2 2 0 0 1 0 4zM10 18a2 2 0 1 1 0-4 2 2 0 0 1 0 4z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="playlist-modal"
+    class="hidden fixed inset-0 bg-black bg-opacity-60 z-[100] flex items-center justify-center p-4">
+    <div id="playlist-modal-content"
+      class="bg-[var(--color-bg-section)] w-full max-w-2xl max-h-[60vh] md:max-h-[80vh] rounded-2xl shadow-2xl flex flex-col border border-[var(--color-border)]">
+      <div class="flex-shrink-0 p-4 border-b border-[var(--color-border)]">
+        <div class="relative flex items-center justify-between">
+          <h3 class="text-xl font-bold text-[var(--color-text-headings)]">Afspilningsliste</h3>
+          <button id="playlist-close-btn"
+            class="p-2 rounded-full hover:bg-[var(--color-bg-interactive-hover)] text-[var(--color-text-headings)] transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="flex-grow p-2 overflow-y-auto">
+        <ul id="playlist-modal-list" class="space-y-1"></ul>
+      </div>
+    </div>
+  </div>
+
+  <div id="history-modal"
+    class="hidden fixed inset-0 bg-black bg-opacity-60 z-[100] flex items-center justify-center p-4">
+    <div id="history-modal-content"
+      class="bg-[var(--color-bg-section)] w-full max-w-2xl max-h-[60vh] md:max-h-[80vh] rounded-2xl shadow-2xl flex flex-col border border-[var(--color-border)]">
+      <div class="flex-shrink-0 p-4 border-b border-[var(--color-border)]">
+        <div class="relative flex items-center justify-between">
+          <h3 class="text-xl font-bold text-[var(--color-text-headings)]">Nyligt set</h3>
+          <div class="flex items-center gap-2">
+            <button id="history-clear-btn" title="Ryd historik"
+              class="p-2 rounded-full hover:bg-[var(--color-bg-interactive-hover)] text-[var(--color-text-headings)]">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path
+                  d="M9 2a1 1 0 00-.894.553L7.382 4H5a1 1 0 100 2h10a1 1 0 100-2h-2.382l-.724-1.447A1 1 0 0011 2H9z" />
+                <path fill-rule="evenodd"
+                  d="M6 6a1 1 0 00-1 1v9a2 2 0 002 2h6a2 2 0 002-2V7a1 1 0 00-1-1H6zm3 3a1 1 0 012 0v7a1 1 0 11-2 0V9z"
+                  clip-rule="evenodd" />
+              </svg>
+            </button>
+            <button id="history-modal-close-btn"
+              class="p-2 rounded-full hover:bg-[var(--color-bg-interactive-hover)] text-[var(--color-text-headings)]">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="flex-grow p-2 overflow-y-auto">
+        <ul id="history-modal-list" class="space-y-1"></ul>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div id="settings-modal"
+    class="hidden fixed inset-0 bg-black bg-opacity-60 z-[100] flex items-center justify-center p-4">
+    <div
+      class="bg-[var(--color-bg-section)] w-full max-w-2xl max-h-[60vh] md:max-h-[80vh] rounded-2xl shadow-2xl flex flex-col border border-[var(--color-border)]"
+      style="transform: scale(1); opacity: 1; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);">
+
+      <div
+        class="px-6 py-4 flex justify-between items-center border-b border-[var(--color-border)] bg-opacity-50 backdrop-blur-md">
+        <div class="flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[var(--color-text-headings)]" fill="none"
+            viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+          <h3 class="text-lg font-semibold text-[var(--color-text-headings)]">Indstillinger</h3>
+        </div>
+        <button id="settings-close-btn"
+          class="p-2 rounded-xl hover:bg-[var(--color-bg-interactive-hover)] transition-colors text-[var(--color-text-headings)]">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="flex-grow p-6 space-y-6 overflow-y-auto max-h-[70vh]">
+
+        <section id="theme-controls">
+          <label
+            class="text-xs font-bold uppercase tracking-wider text-[var(--color-text-muted)] mb-3 block">Visningstema</label>
+          <div class="flex gap-1 p-1 bg-[var(--color-bg-interactive)] rounded-xl border border-[var(--color-border)]">
+            <div class="flex-1">
+              <input type="radio" id="theme-default" name="theme-mode" value="default" class="sr-only peer" checked>
+              <label for="theme-default"
+                class="flex flex-col items-center justify-center py-2 rounded-lg cursor-pointer transition-all peer-checked:bg-[var(--color-bg-section)]">
+                <span class="text-sm font-medium">Lys</span>
+              </label>
+            </div>
+            <div class="flex-1">
+              <input type="radio" id="theme-luxe" name="theme-mode" value="luxe" class="sr-only peer">
+              <label for="theme-luxe"
+                class="flex flex-col items-center justify-center py-2 rounded-lg cursor-pointer transition-all peer-checked:bg-[var(--color-bg-section)]">
+                <span class="text-sm font-medium">Mørk</span>
+              </label>
+            </div>
+            <div class="flex-1">
+              <input type="radio" id="theme-fullcolor" name="theme-mode" value="fullcolor" class="sr-only peer">
+              <label for="theme-fullcolor"
+                class="flex flex-col items-center justify-center py-2 rounded-lg cursor-pointer transition-all peer-checked:bg-[var(--color-bg-section)]">
+                <span class="text-sm font-medium">Fuld farve</span>
+              </label>
+            </div>
+          </div>
+        </section>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <section id="playback-mode-controls">
+            <label
+              class="text-xs font-bold uppercase tracking-wider text-[var(--color-text-muted)] mb-3 block">Afspilningstilstand</label>
+            <div class="flex gap-1 bg-[var(--color-bg-interactive)] rounded-xl p-1 border border-[var(--color-border)]">
+              <div class="flex-1 text-center">
+                <input type="radio" id="play-multiple" name="playback-mode" value="multiple" class="sr-only peer" checked>
+                <label for="play-multiple"
+                  class="block py-2 text-sm font-medium cursor-pointer rounded-lg transition-all peer-checked:bg-[var(--color-bg-section)]">Flere</label>
+              </div>
+              <div class="flex-1 text-center">
+                <input type="radio" id="play-single" name="playback-mode" value="single" class="sr-only peer">
+                <label for="play-single"
+                  class="block py-2 text-sm font-medium cursor-pointer rounded-lg transition-all peer-checked:bg-[var(--color-bg-section)]">Enkelt</label>
+              </div>
+            </div>
+          </section>
+
+          <section id="playback-rate-controls">
+            <label
+              class="text-xs font-bold uppercase tracking-wider text-[var(--color-text-muted)] mb-3 block">Hastighed</label>
+            <div
+              class="flex gap-1 bg-[var(--color-bg-interactive)] rounded-xl p-1 border border-[var(--color-border)] overflow-x-auto">
+              <input type="radio" id="rate-0.5" name="playback-rate" value="0.5" class="sr-only peer">
+              <label for="rate-0.5"
+                class="flex-1 text-center py-2 text-xs font-bold cursor-pointer rounded-lg peer-checked:bg-[var(--color-bg-section)]">0.5</label>
+
+              <input type="radio" id="rate-1" name="playback-rate" value="1" class="sr-only peer" checked>
+              <label for="rate-1"
+                class="flex-1 text-center py-2 text-xs font-bold cursor-pointer rounded-lg peer-checked:bg-[var(--color-bg-section)]">1.0</label>
+
+              <input type="radio" id="rate-1.5" name="playback-rate" value="1.5" class="sr-only peer">
+              <label for="rate-1.5"
+                class="flex-1 text-center py-2 text-xs font-bold cursor-pointer rounded-lg peer-checked:bg-[var(--color-bg-section)]">1.5</label>
+            </div>
+          </section>
+        </div>
+
+        <section id="reading-mode-controls" class="mt-6 pt-4 border-t border-[var(--color-border)]">
+          <label class="text-xs font-bold uppercase tracking-wider text-[var(--color-text-muted)] mb-3 block">Læsetilstand eller grammatikindlæringstilstand</label>
+          <div class="flex gap-1 bg-[var(--color-bg-interactive)] rounded-xl p-1 border border-[var(--color-border)]">
+            <div class="flex-1 text-center">
+              <input type="radio" id="mode-grammar" name="reading-mode" value="grammar" class="sr-only peer" checked>
+              <label for="mode-grammar"
+                class="block py-2 text-sm font-medium cursor-pointer rounded-lg transition-all peer-checked:bg-[var(--color-bg-section)]">
+                Lær grammatik
+              </label>
+            </div>
+            <div class="flex-1 text-center">
+              <input type="radio" id="mode-reading" name="reading-mode" value="reading" class="sr-only peer">
+              <label for="mode-reading"
+                class="block py-2 text-sm font-medium cursor-pointer rounded-lg transition-all peer-checked:bg-[var(--color-bg-section)]">
+                Læse
+              </label>
+            </div>
+          </div>
+        </section>
+
+        <div id="grammar-settings-group" class="space-y-4 pt-4 border-t border-[var(--color-border)] mt-4">
+          <div id="abbr-visibility-controls" class="flex items-center justify-between group">
+            <div>
+              <label class="text-sm font-semibold text-[var(--color-text-headings)]">Grammatiske forkortelser</label>
+              <p class="text-xs text-[var(--color-text-muted)]">Vis grammatiske hint over ord</p>
+            </div>
+            <div class="flex gap-1 bg-[var(--color-bg-interactive)] rounded-lg p-1 border border-[var(--color-border)]">
+              <input type="radio" id="abbr-show" name="abbr-mode" value="show" class="sr-only peer">
+              <label for="abbr-show"
+                class="px-3 py-1 text-xs cursor-pointer rounded-md peer-checked:bg-[var(--color-bg-section)]">Vis</label>
+              <input type="radio" id="abbr-hide" name="abbr-mode" value="hide" class="sr-only peer" checked>
+              <label for="abbr-hide"
+                class="px-3 py-1 text-xs cursor-pointer rounded-md peer-checked:bg-[var(--color-bg-section)]">Skjul</label>
+            </div>
+          </div>
+
+          <div id="abbr-language-controls"
+            class="flex items-center justify-between group mt-3 pt-3 border-t border-[var(--color-border)]">
+            <div>
+              <label class="text-sm font-semibold text-[var(--color-text-headings)]">Ordbogssprog</label>
+              <p class="text-xs text-[var(--color-text-muted)]">Kilde til grammatikfremhævelser</p>
+            </div>
+            <div class="flex gap-1 bg-[var(--color-bg-interactive)] rounded-lg p-1 border border-[var(--color-border)]">
+              <input type="radio" id="lang-da" name="abbr-lang" value="da" class="sr-only peer" checked>
+              <label for="lang-da"
+                class="px-3 py-1 text-xs cursor-pointer rounded-md peer-checked:bg-[var(--color-bg-section)]">Dansk</label>
+              <input type="radio" id="lang-en" name="abbr-lang" value="en" class="sr-only peer">
+              <label for="lang-en"
+                class="px-3 py-1 text-xs cursor-pointer rounded-md peer-checked:bg-[var(--color-bg-section)]">English</label>
+            </div>
+          </div>
+
+          <div id="abbr-filter-container" class="hidden mt-3 pt-3 border-t border-[var(--color-border)]">
+            <p class="text-xs font-bold uppercase tracking-wider text-[var(--color-text-muted)] mb-2">
+              Filtertyper
+            </p>
+            <div id="abbr-filter-buttons" class="flex flex-wrap gap-2">
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div id="mobile-controls-drawer" class="fixed inset-0 z-[200] hidden">
+    <div id="drawer-overlay" class="absolute inset-0 bg-black bg-opacity-50"></div>
+    <div id="drawer-content"
+      class="absolute bottom-0 left-0 right-0 bg-[var(--color-bg-section)] rounded-t-2xl shadow-lg p-4 transform translate-y-full transition-transform duration-300 ease-in-out">
+      <div class="flex justify-between items-center mb-4 pb-2 border-b border-[var(--color-border)]">
+        <h3 class="text-lg font-bold text-[var(--color-text-headings)]">Handlinger</h3>
+        <button id="drawer-close-btn" class="p-2 rounded-full hover:bg-[var(--color-bg-interactive-hover)]">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div id="mobile-font-controls"
+        class="font-size-controls flex items-center justify-between w-full mb-4 px-2 py-3 border-b border-[var(--color-border)]">
+        <svg class="w-4 h-4 text-[var(--color-text-muted)]" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M4 22v-2h2.5l5-12h2l5 12H21v2h-3v-2h-1l-1.25-3h-6.5L8 22H7v2H4zm6.75-7h4.5L12.5 8.25 10.75 15z" />
+        </svg>
+        <input type="range" class="font-size-slider mobile" min="60" max="140" value="100" step="1">
+        <svg class="w-6 h-6 text-[var(--color-text-headings)]" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M4 22v-2h2.5l5-12h2l5 12H21v2h-3v-2h-1l-1.25-3h-6.5L8 22H7v2H4zm6.75-7h4.5L12.5 8.25 10.75 15z" />
+        </svg>
+      </div>
+      <div id="drawer-buttons-container" class="space-y-2"></div>
+    </div>
+  </div>
+
+  <script type="module" src="./scripts/main.js"></script>
+  <script src="scripts/parallel-translations-tooltip.js"></script>
+  <script type="module">
+    import debugLog from "./scripts/util/debug.js";
+    let titleInterval = null;
+    const scrollSpeed = 150;
+    const visibleTitleLength = 30;
+    const titlePadding = " • ";
+
+    function stopTitleScroll() {
+      if (titleInterval) { clearInterval(titleInterval); titleInterval = null; }
+    }
+    function startTitleScroll(title) {
+      stopTitleScroll();
+      if (title.length <= visibleTitleLength) { document.title = title; return; }
+      let position = 0;
+      const extendedTitle = title + titlePadding;
+      titleInterval = setInterval(() => {
+        const visiblePart = extendedTitle.substring(position) + extendedTitle.substring(0, position);
+        document.title = visiblePart.substring(0, visibleTitleLength);
+        position++;
+        if (position >= extendedTitle.length) position = 0;
+      }, scrollSpeed);
+    }
+    function cleanHashForTitle(hash) {
+      if (!hash) return "";
+      try {
+        let decoded = decodeURIComponent(hash);
+        decoded = decoded.replace(/\+/g, " ").replace(/%20/g, " ").replace(/%2D/g, "-").replace(/%2E/g, ".").replace(/[-_]/g, " ").replace(/\s+/g, " ").trim();
+        const words = decoded.split(" ");
+        const smallWords = ["og", "i", "på", "til", "af", "med", "for", "and", "the", "of", "in", "on", "at", "to", "with"];
+        const formattedWords = words.map((word, index) => {
+          if (index === 0 || !smallWords.includes(word.toLowerCase())) { return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(); }
+          return word.toLowerCase();
+        });
+        return formattedWords.join(" ");
+      } catch (error) {
+        debugLog("warn", "Error decoding hash:", error);
+        return hash.replace(/[-_]/g, " ").replace(/\s+/g, " ").split(" ").map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(" ").trim();
+      }
+    }
+    function getPageTitle() {
+      const hash = window.location.hash.substring(1);
+      if (hash) return cleanHashForTitle(hash);
+      const metaTitle = document.querySelector('meta[name="title"]')?.content;
+      const headTitle = document.querySelector("head > title")?.textContent;
+      return metaTitle || headTitle || "Danish Learning Materials";
+    }
+    function updateAndScrollTitle() {
+      stopTitleScroll();
+      const pageTitle = getPageTitle();
+      const sitePrefix = "Danish Learning";
+      const fullTitle = pageTitle ? `${pageTitle} | ${sitePrefix}` : sitePrefix;
+      if (!window.location.hash.substring(1) || fullTitle.length <= visibleTitleLength) { document.title = fullTitle; } else { startTitleScroll(fullTitle); }
+    }
+    function updateTitleWithAudio(audioTitle) {
+      if (!audioTitle) { updateAndScrollTitle(); return; }
+      const pageTitle = getPageTitle();
+      const fullTitle = `♪ ${audioTitle} | ${pageTitle}`;
+      if (fullTitle.length <= visibleTitleLength) { document.title = fullTitle; stopTitleScroll(); } else { startTitleScroll(fullTitle); }
+    }
+    function clearAudioFromTitle() { updateAndScrollTitle(); }
+    window.addEventListener("hashchange", updateAndScrollTitle);
+    document.addEventListener("DOMContentLoaded", updateAndScrollTitle);
+    window.addEventListener("beforeunload", stopTitleScroll);
+    window.titleManager = { updateAndScrollTitle, updateTitleWithAudio, clearAudioFromTitle, stopTitleScroll };
+  </script>
+</body>
+
+</html>

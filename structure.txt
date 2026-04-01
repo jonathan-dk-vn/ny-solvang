@@ -1,0 +1,756 @@
+.
+├── Nhật ký.md
+├── README.md
+├── css
+│   ├── audio-thumb.css
+│   ├── grammarLegend.css
+│   ├── markdown-content.css
+│   ├── orthers
+│   │   ├── apitemplate.io.css
+│   │   ├── foundation.css
+│   │   └── theme.css
+│   ├── range-thumb.css
+│   └── style.css
+├── favicon.ico
+├── heading.md
+├── index 2.html
+├── index.html
+├── netlify.toml
+├── other
+│   ├── Kế hoạch Chăm sóc Heo Nái & Con.md
+│   ├── Produktionsrapport Uge 2, 2026 Solvang.md
+│   ├── Produktionsrapport Uge 3, 2026.md
+│   ├── Produktionsrapport Uge 4, 2026.md
+│   ├── Teams_Transcript_1770711087858.md
+│   ├── index.html
+│   ├── json-to-md-table.js
+│   ├── ky tu dansk.md
+│   ├── lecture_notes.markdown
+│   ├── list.html
+│   ├── nhiệm vụ cần làm.md
+│   ├── note.md
+│   └── task.md
+├── package.json
+├── postcss.config.js
+├── prompt
+│   ├── chuẩn hoá heading.md
+│   ├── cnvert pdf - docx to md.md
+│   ├── convert youtube ielts.md
+│   ├── convert đề thi modul test - md.md
+│   ├── dich-teams copy.js
+│   ├── dich-teams.js
+│   ├── dich.js
+│   ├── dk-uk.md
+│   ├── download-synope.js
+│   ├── explain-grammar.md
+│   ├── format-markdown.md
+│   ├── giải bài tập.md
+│   ├── in đậm keyword.md
+│   ├── phân tích cloudfarms.md
+│   ├── prompt giang giai ngu phap dansk.md
+│   ├── prompt speaking du 32.md
+│   ├── prompt-essay-dansk.md
+│   ├── report-cloudfarms.md
+│   ├── translate-dn-en-vn.md
+│   ├── translate-en-dn-vn.md
+│   ├── translate-en-vn.md
+│   ├── vn-en-dn.md
+│   └── vn-en.md
+├── public
+│   ├── farm-data
+│   │   ├── 1 Cloudfarms 2026
+│   │   │   ├── Uge 2.md
+│   │   │   ├── Uge 3.md
+│   │   │   └── Uge 4.md
+│   │   └── 2 Farm
+│   │       ├── WEEKENDOPDATERING – SVINEFARM  - UGE 5.md
+│   │       └── cloudfarms.md
+│   ├── gold-data
+│   │   ├── 1 Dansk
+│   │   │   ├── 1 Grammatik
+│   │   │   ├── 2 DU 3 MO 3
+│   │   │   ├── 3 Audios
+│   │   │   ├── 4 Dansk i ørerne
+│   │   │   ├── 5 Từ vựng
+│   │   │   ├── 6 Bøgerne
+│   │   │   ├── DU 3 MO 2
+│   │   │   ├── DU INFORMATION
+│   │   │   ├── Khác
+│   │   │   └── Sơ yếu lý lịch - Dạng.md
+│   │   ├── 2 Cloudfarms
+│   │   │   ├── 2025 45.md
+│   │   │   └── Kế hoạch Chăm sóc Heo Nái & Con.md
+│   │   ├── 3 Medicin
+│   │   │   └── medicin.md
+│   │   ├── CV
+│   │   │   └── CV.md
+│   │   ├── Deepsearch
+│   │   │   ├── Bài thi đọc hiểu DU3 Modul 3.md
+│   │   │   ├── Cấu trúc và Tiêu chí Chấm điểm Prøve i Dansk 3.md
+│   │   │   ├── Hướng dẫn giải bài tập Danskuddannelse 3 modul 3.md
+│   │   │   ├── Phòng và điều trị chân heo nái.md
+│   │   │   ├── Từ vựng trong farm.md
+│   │   │   ├── cloudfarms.md
+│   │   │   ├── deepresearch 1 car.md
+│   │   │   ├── deepresearch 2 farm vocabulary.md
+│   │   │   ├── list 500.md
+│   │   │   ├── list adj.md
+│   │   │   └── Điều kiện định cư Đan Mạch 4 năm.md
+│   │   ├── English
+│   │   │   ├── Destination b2
+│   │   │   ├── Grammar
+│   │   │   ├── IELTS
+│   │   │   └── Tactic
+│   │   ├── Siêu thị
+│   │   │   └── Tomyum.md
+│   │   ├── Trang trại
+│   │   │   ├── hoi thoai 0.md
+│   │   │   ├── hoi thoai 1.md
+│   │   │   ├── hoi thoai 2.md
+│   │   │   ├── hoi thoai 3.md
+│   │   │   ├── hoi thoai 4.md
+│   │   │   ├── hoi thoai 5.md
+│   │   │   ├── hoi thoai 6.md
+│   │   │   ├── hoi thoai 7.md
+│   │   │   ├── hoi thoai 8.md
+│   │   │   ├── hoi thoai voi boss.md
+│   │   │   ├── hoi thoai web.md
+│   │   │   └── hoi thoai.md
+│   │   └── md-output
+│   │       ├── words_adjektiver.md
+│   │       ├── words_adverbier.md
+│   │       ├── words_centraladverbier.md
+│   │       ├── words_konjunktioner.md
+│   │       ├── words_praepositioner.md
+│   │       ├── words_pronomener.md
+│   │       ├── words_substantiver.md
+│   │       ├── words_t_liste.md
+│   │       └── words_verber.md
+│   ├── html
+│   │   ├── cấu trúc câu.html
+│   │   └── dansk
+│   │       ├── Sơ đồ tư duy.html
+│   │       ├── du33
+│   │       └── ngữ pháp
+│   ├── html-data
+│   │   ├── 1 DU 3.3
+│   │   │   ├── Modul test
+│   │   │   └── Teams
+│   │   ├── 2 Ngữ Pháp
+│   │   │   ├── Bài tập
+│   │   │   ├── Lý thuyết
+│   │   │   └── Đáp án
+│   │   ├── 3 Dansk i ørerne
+│   │   │   ├── 1 PC ALL.html
+│   │   │   ├── PC 1 Dansk foreningsliv.html
+│   │   │   ├── PC 10 Håndbold.html
+│   │   │   ├── PC 11 Danskernes sundhed.html
+│   │   │   ├── PC 12 Novo Nordisk.html
+│   │   │   ├── PC 13 Påske i Danmark.html
+│   │   │   ├── PC 14 Storebæltsbroen.html
+│   │   │   ├── PC 15 1. maj i Danmark.html
+│   │   │   ├── PC 16 Borgerforslag.html
+│   │   │   ├── PC 17 Lakrids.html
+│   │   │   ├── PC 18 Aalborg.html
+│   │   │   ├── PC 19 Danmark i EU.html
+│   │   │   ├── PC 2 Københavns historie.html
+│   │   │   ├── PC 20 Den danske grundlov og grundlovsdag.html
+│   │   │   ├── PC 21 Efterskole.html
+│   │   │   ├── PC 22 Atomkraft i Danmark.html
+│   │   │   ├── PC 23 SU.html
+│   │   │   ├── PC 24 Musikfestival.html
+│   │   │   ├── PC 25 Sommerhus.html
+│   │   │   ├── PC 26 LEGO.html
+│   │   │   ├── PC 27 Odense.html
+│   │   │   ├── PC 28 Carlsberg.html
+│   │   │   ├── PC 29 Færøerne.html
+│   │   │   ├── PC 3 Overblik over dansk politik venstrefløjen.html
+│   │   │   ├── PC 30 Danske bryllupstraditioner.html
+│   │   │   ├── PC 31 Bornholm.html
+│   │   │   ├── PC 32 Efterårsferie.html
+│   │   │   ├── PC 33 Dansk bagværk og kagetraditioner.html
+│   │   │   ├── PC 34 Genforeningen i 1920.html
+│   │   │   ├── PC 35 Da Danmark vandt EM i fodbold i 1992.html
+│   │   │   ├── PC 36 Mortensaften.html
+│   │   │   ├── PC 37 Danmarks Radio.html
+│   │   │   ├── PC 38 Dronning Margrethe.html
+│   │   │   ├── PC 39 Danske juletraditioner.html
+│   │   │   ├── PC 4 Overblik over dansk politik højrefløjen.html
+│   │   │   ├── PC 40 Danske navne.html
+│   │   │   ├── PC 41 Juleaftenstraditioner.html
+│   │   │   ├── PC 42 Mette Frederiksen Danmarks statsminister.html
+│   │   │   ├── PC 43 Skiferie.html
+│   │   │   ├── PC 44 Danske nobelprismodtagere.html
+│   │   │   ├── PC 45 Den lille havfrue.html
+│   │   │   ├── PC 46 Store bededag.html
+│   │   │   ├── PC 47 Tour de France.html
+│   │   │   ├── PC 48 Hus Forbi og hjemløse i Danmark.html
+│   │   │   ├── PC 49 Danmark Norge.html
+│   │   │   ├── PC 5 Aarhus.html
+│   │   │   ├── PC 50 Eventyret om Klods Hans.html
+│   │   │   ├── PC 51 Kartoflen.html
+│   │   │   ├── PC 52 Tivoli.html
+│   │   │   ├── PC 53 Konfirmation.html
+│   │   │   ├── PC 54 Sankthans.html
+│   │   │   ├── PC 55 Kronprins Frederik.html
+│   │   │   ├── PC 56 Danske tennisspillere.html
+│   │   │   ├── PC 57 Ungdomshuset.html
+│   │   │   ├── PC 58 Flaskepant.html
+│   │   │   ├── PC 59 Fjernvarme.html
+│   │   │   ├── PC 6 Fastelavn i Danmark.html
+│   │   │   ├── PC 60 Historien om kvinders stemmeret i Danmark.html
+│   │   │   ├── PC 61 Elefantordenen.html
+│   │   │   ├── PC 62 Dansk verdensarv.html
+│   │   │   ├── PC 63 Eventyret om den lille pige med svovlstikkerne.html
+│   │   │   ├── PC 64 Christiansborg.html
+│   │   │   ├── PC 65 Kronprinsesse Mary.html
+│   │   │   ├── PC 66 De Vestindiske øer.html
+│   │   │   ├── PC 67 Fagforeninger.html
+│   │   │   ├── PC 68 Kæledyr i Danmark.html
+│   │   │   ├── PC 69 Sommertid og vintertid.html
+│   │   │   ├── PC 7 Dannebrog.html
+│   │   │   ├── PC 70 Værnepligt.html
+│   │   │   ├── PC 71 Børsen.html
+│   │   │   ├── PC 72 Melodi Grand Prix.html
+│   │   │   ├── PC 73 Studentertiden i Danmark.html
+│   │   │   ├── PC 74 Folkemødet på Bornholm.html
+│   │   │   ├── PC 75 Sabbatår.html
+│   │   │   ├── PC 76 Christiania.html
+│   │   │   ├── PC 77 De Olympiske Lege.html
+│   │   │   ├── PC 78 Dansk cykelkultur.html
+│   │   │   ├── PC 79 Operahuset i København.html
+│   │   │   ├── PC 8 Det danske skolesystem.html
+│   │   │   ├── PC 80 Kejserens nye klæder.html
+│   │   │   ├── PC 81 Guldhornene.html
+│   │   │   ├── PC 82 Danmarks nationalsang.html
+│   │   │   ├── PC 83 Vindmøller & Vestas.html
+│   │   │   ├── PC 84 Vinterbadning.html
+│   │   │   ├── PC 85 Vikinger.html
+│   │   │   ├── PC 86 N F S Grundtvig.html
+│   │   │   ├── PC 87 Dansk svineproduktion.html
+│   │   │   ├── PC 88 Aalborg Karneval.html
+│   │   │   ├── PC 89 Faxe Kondi.html
+│   │   │   ├── PC 9 Det danske forsvar.html
+│   │   │   └── PC 90 Matador.html
+│   │   ├── 3 Văn bằng 2
+│   │   │   ├── 1 Giống vật nuôi
+│   │   │   ├── 2 Kỹ thuật truyền giống
+│   │   │   ├── 3 Luật thú y
+│   │   │   ├── 4 Dinh dưỡng thức ăn chăn nuôi
+│   │   │   ├── 5 Khuyến nông
+│   │   │   └── 6 Quản trị kinh doanh
+│   │   ├── 4 Nghe Sách
+│   │   │   ├── 1 Midtvej til dansk.html
+│   │   │   ├── 2 Puls 3 3.html
+│   │   │   └── 3 Fokus 3.html
+│   │   ├── 5 Bøgerne
+│   │   │   ├── Fokus
+│   │   │   ├── Puls
+│   │   │   └── Synope
+│   │   ├── 6 Farm
+│   │   │   ├── Danh sách cong việc.html
+│   │   │   ├── TAI_LIEU_DONG_TU_TIENG_DAN_MACH_V2.html
+│   │   │   └── dansk_svineproduktion_ordbog.html
+│   │   ├── 7 Saadan ordliste
+│   │   │   └── Saadan ordliste.html
+│   │   ├── 8 Văn nhật ký
+│   │   │   └── Nhật ký.html
+│   │   ├── 9 English
+│   │   │   ├── Destination b2
+│   │   │   ├── Grammar
+│   │   │   ├── IELTS
+│   │   │   └── Tactic
+│   │   ├── Categories.html
+│   │   ├── Deep search
+│   │   │   ├── Phân tích lương Fodermester KA 2026.html
+│   │   │   ├── Từ vựng trong farm.html
+│   │   │   └── Vĩnh trú.html
+│   │   ├── Hợp đồng
+│   │   │   ├── 1 Hợp đồng.html
+│   │   │   ├── 2 Nhà.html
+│   │   │   └── 3 work permit.html
+│   │   ├── Prompt
+│   │   │   └── dich-teams.html
+│   │   ├── Test web
+│   │   │   ├── Test web.html
+│   │   │   └── WEEKENDOPDATERING – SVINEFARM  - UGE 5.html
+│   │   ├── Test word
+│   │   │   ├── Văn.html
+│   │   │   └── WEEKENDOPDATERING – SVINEFARM  - UGE 5.html
+│   │   ├── md
+│   │   │   ├── all_combined.html
+│   │   │   ├── data-verb-bydem-output.html
+│   │   │   ├── data-verb-datid-output.html
+│   │   │   ├── data-verb-førdatid-output.html
+│   │   │   ├── data-verb-førnutid-output.html
+│   │   │   ├── data-verb-navnem-output.html
+│   │   │   ├── data-verb-nutid-output.html
+│   │   │   ├── homographs copy.html
+│   │   │   ├── homographs.html
+│   │   │   ├── verbumsudtryk.html
+│   │   │   ├── words_adjektiver.html
+│   │   │   ├── words_adverbier.html
+│   │   │   ├── words_centraladverbier.html
+│   │   │   ├── words_konjunktioner.html
+│   │   │   ├── words_praepositioner.html
+│   │   │   ├── words_pronomener.html
+│   │   │   ├── words_substantiver.html
+│   │   │   ├── words_t_liste.html
+│   │   │   └── words_verber.html
+│   │   └── md-output
+│   │       ├── data-verb-bydem.html
+│   │       ├── data-verb-datid.html
+│   │       ├── data-verb-førdatid.html
+│   │       ├── data-verb-førnutid.html
+│   │       ├── data-verb-navnem.html
+│   │       ├── data-verb-nutid.html
+│   │       ├── merged-verbs-master.html
+│   │       ├── words_adjektiver.html
+│   │       ├── words_adverbier.html
+│   │       ├── words_centraladverbier.html
+│   │       ├── words_konjunktioner.html
+│   │       ├── words_praepositioner.html
+│   │       ├── words_pronomener.html
+│   │       ├── words_substantiver.html
+│   │       └── words_t_liste.html
+│   ├── img
+│   │   ├── Dialogspil
+│   │   │   ├── 34 spørgsmål.jpg
+│   │   │   ├── Datids brætspil fra Fokus 2.jpg
+│   │   │   ├── Dialogspil A4-1.jpg
+│   │   │   ├── Førnutid.jpg
+│   │   │   ├── Hv- sprøgsmål.jpg
+│   │   │   ├── Madspil fra Fokus 2.jpg
+│   │   │   ├── Snak løs om rutiner.jpg
+│   │   │   ├── ord på tid.jpg
+│   │   │   ├── samtale spil_kan godt lide eller kan ikke lide.jpg
+│   │   │   ├── snak løs 1.jpg
+│   │   │   ├── snak løs 3.jpg
+│   │   │   ├── snak løs i nutid datid og fremtid.jpg
+│   │   │   ├── snak løs om familie.jpg
+│   │   │   ├── snak løs om mad.jpg
+│   │   │   ├── snak løs om rejser.jpg
+│   │   │   ├── snak løs om skole og uddannelse.jpg
+│   │   │   ├── snak løs om skole.jpg
+│   │   │   ├── snak løs....jpg
+│   │   │   └── tal i 1 minut om.jpg
+│   │   ├── book
+│   │   │   ├── 1 Vi taler dansk 1
+│   │   │   ├── Destination-B2
+│   │   │   └── online
+│   │   ├── ghibli.jpeg
+│   │   ├── list file img.md
+│   │   └── output_pro_quality
+│   │       ├── page.1.png
+│   │       ├── page.10.png
+│   │       ├── page.100.png
+│   │       ├── page.101.png
+│   │       ├── page.102.png
+│   │       ├── page.103.png
+│   │       ├── page.104.png
+│   │       ├── page.105.png
+│   │       ├── page.106.png
+│   │       ├── page.107.png
+│   │       ├── page.108.png
+│   │       ├── page.109.png
+│   │       ├── page.11.png
+│   │       ├── page.110.png
+│   │       ├── page.111.png
+│   │       ├── page.112.png
+│   │       ├── page.113.png
+│   │       ├── page.114.png
+│   │       ├── page.115.png
+│   │       ├── page.116.png
+│   │       ├── page.117.png
+│   │       ├── page.118.png
+│   │       ├── page.119.png
+│   │       ├── page.12.png
+│   │       ├── page.120.png
+│   │       ├── page.121.png
+│   │       ├── page.122.png
+│   │       ├── page.123.png
+│   │       ├── page.124.png
+│   │       ├── page.125.png
+│   │       ├── page.126.png
+│   │       ├── page.127.png
+│   │       ├── page.128.png
+│   │       ├── page.129.png
+│   │       ├── page.13.png
+│   │       ├── page.130.png
+│   │       ├── page.131.png
+│   │       ├── page.132.png
+│   │       ├── page.133.png
+│   │       ├── page.134.png
+│   │       ├── page.135.png
+│   │       ├── page.136.png
+│   │       ├── page.137.png
+│   │       ├── page.138.png
+│   │       ├── page.139.png
+│   │       ├── page.14.png
+│   │       ├── page.140.png
+│   │       ├── page.141.png
+│   │       ├── page.142.png
+│   │       ├── page.143.png
+│   │       ├── page.144.png
+│   │       ├── page.145.png
+│   │       ├── page.146.png
+│   │       ├── page.147.png
+│   │       ├── page.148.png
+│   │       ├── page.149.png
+│   │       ├── page.15.png
+│   │       ├── page.150.png
+│   │       ├── page.151.png
+│   │       ├── page.152.png
+│   │       ├── page.153.png
+│   │       ├── page.16.png
+│   │       ├── page.17.png
+│   │       ├── page.18.png
+│   │       ├── page.19.png
+│   │       ├── page.2.png
+│   │       ├── page.20.png
+│   │       ├── page.21.png
+│   │       ├── page.22.png
+│   │       ├── page.23.png
+│   │       ├── page.24.png
+│   │       ├── page.25.png
+│   │       ├── page.26.png
+│   │       ├── page.27.png
+│   │       ├── page.28.png
+│   │       ├── page.29.png
+│   │       ├── page.3.png
+│   │       ├── page.30.png
+│   │       ├── page.31.png
+│   │       ├── page.32.png
+│   │       ├── page.33.png
+│   │       ├── page.34.png
+│   │       ├── page.35.png
+│   │       ├── page.36.png
+│   │       ├── page.37.png
+│   │       ├── page.38.png
+│   │       ├── page.39.png
+│   │       ├── page.4.png
+│   │       ├── page.40.png
+│   │       ├── page.41.png
+│   │       ├── page.42.png
+│   │       ├── page.43.png
+│   │       ├── page.44.png
+│   │       ├── page.45.png
+│   │       ├── page.46.png
+│   │       ├── page.47.png
+│   │       ├── page.48.png
+│   │       ├── page.49.png
+│   │       ├── page.5.png
+│   │       ├── page.50.png
+│   │       ├── page.51.png
+│   │       ├── page.52.png
+│   │       ├── page.53.png
+│   │       ├── page.54.png
+│   │       ├── page.55.png
+│   │       ├── page.56.png
+│   │       ├── page.57.png
+│   │       ├── page.58.png
+│   │       ├── page.59.png
+│   │       ├── page.6.png
+│   │       ├── page.60.png
+│   │       ├── page.61.png
+│   │       ├── page.62.png
+│   │       ├── page.63.png
+│   │       ├── page.64.png
+│   │       ├── page.65.png
+│   │       ├── page.66.png
+│   │       ├── page.67.png
+│   │       ├── page.68.png
+│   │       ├── page.69.png
+│   │       ├── page.7.png
+│   │       ├── page.70.png
+│   │       ├── page.71.png
+│   │       ├── page.72.png
+│   │       ├── page.73.png
+│   │       ├── page.74.png
+│   │       ├── page.75.png
+│   │       ├── page.76.png
+│   │       ├── page.77.png
+│   │       ├── page.78.png
+│   │       ├── page.79.png
+│   │       ├── page.8.png
+│   │       ├── page.80.png
+│   │       ├── page.81.png
+│   │       ├── page.82.png
+│   │       ├── page.83.png
+│   │       ├── page.84.png
+│   │       ├── page.85.png
+│   │       ├── page.86.png
+│   │       ├── page.87.png
+│   │       ├── page.88.png
+│   │       ├── page.89.png
+│   │       ├── page.9.png
+│   │       ├── page.90.png
+│   │       ├── page.91.png
+│   │       ├── page.92.png
+│   │       ├── page.93.png
+│   │       ├── page.94.png
+│   │       ├── page.95.png
+│   │       ├── page.96.png
+│   │       ├── page.97.png
+│   │       ├── page.98.png
+│   │       └── page.99.png
+│   ├── json
+│   │   ├── data-verb-bydem-output.json
+│   │   ├── data-verb-datid-output.json
+│   │   ├── data-verb-førdatid-output.json
+│   │   ├── data-verb-førnutid-output.json
+│   │   ├── data-verb-navnem-output.json
+│   │   ├── data-verb-nutid-output.json
+│   │   ├── homographs copy.json
+│   │   ├── homographs.json
+│   │   ├── verbumsudtryk.json
+│   │   ├── words_adjektiver.json
+│   │   ├── words_adverbier.json
+│   │   ├── words_centraladverbier.json
+│   │   ├── words_konjunktioner.json
+│   │   ├── words_praepositioner.json
+│   │   ├── words_pronomener.json
+│   │   ├── words_substantiver.json
+│   │   ├── words_t_liste.json
+│   │   └── words_verber.json
+│   ├── json_to_md.js
+│   ├── process_json.js
+│   ├── quintessential-essence
+│   │   ├── 1 DU 3.3
+│   │   │   ├── Modul test
+│   │   │   └── Teams
+│   │   ├── 2 Ngữ Pháp
+│   │   │   ├── Bài tập
+│   │   │   ├── Lý thuyết
+│   │   │   └── Đáp án
+│   │   ├── 3 Dansk i ørerne
+│   │   │   ├── 1 PC ALL.md
+│   │   │   ├── PC 1 Dansk foreningsliv.md
+│   │   │   ├── PC 10 Håndbold.md
+│   │   │   ├── PC 11 Danskernes sundhed.md
+│   │   │   ├── PC 12 Novo Nordisk.md
+│   │   │   ├── PC 13 Påske i Danmark.md
+│   │   │   ├── PC 14 Storebæltsbroen.md
+│   │   │   ├── PC 15 1. maj i Danmark.md
+│   │   │   ├── PC 16 Borgerforslag.md
+│   │   │   ├── PC 17 Lakrids.md
+│   │   │   ├── PC 18 Aalborg.md
+│   │   │   ├── PC 19 Danmark i EU.md
+│   │   │   ├── PC 2 Københavns historie.md
+│   │   │   ├── PC 20 Den danske grundlov og grundlovsdag.md
+│   │   │   ├── PC 21 Efterskole.md
+│   │   │   ├── PC 22 Atomkraft i Danmark.md
+│   │   │   ├── PC 23 SU.md
+│   │   │   ├── PC 24 Musikfestival.md
+│   │   │   ├── PC 25 Sommerhus.md
+│   │   │   ├── PC 26 LEGO.md
+│   │   │   ├── PC 27 Odense.md
+│   │   │   ├── PC 28 Carlsberg.md
+│   │   │   ├── PC 29 Færøerne.md
+│   │   │   ├── PC 3 Overblik over dansk politik venstrefløjen.md
+│   │   │   ├── PC 30 Danske bryllupstraditioner.md
+│   │   │   ├── PC 31 Bornholm.md
+│   │   │   ├── PC 32 Efterårsferie.md
+│   │   │   ├── PC 33 Dansk bagværk og kagetraditioner.md
+│   │   │   ├── PC 34 Genforeningen i 1920.md
+│   │   │   ├── PC 35 Da Danmark vandt EM i fodbold i 1992.md
+│   │   │   ├── PC 36 Mortensaften.md
+│   │   │   ├── PC 37 Danmarks Radio.md
+│   │   │   ├── PC 38 Dronning Margrethe.md
+│   │   │   ├── PC 39 Danske juletraditioner.md
+│   │   │   ├── PC 4 Overblik over dansk politik højrefløjen.md
+│   │   │   ├── PC 40 Danske navne.md
+│   │   │   ├── PC 41 Juleaftenstraditioner.md
+│   │   │   ├── PC 42 Mette Frederiksen Danmarks statsminister.md
+│   │   │   ├── PC 43 Skiferie.md
+│   │   │   ├── PC 44 Danske nobelprismodtagere.md
+│   │   │   ├── PC 45 Den lille havfrue.md
+│   │   │   ├── PC 46 Store bededag.md
+│   │   │   ├── PC 47 Tour de France.md
+│   │   │   ├── PC 48 Hus Forbi og hjemløse i Danmark.md
+│   │   │   ├── PC 49 Danmark Norge.md
+│   │   │   ├── PC 5 Aarhus.md
+│   │   │   ├── PC 50 Eventyret om Klods Hans.md
+│   │   │   ├── PC 51 Kartoflen.md
+│   │   │   ├── PC 52 Tivoli.md
+│   │   │   ├── PC 53 Konfirmation.md
+│   │   │   ├── PC 54 Sankthans.md
+│   │   │   ├── PC 55 Kronprins Frederik.md
+│   │   │   ├── PC 56 Danske tennisspillere.md
+│   │   │   ├── PC 57 Ungdomshuset.md
+│   │   │   ├── PC 58 Flaskepant.md
+│   │   │   ├── PC 59 Fjernvarme.md
+│   │   │   ├── PC 6 Fastelavn i Danmark.md
+│   │   │   ├── PC 60 Historien om kvinders stemmeret i Danmark.md
+│   │   │   ├── PC 61 Elefantordenen.md
+│   │   │   ├── PC 62 Dansk verdensarv.md
+│   │   │   ├── PC 63 Eventyret om den lille pige med svovlstikkerne.md
+│   │   │   ├── PC 64 Christiansborg.md
+│   │   │   ├── PC 65 Kronprinsesse Mary.md
+│   │   │   ├── PC 66 De Vestindiske øer.md
+│   │   │   ├── PC 67 Fagforeninger.md
+│   │   │   ├── PC 68 Kæledyr i Danmark.md
+│   │   │   ├── PC 69 Sommertid og vintertid.md
+│   │   │   ├── PC 7 Dannebrog.md
+│   │   │   ├── PC 70 Værnepligt.md
+│   │   │   ├── PC 71 Børsen.md
+│   │   │   ├── PC 72 Melodi Grand Prix.md
+│   │   │   ├── PC 73 Studentertiden i Danmark.md
+│   │   │   ├── PC 74 Folkemødet på Bornholm.md
+│   │   │   ├── PC 75 Sabbatår.md
+│   │   │   ├── PC 76 Christiania.md
+│   │   │   ├── PC 77 De Olympiske Lege.md
+│   │   │   ├── PC 78 Dansk cykelkultur.md
+│   │   │   ├── PC 79 Operahuset i København.md
+│   │   │   ├── PC 8 Det danske skolesystem.md
+│   │   │   ├── PC 80 Kejserens nye klæder.md
+│   │   │   ├── PC 81 Guldhornene.md
+│   │   │   ├── PC 82 Danmarks nationalsang.md
+│   │   │   ├── PC 83 Vindmøller & Vestas.md
+│   │   │   ├── PC 84 Vinterbadning.md
+│   │   │   ├── PC 85 Vikinger.md
+│   │   │   ├── PC 86 N F S Grundtvig.md
+│   │   │   ├── PC 87 Dansk svineproduktion.md
+│   │   │   ├── PC 88 Aalborg Karneval.md
+│   │   │   ├── PC 89 Faxe Kondi.md
+│   │   │   ├── PC 9 Det danske forsvar.md
+│   │   │   └── PC 90 Matador.md
+│   │   ├── 3 Văn bằng 2
+│   │   │   ├── 1 Giống vật nuôi
+│   │   │   ├── 2 Kỹ thuật truyền giống
+│   │   │   ├── 3 Luật thú y
+│   │   │   ├── 4 Dinh dưỡng thức ăn chăn nuôi
+│   │   │   ├── 5 Khuyến nông
+│   │   │   └── 6 Quản trị kinh doanh
+│   │   ├── 4 Nghe Sách
+│   │   │   ├── 1 Midtvej til dansk.md
+│   │   │   ├── 2 Puls 3 3.md
+│   │   │   └── 3 Fokus 3.md
+│   │   ├── 5 Bøgerne
+│   │   │   ├── Fokus
+│   │   │   ├── Puls
+│   │   │   └── Synope
+│   │   ├── 6 Farm
+│   │   │   ├── Danh sách cong việc.md
+│   │   │   ├── TAI_LIEU_DONG_TU_TIENG_DAN_MACH_V2.md
+│   │   │   └── dansk_svineproduktion_ordbog.md
+│   │   ├── 7 Saadan ordliste
+│   │   │   └── Saadan ordliste.md
+│   │   ├── 8 Văn nhật ký
+│   │   │   └── Nhật ký.md
+│   │   ├── 9 English
+│   │   │   ├── Destination b2
+│   │   │   ├── Grammar
+│   │   │   ├── IELTS
+│   │   │   └── Tactic
+│   │   ├── Categories.md
+│   │   ├── Deep search
+│   │   │   ├── Phân tích lương Fodermester KA 2026.md
+│   │   │   ├── Từ vựng trong farm.md
+│   │   │   └── Vĩnh trú.md
+│   │   ├── Hợp đồng
+│   │   │   ├── 1 Hợp đồng.md
+│   │   │   ├── 2 Nhà.md
+│   │   │   └── 3 work permit.md
+│   │   ├── Prompt
+│   │   │   └── dich-teams.md
+│   │   ├── Test web
+│   │   │   ├── Test web.md
+│   │   │   └── WEEKENDOPDATERING – SVINEFARM  - UGE 5.md
+│   │   ├── Test word
+│   │   │   ├── Văn.md
+│   │   │   └── WEEKENDOPDATERING – SVINEFARM  - UGE 5.md
+│   │   ├── md
+│   │   │   ├── all_combined.md
+│   │   │   ├── data-verb-bydem-output.md
+│   │   │   ├── data-verb-datid-output.md
+│   │   │   ├── data-verb-førdatid-output.md
+│   │   │   ├── data-verb-førnutid-output.md
+│   │   │   ├── data-verb-navnem-output.md
+│   │   │   ├── data-verb-nutid-output.md
+│   │   │   ├── homographs copy.md
+│   │   │   ├── homographs.md
+│   │   │   ├── verbumsudtryk.md
+│   │   │   ├── words_adjektiver.md
+│   │   │   ├── words_adverbier.md
+│   │   │   ├── words_centraladverbier.md
+│   │   │   ├── words_konjunktioner.md
+│   │   │   ├── words_praepositioner.md
+│   │   │   ├── words_pronomener.md
+│   │   │   ├── words_substantiver.md
+│   │   │   ├── words_t_liste.md
+│   │   │   └── words_verber.md
+│   │   └── md-output
+│   │       ├── data-verb-bydem.md
+│   │       ├── data-verb-datid.md
+│   │       ├── data-verb-førdatid.md
+│   │       ├── data-verb-førnutid.md
+│   │       ├── data-verb-navnem.md
+│   │       ├── data-verb-nutid.md
+│   │       ├── merged-verbs-master.md
+│   │       ├── words_adjektiver.md
+│   │       ├── words_adverbier.md
+│   │       ├── words_centraladverbier.md
+│   │       ├── words_konjunktioner.md
+│   │       ├── words_praepositioner.md
+│   │       ├── words_pronomener.md
+│   │       ├── words_substantiver.md
+│   │       └── words_t_liste.md
+│   └── silver-data
+│       ├── 1 Sách
+│       │   ├── Pa vej ti dansk dịch.md
+│       │   ├── Pa vej ti dansk.md
+│       │   ├── bog På vej til dansk.md
+│       │   └── bog synope ind i samtalen.md
+│       ├── 2 Grammatik
+│       │   ├── Bài tập
+│       │   ├── Lý thuyết
+│       │   └── Đáp án
+│       └── 3 Văn bằng 2
+│           ├── 1 Giống vật nuôi
+│           ├── 2 Kỹ thuật truyền giống
+│           ├── 3 Luật thú y
+│           ├── 4 Dinh dưỡng thức ăn chăn nuôi
+│           ├── 5 Khuyến nông
+│           └── 6 Quản trị kinh doanh
+├── scripts
+│   ├── audioUtils.js
+│   ├── bookmark.js
+│   ├── build-html.js
+│   ├── contentLoader.js
+│   ├── domElements.js
+│   ├── generate-categories-md.js
+│   ├── generate-navigation.js
+│   ├── generate-search-index-once.js
+│   ├── grammarLegend.js
+│   ├── history.js
+│   ├── loading.js
+│   ├── main.js
+│   ├── navigation.js
+│   ├── navigationData.generated.js
+│   ├── parallel-translations-tooltip.js
+│   ├── scrollMemory.js
+│   ├── search.js
+│   ├── search.worker.js
+│   ├── test-grammar-full.js
+│   ├── test-logic.js
+│   ├── test-manual.js
+│   ├── test-scroll-human.js
+│   ├── test-scroll.js
+│   ├── textAreaManager.js
+│   ├── toc.js
+│   ├── util
+│   │   ├── debug.js
+│   │   ├── headingUtils.js
+│   │   ├── modal.js
+│   │   └── nav-test.md
+│   └── validate-navigation.js
+├── src
+│   ├── index.html
+│   └── style.css
+├── structure.txt
+├── tailwind.config.js
+├── vercel.json
+└── vite.config.js
+
+132 directories, 622 files

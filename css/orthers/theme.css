@@ -1,0 +1,240 @@
+:root {
+  color-scheme: light dark;
+
+  /* Font System - changed to Times New Roman */
+  --font-universal-serif: "Times New Roman", Times, serif;
+  --font-ibm-plex-mono: "IBM Plex Mono", "Courier New", Consolas, monospace;
+
+  /* Áp dụng font chính */
+  --font-family-sans: var(--font-universal-serif);
+  --font-family-mono: var(--font-ibm-plex-mono);
+
+  --font-size-xs: 0.9rem; /* ~7-9px */
+  --font-size-sm: 1rem; /* ~8-10px */
+  --font-size-base: 1rem; /* 8-12px (giá trị cơ bản do JS đặt) */
+  --font-size-lg: 1.15rem; /* ~9-14px */
+  --font-size-xl: 1.25rem; /* ~10-15px */
+  --font-size-2xl: 1.4rem; /* ~11-17px */
+
+  /* Spacing */
+  --spacing-xs: 0.25rem; /* 4px */
+  --spacing-sm: 0.5rem; /* 8px */
+  --spacing-md: 0.75rem; /* 12px */
+  --spacing-lg: 1rem; /* 16px */
+  --spacing-xl: 1.25rem; /* 20px */
+  --spacing-2xl: 1.5rem; /* 24px */
+  --spacing-3xl: 2rem; /* 32px */
+
+  /* Modal sizing */
+  --modal-padding: var(--spacing-lg);
+  --modal-item-padding: var(--spacing-md) var(--spacing-lg);
+  --modal-border-radius: 0.75rem; /* 12px */
+  --modal-item-border-radius: 0.5rem; /* 8px */
+
+  /* Foundational Palette (Light Mode Semantics)
+     Deep Slate (#222831), Graphite (#393E46), Stone (#948979), Parchment (#DFD0B8) */
+  --rgb-slate: 34, 40, 49; /* Deep Slate */
+  --rgb-graphite: 57, 62, 70; /* Graphite */
+  --rgb-stone: 148, 136, 121; /* Stone */
+  --rgb-parchment: 223, 208, 184; /* Parchment */
+
+  /* Legacy “navy” palette mapped to new semantics for backward compatibility */
+  /* --navy-darkest: Deep Slate (primary dark) */
+  --navy-darkest: #222831; /* Deep Slate */
+  /* --navy-dark: Graphite (secondary dark surface/accent) */
+  --navy-dark: #393E46; /* Graphite */
+  /* --navy-medium: Stone-800 for accessible mid-tone on light bg */
+  --navy-medium: #5F564B; /* Darkened Stone for 4.5:1+ on Parchment */
+  /* --navy-light: Stone (tertiary) */
+  --navy-light: #948979; /* Stone */
+  /* --navy-lightest: Parchment (brand base bg) */
+  --navy-lightest: #c5b293; /* Parchment */
+
+  /* Extended legacy mappings */
+  --navy-shadow: rgba(var(--rgb-slate), 0.8);
+  --navy-accent: #393E46; /* Graphite accent on light */
+  --navy-bright: #DFD0B8; /* Parchment accent */
+  --navy-muted: #5F564B; /* Stone-800 for contrast */
+  --navy-subtle: #E8DEC5; /* Parchment-200 for subtle surfaces */
+
+  /* Text Colors (ensure WCAG AA on Parchment bg) */
+  /* --color-text-body: Deep Slate on Parchment yields ~9.1:1 */
+  --color-text-body: #222831; /* Deep Slate */
+  /* --color-text-muted: Darkened Stone for muted copy while passing AA */
+  --color-text-muted: #5F564B; /* Stone-800 */
+  --color-text-headings: #222831; /* Deep Slate */
+  --color-text-subtle: #5F564B; /* Stone-800 for placeholders */
+  --color-text-code: #393E46; /* Graphite */
+  --color-text-pre-code: #DFD0B8; /* Parchment on dark code block */
+  --color-text-link: #393E46; /* Graphite links for contrast */
+  --color-text-link-hover: #222831; /* Deep Slate hover for clarity */
+  --color-text-link-visited: #5F564B; /* Stone-800, maintains AA */
+  --color-text-active: #222831; /* Deep Slate on active Parchment */
+  --color-text-inverse: #DFD0B8; /* For text on dark surfaces */
+  /* --color-bg-active: Parchment as brand accent for selected items */
+  --color-bg-active: #DFD0B8; /* Parchment */
+
+  /* Button/Icon Accent Colors */
+  /* --color-btn-nav: Deep Slate for strong nav affordance */
+  --color-btn-nav: #222831; /* Deep Slate */
+  /* --color-btn-playlist: Graphite as secondary */
+  --color-btn-playlist: #393E46; /* Graphite */
+  /* --color-btn-play: Graphite CTA without overpowering */
+  --color-btn-play: #393E46; /* Graphite */
+  /* --color-btn-next/settings: Stone-800 as tertiary */
+  --color-btn-next: #5F564B; /* Stone-800 */
+  --color-btn-settings: #5F564B; /* Stone-800 */
+  --color-btn-toc: #393E46; /* Graphite */
+
+  /* Background Colors */
+  /* --color-bg-body: Parchment as foundational light bg */
+  --color-bg-body: #DFD0B8; /* Parchment */
+  /* Sections: low-opacity Graphite to establish hierarchy */
+  --color-bg-section: rgba(var(--rgb-graphite), 0.05);
+  --color-bg-blockquote: rgba(var(--rgb-graphite), 0.06);
+  --color-bg-code: rgba(var(--rgb-graphite), 0.08);
+  /* Pre/code blocks: dark surface for scannability + AA */
+  --color-bg-pre: #393E46; /* Graphite */
+  --color-bg-interactive-hover: rgba(var(--rgb-graphite), 0.08);
+  --color-bg-table-head: #393E46; /* Graphite */
+  --color-bg-table-row: #F0E8D6; /* Parchment-150 */
+  --color-bg-table-row-hover: rgba(var(--rgb-graphite), 0.06);
+
+  /* Border Colors */
+  --color-border: rgba(var(--rgb-graphite), 0.22); /* Subtle, AA-adjacent */
+  --color-border-table: rgba(var(--rgb-graphite), 0.22);
+  --color-border-blockquote: rgba(var(--rgb-graphite), 0.3);
+  --border-radius-table: 8px; /* Rounded table corners */
+  /* Dividers (Stone) adapted for sufficient contrast */
+  --color-border-hr: rgba(var(--rgb-stone), 0.5);
+  --color-border-link-hover: #393E46; /* Graphite */
+  --color-border-active: #222831; /* Deep Slate */
+
+  /* Status Colors (kept semantic, non-brand) */
+  --color-success-bg: linear-gradient(135deg, #f0fdf4, #dcfce7);
+  --color-success-border: #4ade80;
+  --color-success-text: #16a34a;
+  --color-info-bg: linear-gradient(135deg, rgba(var(--rgb-graphite), 0.06), rgba(var(--rgb-graphite), 0.1));
+  --color-info-border: #393E46; /* Graphite */
+  --color-info-text: var(--color-text-link);
+  --color-warning-bg: linear-gradient(135deg, #fffbeb, #fef3c7);
+  --color-warning-border: #fbbf24;
+  --color-warning-text: #d97706;
+  --color-error-bg: linear-gradient(135deg, #fef2f2, #fee2e2);
+  --color-error-border: #f87171;
+  --color-error-text: #dc2626;
+
+  /* Shadow Colors */
+  --shadow-pre: rgba(var(--rgb-slate), 0.2);
+  --shadow-table: rgba(var(--rgb-slate), 0.1);
+  --shadow-content: rgba(var(--rgb-slate), 0.08);
+  --shadow-btn: rgba(var(--rgb-graphite), 0.2);
+
+  /* Gradient Colors (text gradients, headings) */
+  --color-gradient-h2-start: #393E46; /* Graphite */
+  --color-gradient-h2-end: #222831; /* Deep Slate */
+
+  /* Modal/Dock Surfaces on light theme */
+  --color-bg-modal: rgba(var(--rgb-parchment), 0.95);
+  --color-border-modal: rgba(var(--rgb-graphite), 0.2);
+  --color-bg-dock: rgba(var(--rgb-parchment), 0.95);
+  --color-border-dock: rgba(var(--rgb-graphite), 0.2);
+
+  /* Utilities */
+  /* --color-bg-search-highlight: low-opacity Graphite highlight */
+  --color-bg-search-highlight: rgba(var(--rgb-graphite), 0.22);
+  --color-icon-dock-primary: #DFD0B8;
+}
+
+/* Dark Theme (Luxe) Variables */
+.theme-luxe {
+  /* Dark Theme: Deep Slate surfaces, Parchment text */
+  /* Legacy “navy” mapped to new palette for compatibility */
+  --navy-darkest: #222831; /* Deep Slate */
+  --navy-dark: #393E46; /* Graphite */
+  --navy-medium: #948979; /* Stone */
+  --navy-light: #E8DEC5; /* Parchment-200 */
+  --navy-lightest: #DFD0B8; /* Parchment */
+
+  --navy-shadow: rgba(var(--rgb-slate), 0.9);
+  --navy-accent: #DFD0B8; /* Parchment accent on dark */
+  --navy-bright: #F3EAD5; /* Lighter Parchment */
+  --navy-muted: #948979; /* Stone */
+  --navy-subtle: #5F564B; /* Stone-800 */
+
+  /* Text Colors */
+  --color-text-body: #DFD0B8; /* Parchment on Deep Slate */
+  /* Muted uses a lightened Stone that passes AA on Deep Slate */
+  --color-text-muted: #B9AE9F; /* Stone-300 approx */
+  --color-text-headings: #DFD0B8; /* Parchment */
+  --color-text-subtle: #B9AE9F; /* Light Stone */
+  --color-text-code: #DFD0B8; /* Code on Graphite surface */
+  --color-text-pre-code: #DFD0B8;
+  --color-text-link: #DFD0B8; /* Parchment */
+  --color-text-link-hover: #F3EAD5; /* Lighter Parchment */
+  --color-text-link-visited: #B9AE9F; /* Light Stone */
+  --color-text-active: #222831; /* Deep Slate on active Parchment */
+  --color-text-inverse: #222831; /* Inverse on light surfaces in dark UI */
+  --color-bg-active: #DFD0B8; /* Parchment accent */
+
+  /* Button/Icon Accent Colors */
+  --color-btn-nav: #DFD0B8; /* Parchment on dark */
+  --color-btn-playlist: #B9AE9F; /* Light Stone */
+  --color-btn-play: #DFD0B8; /* Parchment */
+  --color-btn-next: #B9AE9F; /* Light Stone */
+  --color-btn-settings: #B9AE9F; /* Light Stone */
+  --color-btn-toc: #DFD0B8; /* Parchment */
+
+  /* Background Surfaces */
+  --color-bg-body: #222831; /* Deep Slate */
+  --color-bg-section: #393E46; /* Graphite surface */
+  --color-bg-blockquote: rgba(var(--rgb-parchment), 0.06);
+  --color-bg-code: #393E46; /* Graphite */
+  --color-bg-pre: #393E46; /* Graphite */
+  --color-bg-interactive-hover: rgba(var(--rgb-parchment), 0.08);
+  --color-bg-table-head: #393E46; /* Graphite */
+  --color-bg-table-row: #2B3037; /* Graphite-700 */
+  --color-bg-table-row-hover: rgba(var(--rgb-parchment), 0.06);
+
+  /* Borders */
+  --color-border: rgba(var(--rgb-parchment), 0.18);
+  --color-border-table: rgba(var(--rgb-parchment), 0.2);
+  --color-border-blockquote: rgba(var(--rgb-parchment), 0.25);
+  --color-border-hr: rgba(var(--rgb-parchment), 0.18);
+  --color-border-link-hover: #DFD0B8; /* Parchment */
+  --color-border-active: #DFD0B8; /* Parchment */
+
+  /* Status Colors (kept semantic) */
+  --color-success-bg: rgba(34, 197, 94, 0.15);
+  --color-success-border: #86efac;
+  --color-success-text: #86efac;
+  --color-info-bg: rgba(223, 208, 184, 0.12);
+  --color-info-border: #DFD0B8;
+  --color-info-text: #DFD0B8;
+  --color-warning-bg: rgba(245, 158, 11, 0.18);
+  --color-warning-border: #fbbf24;
+  --color-warning-text: #fbbf24;
+  --color-error-bg: rgba(239, 68, 68, 0.18);
+  --color-error-border: #f87171;
+  --color-error-text: #f87171;
+
+  /* Shadows */
+  --shadow-pre: rgba(0, 0, 0, 0.5);
+  --shadow-table: rgba(0, 0, 0, 0.4);
+  --shadow-content: rgba(var(--rgb-slate), 0.3);
+  --shadow-btn: rgba(var(--rgb-parchment), 0.3);
+
+  /* Gradients */
+  --color-gradient-h2-start: #DFD0B8; /* Parchment */
+  --color-gradient-h2-end: #B9AE9F; /* Light Stone */
+
+  /* Modal/Dock Surfaces on dark theme */
+  --color-bg-modal: #393E46; /* Graphite modal surface */
+  --color-border-modal: rgba(var(--rgb-parchment), 0.22);
+  --color-bg-dock: #2B3037; /* Slightly lighter Graphite */
+  --color-border-dock: rgba(var(--rgb-parchment), 0.2);
+
+  /* Utilities */
+  --color-bg-search-highlight: rgba(var(--rgb-parchment), 0.18);
+  --color-icon-dock-primary: #393E46;
+}

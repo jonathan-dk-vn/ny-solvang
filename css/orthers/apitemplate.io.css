@@ -1,0 +1,135 @@
+/* Add your custom CSS here */
+body {
+	font-family: 'Georgia', 'Palatino', 'Cambria', 'Times New Roman', serif;
+	font-size: 19px;
+	line-height: 1.8;
+	padding: 20px;
+	margin: 0;
+}
+pre {
+	background: #2d2d2d;
+	border-radius: 4px;
+	margin: 0.5em 0;
+	font-size: 16px;
+}
+code {
+	font-family: 'Fira Code', 'JetBrains Mono', Consolas, Monaco, monospace;
+	white-space: pre-wrap;
+	word-wrap: break-word;
+	overflow-wrap: anywhere;
+}
+:not(pre)>code {
+	background: #f0f0f0;
+	padding: 2px 4px;
+	border-radius: 3px;
+	color: #e83e8c;
+	font-size: 16px;
+}
+img {
+	max-width: 100%;
+}
+table {
+	border-collapse: collapse;
+	width: 100%;
+	margin: 1em 0;
+	font-size: 18px;
+}
+th,
+td {
+	border: 1px solid #ddd;
+	padding: 10px 12px;
+}
+th {
+	background-color: #f4f4f4;
+	font-weight: 600;
+}
+blockquote {
+	border-left: 4px solid #ddd;
+	padding-left: 1em;
+	margin-left: 0;
+	color: #666;
+	font-size: 18px;
+	
+}
+h1 {
+	font-size: 2.5em;
+	color: #2c3e50;
+	border-bottom: 2px solid #eee;
+	padding-bottom: 0.5rem;
+	margin: 1.5rem 0;
+	font-weight: 700;
+}
+h2 {
+	font-size: 2.1em;
+	color: #34495e;
+	margin: 1.5rem 0;
+	font-weight: 600;
+}
+h3 {
+	font-size: 1.7em;
+	color: #455a64;
+	font-weight: 600;
+}
+h4 {
+	font-size: 1.4em;
+	color: #566e77;
+    font-weight: 600;
+}
+h5 {
+    font-size: 1.2em;
+    color: #607d8b;
+    font-weight: 600;
+}
+h6 {
+    font-size: 1em;
+    color: #6c9399;
+    font-weight: 600;
+}
+a {
+    color: #007bff;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}   
+ul, ol {
+    margin: 1em 0;
+    padding-left: 2em;
+}   
+li {
+    margin-bottom: 0.5em;
+}           
+hr {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 2em 0;
+}
+p {
+    margin: 1em 0;
+}
+strong {
+    font-weight: 700;
+}
+em {
+    
+}
+del {
+    text-decoration: line-through;
+}
+img {
+    max-width: 100%;
+}
+figure {
+    margin: 1em 0;
+}
+figcaption {
+    font-size: 0.9em;
+    color: #666;
+    text-align: center;
+    margin-top: 0.5em;
+}
+hr {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 2em 0;
+}
