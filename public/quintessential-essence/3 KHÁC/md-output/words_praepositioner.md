@@ -1,5 +1,0 @@
-# Dữ liệu từ words_praepositioner.json
-
-| Cột 1 | Cột 2 | Cột 3 | Cột 4 | Cột 5 | Cột 6 | Cột 7 | Cột 8 | Cột 9 | Cột 10 | Cột 11 | Cột 12 | Cột 13 | Cột 14 | Cột 15 | Cột 16 | Cột 17 | Cột 18 | Cột 19 | Cột 20 | Cột 21 | Cột 22 | Cột 23 | Cột 24 | Cột 25 | Cột 26 | Cột 27 | Cột 28 | Cột 29 | Cột 30 | Cột 31 | Cột 32 | Cột 33 | Cột 34 | Cột 35 | Cột 36 | Cột 37 | Cột 38 | Cột 39 | Cột 40 | Cột 41 | Cột 42 | Cột 43 | Cột 44 | Cột 45 | Cột 46 | Cột 47 | Cột 48 | Cột 49 | Cột 50 |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| ad | af | bag | bagved | efter | for | foran | fra | gennem | hos | i | med | mellem | om | over | på | sammen med | til | under | ved siden af |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |

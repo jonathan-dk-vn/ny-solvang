@@ -1681,7 +1681,6 @@ async function initializeApp() {
   initializeScrollMemory();
   initializeHistory();
   initializeThemeControls();
-  initializeReadingMode();
   initializeNavigation();
   initializeHeadingClickScroll();
   initializeEnhancedPlaylistModal();
@@ -1689,11 +1688,9 @@ async function initializeApp() {
   initializeFontScaler();
   initializeEnhancedKeyboardControls();
   initializeEnhancedSettingsModal();
-  initializeAbbrControls();
   initializePerformanceOptimizations();
   initializeDockToggle();
   initializeMobileDrawer();
-  initializeGrammarTable();
   initializeWordDoubleTapScroll();
 
   document.getElementById("home-btn")?.addEventListener("click", () => {

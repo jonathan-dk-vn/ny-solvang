@@ -6,20 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title></title>
 
-  <style>
-    body.reading-mode-active #rich-content-view {
-      display: none !important;
-    }
-
-    body.reading-mode-active #raw-content-view {
-      display: block !important;
-    }
-
-    #raw-content-view {
-      display: none;
-    }
-  </style>
-
   <script>
     (function () {
       try {
@@ -104,29 +90,6 @@
       <div id="content" class="markdown-content flex-shrink-0"></div>
     </main>
 
-    <aside id="dynamic-grammar-sidebar"
-      class="hidden lg:block flex-shrink-0 p-6 overflow-y-auto border-l border-[var(--color-border)]">
-      <div
-        class="bg-[var(--color-bg-section)] rounded-xl border border-[var(--color-border)] shadow-sm overflow-hidden flex flex-col max-h-full">
-        <div
-          class="p-4 border-b border-[var(--color-border)] bg-opacity-50 backdrop-blur-md sticky top-0 z-10 bg-[var(--color-bg-section)]">
-          <h3 class="text-lg font-bold text-[var(--color-text-headings)] flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[var(--color-text-link)]" fill="none"
-              viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-            </svg>
-            Ordforrådsliste
-          </h3>
-          <p class="text-xs text-[var(--color-text-muted)] mt-1">Alt ordforråd er fremhævet i teksten.</p>
-        </div>
-
-        <div id="dynamic-grammar-container" class="overflow-x-auto overflow-y-auto custom-scrollbar flex-grow p-1">
-          <p class="text-center text-[var(--color-text-muted)] italic">Analyserer...</p>
-        </div>
-      </div>
-    </aside>
-
   </div>
 
   <div id="bottom-nav-bar" title="Click to open Navigation">
@@ -163,13 +126,6 @@
           <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
             <path
               d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
-          </svg>
-        </button>
-        <button id="playlist-toggle-btn" title="Vis spilleliste" class="control-btn">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block" viewBox="0 0 20 20" fill="currentColor">
-            <path
-              d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3V7.82l8-1.6v5.894A4.37 4.37 0 0015 12c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3V3z">
-            </path>
           </svg>
         </button>
         <button id="history-toggle-btn" title="Vis historik" class="control-btn">
@@ -392,26 +348,6 @@
             </div>
           </section>
         </div>
-
-        <section id="reading-mode-controls" class="mt-6 pt-4 border-t border-[var(--color-border)]">
-          <label class="text-xs font-bold uppercase tracking-wider text-[var(--color-text-muted)] mb-3 block">Læsetilstand eller grammatikindlæringstilstand</label>
-          <div class="flex gap-1 bg-[var(--color-bg-interactive)] rounded-xl p-1 border border-[var(--color-border)]">
-            <div class="flex-1 text-center">
-              <input type="radio" id="mode-grammar" name="reading-mode" value="grammar" class="sr-only peer" checked>
-              <label for="mode-grammar"
-                class="block py-2 text-sm font-medium cursor-pointer rounded-lg transition-all peer-checked:bg-[var(--color-bg-section)]">
-                Lær grammatik
-              </label>
-            </div>
-            <div class="flex-1 text-center">
-              <input type="radio" id="mode-reading" name="reading-mode" value="reading" class="sr-only peer">
-              <label for="mode-reading"
-                class="block py-2 text-sm font-medium cursor-pointer rounded-lg transition-all peer-checked:bg-[var(--color-bg-section)]">
-                Læse
-              </label>
-            </div>
-          </div>
-        </section>
 
         <div id="grammar-settings-group" class="space-y-4 pt-4 border-t border-[var(--color-border)] mt-4">
           <div id="abbr-visibility-controls" class="flex items-center justify-between group">

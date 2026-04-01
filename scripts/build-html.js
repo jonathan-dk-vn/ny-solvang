@@ -753,7 +753,6 @@ async function processMarkdownFile(filePath, currentOutputDir) {
 
     let htmlContent = `<div class="markdown-rendered">${out.join("\n")}</div>`;
 
-    htmlContent = highlightWordsInHtml(htmlContent);
     htmlContent = enhanceExerciseHtml(htmlContent);
     htmlContent = enhanceNestedTranslations(htmlContent);
 
@@ -805,8 +804,9 @@ async function processMarkdownFile(filePath, currentOutputDir) {
     const rel = path.relative(markdownDir, filePath).replace(/\.md$/i, ".html");
     const outputFilePath = path.join(currentOutputDir, rel);
     await fs.mkdir(path.dirname(outputFilePath), { recursive: true });
-    // LƯU Ý: Đổi htmlContent thành finalHtmlContent ở hàm writeFile
-    await fs.writeFile(outputFilePath, finalHtmlContent, "utf-8");
+    
+    // Ghi trực tiếp htmlContent (Raw HTML) ra file, không cần bọc 2 chế độ nữa
+    await fs.writeFile(outputFilePath, htmlContent, "utf-8");
   } catch (err) {
     console.error(`[ERROR] ${filePath}:`, err.message);
   }
