@@ -5,6 +5,7 @@ import { marked } from "marked";
 import chokidar from "chokidar";
 import { fileURLToPath } from "url";
 import pLimit from "p-limit";
+import { parse } from "node-html-parser"; // <-- THÊM THƯ VIỆN NÀY
 
 // =============================================================================
 // 1. CẤU HÌNH & KHỞI TẠO
@@ -33,7 +34,7 @@ async function processMarkdownFile(filePath) {
     // Đọc nội dung file Markdown gốc
     const rawContent = await fs.readFile(filePath, "utf-8");
 
-    // Xử lý trước một số thẻ tùy chỉnh nếu báo cáo của bạn có sử dụng (imgsrc, htmlsrc)
+    // Xử lý trước một số thẻ tùy chỉnh nếu báo cáo của bạn có sử dụng
     const lines = rawContent.split("\n");
     const processedLines = lines.map((line) => {
       const trimmedLine = line.trim();
@@ -57,9 +58,36 @@ async function processMarkdownFile(filePath) {
     });
 
     // Dùng marked để biên dịch Markdown cơ bản thành HTML
-    const htmlContent = marked.parse(processedLines.join("\n"));
+    let htmlContent = marked.parse(processedLines.join("\n"));
 
-    // Bọc trong container chuẩn để CSS hiện tại của bạn (style.css) vẫn hiển thị đẹp
+    // -------------------------------------------------------------------------
+    // BƯỚC NÂNG CẤP: GẮN DATA-LABEL CHO TABLE ĐỂ LÀM RESPONSIVE TRÊN MOBILE
+    // -------------------------------------------------------------------------
+    const root = parse(htmlContent);
+    const tables = root.querySelectorAll('table');
+
+    tables.forEach(table => {
+      // 1. Lấy danh sách text của các thẻ <th> (tiêu đề cột)
+      const headers = table.querySelectorAll('th').map(th => th.textContent.trim());
+
+      // 2. Lặp qua từng hàng <tr> trong <tbody> (bỏ qua thead)
+      const rows = table.querySelectorAll('tbody tr');
+      rows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        cells.forEach((cell, index) => {
+          // Gán data-label tương ứng với cột của nó
+          if (headers[index]) {
+            cell.setAttribute('data-label', headers[index]);
+          }
+        });
+      });
+    });
+
+    // Cập nhật lại htmlContent sau khi đã gắn data-label
+    htmlContent = root.toString();
+    // -------------------------------------------------------------------------
+
+    // Bọc trong container chuẩn để CSS hiện tại của bạn vẫn hiển thị đẹp
     const finalHtml = `<div class="markdown-rendered">\n${htmlContent}\n</div>`;
 
     // Tính toán đường dẫn lưu file HTML tương ứng

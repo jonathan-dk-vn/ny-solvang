@@ -1842,3 +1842,70 @@ html.theme-luxe #pt-global-overlay {
   overflow: visible !important;
 }
 
+/* ========================================================================== */
+/* UPGRADED MOBILE TABLES (STANDARD TABLES)                                   */
+/* ========================================================================== */
+
+@media (max-width: 640px) {
+  .markdown-content table:not(.parallel-translations) {
+    display: block;
+    border: none !important;
+  }
+
+  /* Ẩn tiêu đề bảng (thead) truyền thống */
+  .markdown-content table:not(.parallel-translations) thead {
+    display: none;
+  }
+
+  .markdown-content table:not(.parallel-translations) tbody {
+    display: block;
+    width: 100%;
+  }
+
+  /* Biến mỗi hàng (tr) thành một chiếc Card */
+  .markdown-content table:not(.parallel-translations) tr {
+    display: block;
+    background: var(--color-bg-table-row);
+    border: 1px solid var(--color-border-table);
+    border-radius: 12px;
+    margin-bottom: 1.25rem;
+    padding: 0.5rem;
+    box-shadow: 0 2px 8px var(--shadow-table);
+    overflow: hidden;
+  }
+
+  /* Biến mỗi ô (td) thành một dòng có nhãn */
+  .markdown-content table:not(.parallel-translations) td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: right;
+    padding: 0.75rem 0.5rem !important;
+    border: none !important;
+    border-bottom: 1px solid var(--sage-100) !important;
+    font-size: 0.9rem !important;
+    line-height: 1.4 !important;
+  }
+
+  .markdown-content table:not(.parallel-translations) td:last-child {
+    border-bottom: none !important;
+  }
+
+  /* Tạo nhãn từ thuộc tính data-label (Bạn cần thêm thuộc tính này vào HTML) */
+  .markdown-content table:not(.parallel-translations) td::before {
+    content: attr(data-label);
+    flex-basis: 40%;
+    text-align: left;
+    font-weight: 700;
+    color: var(--color-text-headings);
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+  }
+
+  /* Nếu td không có data-label, nội dung sẽ canh trái lại */
+  .markdown-content table:not(.parallel-translations) td:not([data-label]) {
+    display: block;
+    text-align: left;
+  }
+}
