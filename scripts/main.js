@@ -211,70 +211,6 @@ function isMacOS() {
   );
 }
 
-// --- VIEW TRANSITIONS & THEME ---
-function setTheme(theme) {
-  const updateDOM = () => {
-    const htmlEl = document.documentElement;
-    htmlEl.classList.remove("theme-luxe", "theme-fullcolor");
-
-    if (theme === "luxe") {
-      htmlEl.classList.add("theme-luxe");
-      localStorage.setItem("theme", "luxe");
-    } else if (theme === "fullcolor") {
-      htmlEl.classList.add("theme-fullcolor");
-      localStorage.setItem("theme", "fullcolor");
-    } else {
-      localStorage.setItem("theme", "default");
-    }
-  };
-
-  if (document.startViewTransition) {
-    document.startViewTransition(() => {
-      updateDOM();
-    });
-  } else {
-    updateDOM();
-  }
-}
-
-function initializeThemeControls() {
-  const { themeControls } = elements;
-  if (!themeControls) return;
-
-  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)");
-  let savedTheme = localStorage.getItem("theme");
-
-  if (!savedTheme) {
-    savedTheme = prefersDark.matches ? "luxe" : "default";
-  }
-
-  const htmlEl = document.documentElement;
-  htmlEl.classList.remove("theme-luxe", "theme-fullcolor");
-  if (savedTheme === "luxe") htmlEl.classList.add("theme-luxe");
-  else if (savedTheme === "fullcolor") htmlEl.classList.add("theme-fullcolor");
-
-  const currentThemeRadio = document.getElementById(`theme-${savedTheme}`);
-  if (currentThemeRadio) {
-    currentThemeRadio.checked = true;
-  }
-
-  themeControls.addEventListener("click", (e) => {
-    if (e.target.name === "theme-mode") {
-      setTheme(e.target.value);
-    }
-  });
-
-  prefersDark.addEventListener("change", (e) => {
-    if (!localStorage.getItem("theme")) {
-      const newTheme = e.matches ? "luxe" : "default";
-      setTheme(newTheme);
-      const radio = document.getElementById(`theme-${newTheme}`);
-      if (radio) {
-        radio.checked = true;
-      }
-    }
-  });
-}
 
 function initializeEnhancedPlaylistModal() {
   if (
@@ -1680,7 +1616,6 @@ async function initializeApp() {
   initializeMobileWarning();
   initializeScrollMemory();
   initializeHistory();
-  initializeThemeControls();
   initializeNavigation();
   initializeHeadingClickScroll();
   initializeEnhancedPlaylistModal();

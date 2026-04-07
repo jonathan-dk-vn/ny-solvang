@@ -6,28 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title></title>
 
-  <script>
-    (function () {
-      try {
-        const savedTheme = localStorage.getItem('theme');
-        const htmlEl = document.documentElement;
-        htmlEl.classList.remove('theme-luxe', 'theme-fullcolor');
-        if (savedTheme === 'luxe') {
-          htmlEl.classList.add('theme-luxe');
-        } else if (savedTheme === 'fullcolor') {
-          htmlEl.classList.add('theme-fullcolor');
-        } else if (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-          htmlEl.classList.add('theme-luxe');
-        }
-      } catch (e) { }
-    })();
-  </script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/markdown-content.css" />
-  <link rel="stylesheet" href="css/audio-thumb.css" />
   <link rel="stylesheet" href="css/range-thumb.css" />
-  <link rel="stylesheet" href="css/grammarLegend.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 </head>
