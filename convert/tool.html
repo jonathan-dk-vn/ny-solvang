@@ -148,10 +148,20 @@
             document.getElementById('dashboard').classList.remove('hidden');
             const zip = new JSZip();
 
+            // Danh sách tên tháng bằng tiếng Đan Mạch
+            const danishMonths = ["Januar", "Februar", "Marts", "April", "Maj", "Juni", "Juli", "August", "September", "Oktober", "November", "December"];
+
             for (let year in grouped) {
                 let yearFolder = zip.folder(year);
                 for (let month in grouped[year]) {
-                    let monthFolder = yearFolder.folder(`Maaned ${month}`);
+
+                    // Lấy tên tháng bằng tiếng Đan Mạch
+                    let monthIndex = parseInt(month) - 1;
+                    let monthNameDanish = danishMonths[monthIndex];
+
+                    // Đặt tên folder kết hợp số và chữ (VD: "04 - April") để giữ thứ tự thời gian chuẩn xác
+                    let monthFolder = yearFolder.folder(`${month} - ${monthNameDanish}`);
+
                     for (let week in grouped[year][month]) {
                         let weekData = grouped[year][month][week];
                         weekData.sort((a, b) => a._realDate - b._realDate);

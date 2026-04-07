@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="da">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vaccinationsplan (Uge 15)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen font-sans">
+
+    <div class="max-w-5xl mx-auto py-10 px-4">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-teal-700 mb-2">Vaccinationsplan Generator</h1>
+            <p class="text-gray-600">Automatisk opdeling af vaccinationshold (Team 1, 2, 3) baseret på Løbeliste</p>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-md mb-8 border-l-4 border-teal-500">
+            <h2 class="text-lg font-bold text-gray-800 mb-3">Aktuel Uge: 15 - Vaccinationsregler</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-teal-50 p-3 rounded border border-teal-100">
+                    <p class="text-sm font-bold text-teal-800">Team 3: Nye Gylte (Øverst)</p>
+                    <p class="text-xs text-gray-700 mt-1">Skrives manuelt i filen:</p>
+                    <ul class="text-xs text-gray-600 list-disc ml-4 mt-1">
+                        <li>Samlet antal (Manuelt)</li>
+                        <li>Vitamin E 5ml, Hyobac 1ml, Stellume 2ml</li>
+                    </ul>
+                </div>
+                <div class="bg-teal-50 p-3 rounded border border-teal-100">
+                    <p class="text-sm font-bold text-teal-800">Team 1: Løbet i Uge 2</p>
+                    <p class="text-xs text-gray-700 mt-1">Alle søer vaccineres med:</p>
+                    <ul class="text-xs text-gray-600 list-disc ml-4 mt-1">
+                        <li>Vitamin E: 5ml</li>
+                        <li>Hyobac: 1ml</li>
+                        <li>Porcilcis: 2ml</li>
+                        <li>Sunseng: 2ml</li>
+                    </ul>
+                </div>
+                <div class="bg-teal-50 p-3 rounded border border-teal-100">
+                    <p class="text-sm font-bold text-teal-800">Team 2: Løbet i Uge 5</p>
+                    <p class="text-xs text-gray-700 mt-1">KUN 1. lægs (kuld 1) vaccineres:</p>
+                    <ul class="text-xs text-gray-600 list-disc ml-4 mt-1">
+                        <li>Hyobac: 1ml</li>
+                        <li>Sunseng: 2ml</li>
+                    </ul>
+                </div>
+            </div>
+            <p class="text-xs text-red-500 mt-4 italic">* Bemærk: "Ikke drægtige søer" er automatisk ekskluderet fra
+                listen.</p>
+        </div>
+
+        <div class="bg-white p-8 rounded-lg shadow-md mb-8">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Upload Excel / CSV filer (Sørg for at filnavnet
+                indeholder "2" eller "5")</label>
+            <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-teal-500 bg-gray-50 cursor-pointer"
+                onclick="document.getElementById('file-upload').click()">
+                <div class="space-y-1 text-center">
+                    <svg class="mx-auto h-12 w-12 text-teal-500" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                        <path
+                            d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    <div class="flex text-sm text-gray-600 justify-center mt-2">
+                        <span class="relative bg-white rounded-md font-medium text-teal-600">Vælg filer (.xlsx,
+                            .csv)</span>
+                        <input id="file-upload" type="file" class="sr-only" accept=".xlsx, .xls, .csv" multiple>
+                    </div>
+                </div>
+            </div>
+
+            <div id="status-log" class="mt-4 p-4 bg-gray-100 rounded border border-gray-200 hidden">
+                <h3 class="font-bold text-gray-700 mb-2">System Log:</h3>
+                <div id="file-list" class="space-y-1 text-sm"></div>
+            </div>
+        </div>
+
+        <div id="dashboard" class="hidden text-center">
+            <button id="download-btn"
+                class="bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-8 rounded shadow-lg transition-transform transform hover:scale-105">
+                Download Vaccinationsplan (.md)
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let week2Data = [];
+        let week5Data = [];
+        let fileListHTML = "";
+
+        function escapeMd(str) {
+            if (str === null || str === undefined) return "";
+            return String(str).replace(/\|/g, '\\|').replace(/\n/g, ' ');
+        }
+
+        function logStatus(msg, isError = false) {
+            let colorClass = isError ? "text-red-600 font-semibold" : "text-gray-700";
+            fileListHTML += `<p class="${colorClass}">${msg}</p>`;
+            document.getElementById('file-list').innerHTML = fileListHTML;
+            document.getElementById('status-log').classList.remove('hidden');
+        }
+
+        document.getElementById('file-upload').addEventListener('change', async function (e) {
+            const files = e.target.files;
+            if (files.length === 0) return;
+
+            week2Data = [];
+            week5Data = [];
+            fileListHTML = "";
+            document.getElementById('status-log').classList.remove('hidden');
+            document.getElementById('dashboard').classList.add('hidden');
+
+            for (let i = 0; i < files.length; i++) {
+                let file = files[i];
+                logStatus(`▶ Læser fil: <strong>${file.name}</strong>...`);
+
+                try {
+                    let data = await readFile(file);
+
+                    if (data.length === 0) {
+                        logStatus(`❌ Fejl i ${file.name}: Kunne ikke finde data, eller der var kun "Ikke drægtige søer".`, true);
+                        continue;
+                    }
+
+                    if (file.name.includes('2')) {
+                        week2Data = week2Data.concat(data);
+                        logStatus(`✅ Fandt ${data.length} drægtige søer til <strong>Team 1 (Uge 2)</strong>`);
+                    } else if (file.name.includes('5')) {
+                        week5Data = week5Data.concat(data);
+                        logStatus(`✅ Fandt ${data.length} drægtige søer til <strong>Team 2 (Uge 5)</strong>`);
+                    } else {
+                        logStatus(`⚠️ Advarsel: Filen ${file.name} mangler "2" eller "5" i filnavnet. Data ignoreres!`, true);
+                    }
+                } catch (error) {
+                    logStatus(`❌ Teknisk fejl ved læsning af ${file.name}: ${error.message}`, true);
+                }
+            }
+
+            if (week2Data.length > 0 || week5Data.length > 0) {
+                document.getElementById('dashboard').classList.remove('hidden');
+                logStatus(`🎉 <strong>Klar!</strong> Klik på knappen for at downloade.`);
+            }
+        });
+
+        function readFile(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    try {
+                        const workbook = XLSX.read(new Uint8Array(event.target.result), { type: 'array', cellDates: true });
+                        let allData = [];
+
+                        workbook.SheetNames.forEach(sheetName => {
+                            // Bỏ qua sheet chứa nái lốc
+                            if (sheetName.toLowerCase().includes('ikke drægtige')) {
+                                return;
+                            }
+
+                            const rawJson = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 1, raw: false });
+
+                            let headerIndex = rawJson.findIndex(row =>
+                                row.some(cell => {
+                                    let str = String(cell).trim().toLowerCase();
+                                    return str === 'sonavn' || str === 'so navn' || str === 'so' || str === 'dyrenr' || str === 'id' || str === 'animal id';
+                                })
+                            );
+
+                            if (headerIndex === -1) return;
+
+                            const headers = rawJson[headerIndex];
+
+                            let sonavnKey = headers.find(h => {
+                                let str = String(h).trim().toLowerCase();
+                                return str === 'sonavn' || str === 'so navn' || str === 'so' || str === 'dyrenr' || str === 'id' || str === 'animal id';
+                            });
+
+                            rawJson.slice(headerIndex + 1).forEach(row => {
+                                let obj = {};
+                                let hasData = false;
+                                headers.forEach((h, i) => {
+                                    if (h && h.trim()) {
+                                        obj[h.trim()] = row[i] !== undefined ? row[i] : "";
+                                        if (row[i] !== undefined && row[i] !== "") hasData = true;
+                                    }
+                                });
+
+                                // THUẬT TOÁN CHỐNG NHIỄU SỐ TRANG (Page Numbers)
+                                if (hasData && sonavnKey && obj[sonavnKey]) {
+                                    let sonavnStr = String(obj[sonavnKey]).trim();
+                                    let kuldStr = String(obj['Kuld'] || obj['Kuld nr.'] || obj['Lægs'] || obj['Parity'] || '').trim();
+
+                                    // Chỉ đẩy vào danh sách nếu có Tên Nái VÀ bắt buộc phải có thông số Lứa đẻ (Kuld)
+                                    // Dòng footer số trang sẽ bị bỏ qua vì Kuld của nó trống
+                                    if (sonavnStr !== "" && kuldStr !== "") {
+                                        obj['Sonavn'] = sonavnStr;
+                                        allData.push(obj);
+                                    }
+                                }
+                            });
+                        });
+                        resolve(allData);
+                    } catch (e) {
+                        reject(e);
+                    }
+                };
+                reader.readAsArrayBuffer(file);
+            });
+        }
+
+        document.getElementById('download-btn').addEventListener('click', function () {
+            let md = `\n# Vaccinationsplan - Uge 15\n\n`;
+
+            // --- TEAM 3 ---
+            md += `## Team 3: Nye Gylte\n`;
+            md += `**Samlet antal:** _________________, Vitamin E 5ml, Hyobac 1ml, Stellume 2ml.\n\n`;
+            md += `---\n\n`;
+
+            // Đếm số liên tục
+            let globalNr = 1;
+
+            // --- TEAM 1 ---
+            md += `## Team 1: Søer løbet i uge 2\n`;
+            md += `*Vaccine for alle drægtige søer: Vitamin E (5ml), Hyobac (1ml), Porcilcis (2ml), Sunseng (2ml)*\n\n`;
+
+            md += `| Nr. | Sonavn | Kuld | Lokation | Vitamin E | Hyobac | Porcilcis | Sunseng |\n`;
+            md += `| :--- | :--- | :---: | :--- | :---: | :---: | :---: | :---: |\n`;
+
+            week2Data.forEach((row) => {
+                let nr = globalNr++;
+                let sonavn = `**${escapeMd(row['Sonavn'])}**`;
+                let kuld = escapeMd(row['Kuld'] || row['Kuld nr.'] || row['Lægs'] || row['Parity'] || '');
+                let lokation = escapeMd(row['Lokation'] || row['Sektion'] || row['Sti'] || row['Location'] || '');
+
+                md += `| ${nr} | ${sonavn} | ${kuld} | ${lokation} | 5 ml | 1 ml | 2 ml | 2 ml |\n`;
+            });
+            md += `\n<br>\n\n`;
+
+            // --- TEAM 2 ---
+            md += `## Team 2: Søer løbet i uge 5\n`;
+            md += `*Vaccine KUN for 1. lægs (Kuld = 1): Hyobac (1ml), Sunseng (2ml)*\n\n`;
+
+            md += `| Nr. | Sonavn | Kuld | Lokation | Hyobac | Sunseng |\n`;
+            md += `| :--- | :--- | :---: | :--- | :---: | :---: |\n`;
+
+            week5Data.forEach((row) => {
+                let kuld = parseInt(row['Kuld'] || row['Kuld nr.'] || row['Lægs'] || row['Parity'] || -1);
+
+                if (kuld === 1) {
+                    let nr = globalNr++;
+                    let sonavn = `**${escapeMd(row['Sonavn'])}**`;
+                    let lokation = escapeMd(row['Lokation'] || row['Sektion'] || row['Sti'] || row['Location'] || '');
+
+                    md += `| ${nr} | ${sonavn} | ${kuld} | ${lokation} | 1 ml | 2 ml |\n`;
+                }
+            });
+            md += `\n<br>\n\n`;
+
+            var blob = new Blob(["\uFEFF" + md], { type: "text/markdown;charset=utf-8" });
+            saveAs(blob, "Vaccinationsplan-Uge15.md");
+        });
+    </script>
+</body>
+
+</html>

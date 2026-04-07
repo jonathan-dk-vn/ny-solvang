@@ -10,12 +10,14 @@
   color-scheme: light dark;
 
   /* --- TYPOGRAPHY --- */
-  --font-universal-serif:
-    "Georgia", "Palatino", "Cambria", "Times New Roman", serif;
-  --font-ibm-plex-mono:
-    "Fira Code", "JetBrains Mono", Consolas, Monaco, monospace;
-  --font-family-sans: var(--font-universal-serif);
-  --font-family-mono: var(--font-ibm-plex-mono);
+  --font-family-sans:
+    "IBM Plex Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+
+  --font-family-serif: "IBM Plex Serif", "Georgia", "Times New Roman", serif;
+
+  --font-family-mono:
+    "IBM Plex Mono", "JetBrains Mono", Consolas, Monaco, monospace;
 
   /* Font Sizes */
   --font-size-xxs: 0.625rem;
