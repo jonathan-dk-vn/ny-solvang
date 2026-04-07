@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="da">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farestyring (Enterprise BI)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen font-sans">
+
+    <div class="max-w-5xl mx-auto py-10 px-4">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-blue-800 mb-2">Farrows Manager (Enterprise BI)</h1>
+            <p class="text-gray-600">Intelligent data-analyse, KPI overvågning og OBS-søer identifikation</p>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-md mb-8 border-l-4 border-indigo-600">
+            <h2 class="text-lg font-bold text-gray-800 mb-3">Faste Målsætninger (Cloudfarms KPIs)</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-indigo-50 p-3 rounded border border-indigo-100">
+                    <p class="text-[11px] font-semibold text-indigo-500 uppercase">Faringer [#]</p>
+                    <p class="text-xl font-bold text-gray-800">80</p>
+                </div>
+                <div class="bg-indigo-50 p-3 rounded border border-indigo-100">
+                    <p class="text-[11px] font-semibold text-indigo-500 uppercase">Levende / kuld</p>
+                    <p class="text-xl font-bold text-gray-800">20.0</p>
+                </div>
+                <div class="bg-indigo-50 p-3 rounded border border-indigo-100">
+                    <p class="text-[11px] font-semibold text-indigo-500 uppercase">1. Lægs (Gylte) Levende</p>
+                    <p class="text-xl font-bold text-gray-800">18.0</p>
+                </div>
+                <div class="bg-indigo-50 p-3 rounded border border-indigo-100">
+                    <p class="text-[11px] font-semibold text-indigo-500 uppercase">Dødfødte / kuld</p>
+                    <p class="text-xl font-bold text-gray-800">1.6</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white p-8 rounded-lg shadow-md mb-8">
+            <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-blue-500 bg-gray-50 cursor-pointer"
+                onclick="document.getElementById('file-upload').click()">
+                <div class="space-y-1 text-center">
+                    <svg class="mx-auto h-12 w-12 text-blue-500" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                        <path
+                            d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    <div class="flex text-sm text-gray-600 justify-center mt-2">
+                        <span class="relative bg-white rounded-md font-medium text-blue-600">Vælg Excel-fil
+                            (.xlsx)</span>
+                        <input id="file-upload" type="file" class="sr-only" accept=".xlsx, .xls">
+                    </div>
+                </div>
+            </div>
+            <p id="file-name" class="text-sm text-green-600 mt-2 text-center font-semibold hidden"></p>
+        </div>
+
+        <div id="dashboard" class="hidden text-center">
+            <button id="download-btn"
+                class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded shadow-lg transition-transform transform hover:scale-105">
+                Download ZIP (Enterprise BI Rapport)
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const GOAL_FARINGER = 80;
+        const GOAL_LEVENDE_PR_KULD = 20.0;
+        const GOAL_LEVENDE_1_LAEGS = 18.0;
+        const GOAL_DODFODTE_PR_KULD = 1.6;
+
+        let processedZip = null;
+
+        function getISOWeek(date) {
+            const target = new Date(date.valueOf());
+            const dayNr = (date.getDay() + 6) % 7;
+            target.setDate(target.getDate() - dayNr + 3);
+            const firstThursday = target.valueOf();
+            target.setMonth(0, 1);
+            if (target.getDay() !== 4) target.setMonth(0, 1 + ((4 - target.getDay()) + 7) % 7);
+            return 1 + Math.ceil((firstThursday - target) / 604800000);
+        }
+
+        function formatEval(val, goal, isHigherBetter = true) {
+            let diff = (val - goal).toFixed(1);
+            if (isHigherBetter) return val >= goal ? `🟢 **${val.toFixed(1)}** (+${diff})` : `🔴 **${val.toFixed(1)}** (${diff})`;
+            else return val <= goal ? `🟢 **${val.toFixed(1)}** (${diff})` : `🔴 **${val.toFixed(1)}** (+${diff})`;
+        }
+
+        function escapeMd(str) {
+            if (str === null || str === undefined) return "";
+            return String(str).replace(/\|/g, '\\|').replace(/\n/g, ' ');
+        }
+
+        document.getElementById('file-upload').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            document.getElementById('file-name').innerText = "Behandler: " + file.name;
+            document.getElementById('file-name').classList.remove('hidden');
+
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                const workbook = XLSX.read(new Uint8Array(event.target.result), { type: 'array', cellDates: true });
+                const rawJson = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], { header: 1, raw: false, dateNF: 'yyyy-mm-dd hh:mm:ss' });
+
+                let headerIndex = rawJson.findIndex(row => row.includes('Sonavn') && row.includes('Dato'));
+                if (headerIndex === -1) headerIndex = 0;
+
+                const headers = rawJson[headerIndex];
+                let parsedData = [];
+                rawJson.slice(headerIndex + 1).forEach(row => {
+                    let obj = {};
+                    let hasData = false;
+                    headers.forEach((h, i) => {
+                        if (h && h.trim()) { obj[h.trim()] = row[i] !== undefined ? row[i] : ""; if (row[i]) hasData = true; }
+                    });
+                    if (hasData) parsedData.push(obj);
+                });
+                processDataToZip(parsedData);
+            };
+            reader.readAsArrayBuffer(file);
+        });
+
+        function processDataToZip(data) {
+            let validData = data.filter(row => row['Oprettet den'] && row['Sonavn']);
+            let grouped = {};
+
+            validData.forEach(row => {
+                let oprettetDate = new Date(row['Oprettet den'].replace(/-/g, '/'));
+                if (isNaN(oprettetDate.getTime())) oprettetDate = new Date(row['Oprettet den']);
+                row._realDate = oprettetDate;
+
+                let year = oprettetDate.getFullYear();
+                let month = String(oprettetDate.getMonth() + 1).padStart(2, '0');
+                let week = getISOWeek(oprettetDate);
+
+                if (!grouped[year]) grouped[year] = {};
+                if (!grouped[year][month]) grouped[year][month] = {};
+                if (!grouped[year][month][week]) grouped[year][month][week] = [];
+                grouped[year][month][week].push(row);
+            });
+
+            document.getElementById('dashboard').classList.remove('hidden');
+            const zip = new JSZip();
+
+            for (let year in grouped) {
+                let yearFolder = zip.folder(year);
+                for (let month in grouped[year]) {
+                    let monthFolder = yearFolder.folder(`Maaned ${month}`);
+                    for (let week in grouped[year][month]) {
+                        let weekData = grouped[year][month][week];
+                        weekData.sort((a, b) => a._realDate - b._realDate);
+
+                        // Xử lý Thuốc (2 con đầu = Ingen)
+                        weekData.forEach((row, index) => {
+                            let kuld = parseInt(row['Kuld']);
+                            if (index < 2) row._medicinPat = "Ingen";
+                            else if (kuld >= 2) row._medicinPat = "Bimoxyl LA 0.3ml";
+                            else if (kuld === 1) row._medicinPat = "Bimoxyl LA 0.3ml + Neuton 0.3ml";
+                            row._medicinSo = "Oxytobel 2ml + Melovem 5ml";
+                        });
+
+                        // Nhóm theo ngày
+                        let daysGroup = {};
+                        weekData.forEach(row => {
+                            let dStr = `${String(row._realDate.getDate()).padStart(2, '0')}.${String(row._realDate.getMonth() + 1).padStart(2, '0')}.${row._realDate.getFullYear()}`;
+                            if (!daysGroup[dStr]) daysGroup[dStr] = [];
+                            daysGroup[dStr].push(row);
+                        });
+
+                        // Tính Toán Lũy Kế
+                        let sortedDatesAsc = Object.keys(daysGroup).sort((a, b) => {
+                            let [dA, mA, yA] = a.split('.'); let [dB, mB, yB] = b.split('.');
+                            return new Date(`${yA}-${mA}-${dA}`) - new Date(`${yB}-${mB}-${dB}`);
+                        });
+
+                        let accFaringer = 0, accLevende = 0, accDod = 0, accFaringerGylte = 0, accLevendeGylte = 0;
+                        let accData = {};
+
+                        sortedDatesAsc.forEach(dStr => {
+                            let dF = 0, dL = 0, dD = 0, dFGylte = 0, dLGylte = 0;
+                            daysGroup[dStr].forEach(r => {
+                                let k = parseInt(r['Kuld']);
+                                dF++; dL += parseInt(r['Levendefødte'] || 0); dD += parseInt(r['Dødfødte'] || 0);
+                                if (k === 1) { dFGylte++; dLGylte += parseInt(r['Levendefødte'] || 0); }
+                            });
+                            accFaringer += dF; accLevende += dL; accDod += dD; accFaringerGylte += dFGylte; accLevendeGylte += dLGylte;
+                            accData[dStr] = { accFaringer, accLevende, accDod, accFaringerGylte, accLevendeGylte };
+                        });
+
+                        // --- TẠO FILE MARKDOWN ---
+                        let md = `\n# Uge ${week} - Enterprise BI Rapport\n\n`;
+
+                        let wGnsLev = accFaringer > 0 ? accLevende / accFaringer : 0;
+                        let wGnsDod = accFaringer > 0 ? accDod / accFaringer : 0;
+                        let wGnsGylte = accFaringerGylte > 0 ? accLevendeGylte / accFaringerGylte : 0;
+
+                        md += `## 🏆 Ugens Resultat vs KPIs\n`;
+                        md += `- Faringer (Mål: ${GOAL_FARINGER}): **${accFaringer}** ` + (accFaringer >= GOAL_FARINGER ? `(🟢 Opnået)` : `(🔴 Mangler ${GOAL_FARINGER - accFaringer})`) + `\n`;
+                        md += `- Levende/kuld (Mål: ${GOAL_LEVENDE_PR_KULD}): ${formatEval(wGnsLev, GOAL_LEVENDE_PR_KULD, true)}\n`;
+                        md += `- Gylte Levende/kuld (Mål: ${GOAL_LEVENDE_1_LAEGS}): ${accFaringerGylte > 0 ? formatEval(wGnsGylte, GOAL_LEVENDE_1_LAEGS, true) : 'N/A'}\n`;
+                        md += `- Dødfødte/kuld (Max: ${GOAL_DODFODTE_PR_KULD}): ${formatEval(wGnsDod, GOAL_DODFODTE_PR_KULD, false)}\n`;
+                        md += `---\n\n`;
+
+                        [...sortedDatesAsc].reverse().forEach(dateStr => {
+                            let dayData = daysGroup[dateStr];
+                            dayData.sort((a, b) => a._realDate - b._realDate);
+
+                            md += `## 📅 Dato: ${dateStr}\n\n`;
+
+                            // Nhận diện Nái (OBS vs Top)
+                            let obsSoer = [];
+                            let topSoer = [];
+                            dayData.forEach(r => {
+                                let lev = parseInt(r['Levendefødte'] || 0);
+                                let dod = parseInt(r['Dødfødte'] || 0);
+                                if (dod >= 3 || lev <= 10) obsSoer.push(`${r['Sonavn']} (L:${lev}, D:${dod}, Lok: ${r['Faringslokation'] || r['Lokation']})`);
+                                if (lev >= 22 && dod === 0) topSoer.push(`${r['Sonavn']} (L:${lev}, Kuld: ${r['Kuld']})`);
+                            });
+
+                            md += `### 🚨 Actionable Insights\n`;
+                            if (obsSoer.length > 0) {
+                                md += `- **OBS-Søer (Kræver tjek - Høj dødelighed/Lav overlevelse):**\n`;
+                                obsSoer.forEach(s => md += `  - 🔴 So nr: **${s}**\n`);
+                            } else {
+                                md += `- **OBS-Søer:** Ingen kritiske søer i dag. Godt arbejde! ✅\n`;
+                            }
+
+                            if (topSoer.length > 0) {
+                                md += `- **Stjernesøer (Fremragende genetik >22 levende, 0 døde):**\n`;
+                                topSoer.forEach(s => md += `  - 🌟 So nr: **${s}**\n`);
+                            }
+                            md += `\n`;
+
+                            // Bảng Dữ liệu gốc
+                            md += `### 📋 Faringer Detaljer\n`;
+                            md += `| Nr. | Sonavn | Tid | Kuld | Levendefødte | Dødfødte | Lokation | Medicin (Pattegrise) | Medicin (So) |\n`;
+                            md += `| :--- | :--- | :--- | :---: | :---: | :---: | :--- | :--- | :--- |\n`;
+                            dayData.forEach((row, index) => {
+                                let nr = index + 1;
+                                let tid = `${String(row._realDate.getHours()).padStart(2, '0')}.${String(row._realDate.getMinutes()).padStart(2, '0')}`;
+                                md += `| ${nr} | **${row['Sonavn'] || ''}** | ${tid} | ${row['Kuld'] || ''} | ${row['Levendefødte'] || 0} | ${row['Dødfødte'] || 0} | ${row['Faringslokation'] || row['Lokation'] || ''} | ${row._medicinPat} | ${row._medicinSo} |\n`;
+                            });
+                            md += `\n<br><br>\n\n`;
+                        });
+                        monthFolder.file(`Uge ${week}.md`, "\uFEFF" + md);
+                    }
+                }
+            }
+            processedZip = zip;
+        }
+
+        document.getElementById('download-btn').addEventListener('click', function () {
+            if (!processedZip) return;
+            processedZip.generateAsync({ type: "blob" }).then(function (content) { saveAs(content, "Farrows-Enterprise-BI.zip"); });
+        });
+    </script>
+</body>
+
+</html>

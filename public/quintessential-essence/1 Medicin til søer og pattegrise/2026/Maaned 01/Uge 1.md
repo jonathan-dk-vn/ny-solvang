@@ -1,0 +1,87 @@
+﻿
+# Uge 1 - Enterprise BI Rapport
+
+## 🏆 Ugens Resultat vs KPIs
+- Faringer (Mål: 80): **23** (🔴 Mangler 57)
+- Levende/kuld (Mål: 20): 🔴 **19.8** (-0.2)
+- Gylte Levende/kuld (Mål: 18): 🔴 **16.3** (-1.8)
+- Dødfødte/kuld (Max: 1.6): 🔴 **2.0** (+0.4)
+---
+
+## 📅 Dato: 04.01.2026
+
+### 🚨 Actionable Insights
+- **OBS-Søer (Kræver tjek - Høj dødelighed/Lav overlevelse):**
+  - 🔴 So nr: **2180 (L:23, D:4, Lok: 117/Farrow-6/Sows/Solvang)**
+  - 🔴 So nr: **1218 (L:23, D:4, Lok: 109/Farrow-6/Sows/Solvang)**
+
+### 📋 Faringer Detaljer
+| Nr. | Sonavn | Tid | Kuld | Levendefødte | Dødfødte | Lokation | Medicin (Pattegrise) | Medicin (So) |
+| :--- | :--- | :--- | :---: | :---: | :---: | :--- | :--- | :--- |
+| 1 | **2859** | 07.38 | 2 | 23 | 1 | 104/Farrow-6/Sows/Solvang | Bimoxyl LA 0.3ml | Oxytobel 2ml + Melovem 5ml |
+| 2 | **2180** | 07.38 | 3 | 23 | 4 | 117/Farrow-6/Sows/Solvang | Bimoxyl LA 0.3ml | Oxytobel 2ml + Melovem 5ml |
+| 3 | **2181** | 07.38 | 3 | 20 | 2 | 116/Farrow-6/Sows/Solvang | Bimoxyl LA 0.3ml | Oxytobel 2ml + Melovem 5ml |
+| 4 | **1218** | 07.38 | 5 | 23 | 4 | 109/Farrow-6/Sows/Solvang | Bimoxyl LA 0.3ml | Oxytobel 2ml + Melovem 5ml |
+
+<br><br>
+
+## 📅 Dato: 03.01.2026
+
+### 🚨 Actionable Insights
+- **OBS-Søer (Kræver tjek - Høj dødelighed/Lav overlevelse):**
+  - 🔴 So nr: **3484 (L:15, D:3, Lok: 108/Farrow-6/Sows/Solvang)**
+- **Stjernesøer (Fremragende genetik >22 levende, 0 døde):**
+  - 🌟 So nr: **3486 (L:24, Kuld: 1)**
+
+### 📋 Faringer Detaljer
+| Nr. | Sonavn | Tid | Kuld | Levendefødte | Dødfødte | Lokation | Medicin (Pattegrise) | Medicin (So) |
+| :--- | :--- | :--- | :---: | :---: | :---: | :--- | :--- | :--- |
+| 1 | **3484** | 07.18 | 1 | 15 | 3 | 108/Farrow-6/Sows/Solvang | Bimoxyl LA 0.3ml + Neuton 0.3ml | Oxytobel 2ml + Melovem 5ml |
+| 2 | **3486** | 07.18 | 1 | 24 | 0 | 79/Farrow-4/Sows/Solvang | Bimoxyl LA 0.3ml + Neuton 0.3ml | Oxytobel 2ml + Melovem 5ml |
+
+<br><br>
+
+## 📅 Dato: 02.01.2026
+
+### 🚨 Actionable Insights
+- **OBS-Søer (Kræver tjek - Høj dødelighed/Lav overlevelse):**
+  - 🔴 So nr: **3482 (L:18, D:5, Lok: 87/Farrow-5/Sows/Solvang)**
+  - 🔴 So nr: **1101 (L:20, D:4, Lok: 80/Farrow-5/Sows/Solvang)**
+  - 🔴 So nr: **3462 (L:10, D:6, Lok: 66/Farrow-4/Sows/Solvang)**
+
+### 📋 Faringer Detaljer
+| Nr. | Sonavn | Tid | Kuld | Levendefødte | Dødfødte | Lokation | Medicin (Pattegrise) | Medicin (So) |
+| :--- | :--- | :--- | :---: | :---: | :---: | :--- | :--- | :--- |
+| 1 | **2239** | 06.44 | 3 | 21 | 2 | 78/Farrow-4/Sows/Solvang | Bimoxyl LA 0.3ml | Oxytobel 2ml + Melovem 5ml |
+| 2 | **2179** | 06.44 | 3 | 20 | 0 | 88/Farrow-5/Sows/Solvang | Bimoxyl LA 0.3ml | Oxytobel 2ml + Melovem 5ml |
+| 3 | **3482** | 06.44 | 1 | 18 | 5 | 87/Farrow-5/Sows/Solvang | Bimoxyl LA 0.3ml + Neuton 0.3ml | Oxytobel 2ml + Melovem 5ml |
+| 4 | **2866** | 06.44 | 2 | 18 | 1 | 85/Farrow-5/Sows/Solvang | Bimoxyl LA 0.3ml | Oxytobel 2ml + Melovem 5ml |
+| 5 | **1101** | 06.44 | 5 | 20 | 4 | 80/Farrow-5/Sows/Solvang | Bimoxyl LA 0.3ml | Oxytobel 2ml + Melovem 5ml |
+| 6 | **3487** | 06.44 | 1 | 17 | 0 | 97/Farrow-5/Sows/Solvang | Bimoxyl LA 0.3ml + Neuton 0.3ml | Oxytobel 2ml + Melovem 5ml |
+| 7 | **3462** | 06.49 | 1 | 10 | 6 | 66/Farrow-4/Sows/Solvang | Bimoxyl LA 0.3ml + Neuton 0.3ml | Oxytobel 2ml + Melovem 5ml |
+| 8 | **3488** | 06.49 | 1 | 18 | 1 | 65/Farrow-4/Sows/Solvang | Bimoxyl LA 0.3ml + Neuton 0.3ml | Oxytobel 2ml + Melovem 5ml |
+| 9 | **2775** | 06.49 | 2 | 22 | 2 | 62/Farrow-4/Sows/Solvang | Bimoxyl LA 0.3ml | Oxytobel 2ml + Melovem 5ml |
+
+<br><br>
+
+## 📅 Dato: 01.01.2026
+
+### 🚨 Actionable Insights
+- **OBS-Søer (Kræver tjek - Høj dødelighed/Lav overlevelse):**
+  - 🔴 So nr: **3461 (L:9, D:1, Lok: 96/Farrow-5/Sows/Solvang)**
+  - 🔴 So nr: **9297 (L:18, D:4, Lok: 90/Farrow-5/Sows/Solvang)**
+
+### 📋 Faringer Detaljer
+| Nr. | Sonavn | Tid | Kuld | Levendefødte | Dødfødte | Lokation | Medicin (Pattegrise) | Medicin (So) |
+| :--- | :--- | :--- | :---: | :---: | :---: | :--- | :--- | :--- |
+| 1 | **10123** | 06.28 | 5 | 20 | 0 | 86/Farrow-5/Sows/Solvang | Ingen | Oxytobel 2ml + Melovem 5ml |
+| 2 | **2281** | 06.28 | 3 | 20 | 1 | 81/Farrow-5/Sows/Solvang | Ingen | Oxytobel 2ml + Melovem 5ml |
+| 3 | **3483** | 06.28 | 1 | 19 | 1 | 99/Farrow-5/Sows/Solvang | Bimoxyl LA 0.3ml + Neuton 0.3ml | Oxytobel 2ml + Melovem 5ml |
+| 4 | **3461** | 06.28 | 1 | 9 | 1 | 96/Farrow-5/Sows/Solvang | Bimoxyl LA 0.3ml + Neuton 0.3ml | Oxytobel 2ml + Melovem 5ml |
+| 5 | **9297** | 06.28 | 7 | 18 | 4 | 90/Farrow-5/Sows/Solvang | Bimoxyl LA 0.3ml | Oxytobel 2ml + Melovem 5ml |
+| 6 | **1713** | 06.48 | 4 | 29 | 2 | 63/Farrow-4/Sows/Solvang | Bimoxyl LA 0.3ml | Oxytobel 2ml + Melovem 5ml |
+| 7 | **2828** | 06.48 | 2 | 28 | 1 | 64/Farrow-4/Sows/Solvang | Bimoxyl LA 0.3ml | Oxytobel 2ml + Melovem 5ml |
+| 8 | **2236** | 06.48 | 3 | 21 | 2 | 68/Farrow-4/Sows/Solvang | Bimoxyl LA 0.3ml | Oxytobel 2ml + Melovem 5ml |
+
+<br><br>
+
