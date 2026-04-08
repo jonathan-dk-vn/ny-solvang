@@ -15,40 +15,40 @@
 
 /* ── DEFAULT THEME (Sage / Olive) ── */
 .markdown-content {
-  /* Bullet/badge màu — ánh xạ với accent heading tương ứng */
-  --li-c1-a: #7ab862; /* UL cấp 1 (= border-left-h2 sage)   */
-  --li-c1-b: #5a9844;
-  --li-c1-glow: rgba(175, 211, 161, 0.35);
+  /* Bullet/badge màu — ánh xạ chuyên nghiệp theo cấp độ */
+  --li-c1-a: #1d4ed8; /* UL cấp 1 — xanh dương chính phủ  */
+  --li-c1-b: #1239a8;
+  --li-c1-glow: rgba(29, 78, 216, 0.12);
 
-  --li-c2-a: #1976d2; /* UL cấp 2 (= border-left-h3 blue)   */
-  --li-c2-b: #2196f3;
-  --li-c2-glow: rgba(33, 150, 243, 0.3);
+  --li-c2-a: #3b82f6; /* UL cấp 2 — xanh dương nhạt hơn   */
+  --li-c2-b: #2563eb;
+  --li-c2-glow: rgba(59, 130, 246, 0.12);
 
-  --li-c3-a: #f57c00; /* UL cấp 3 (= border-left-h4 orange) */
-  --li-c3-b: #ffa726;
-  --li-c3-glow: rgba(255, 167, 38, 0.3);
+  --li-c3-a: #64748b; /* UL cấp 3 — slate xám trung tính   */
+  --li-c3-b: #475569;
+  --li-c3-glow: rgba(100, 116, 139, 0.12);
 
   --li-ol1-a: var(
     --color-text-link,
-    #2d7a48
-  ); /* OL cấp 1 (= link color)        */
-  --li-ol1-b: var(--color-text-link-hover, #1e5a32);
-  --li-ol1-glow: rgba(45, 122, 72, 0.35);
+    #1d4ed8
+  ); /* OL cấp 1 — link color              */
+  --li-ol1-b: var(--color-text-link-hover, #1239a8);
+  --li-ol1-glow: rgba(29, 78, 216, 0.15);
   --li-ol1-txt: #ffffff;
 
-  --li-ol2-a: #c2185b; /* OL cấp 2 (= border-left-h5 pink)   */
-  --li-ol2-b: #e91e63;
-  --li-ol2-glow: rgba(233, 30, 99, 0.3);
+  --li-ol2-a: #475569; /* OL cấp 2 — slate đậm               */
+  --li-ol2-b: #64748b;
+  --li-ol2-glow: rgba(71, 85, 105, 0.12);
 
-  --li-ol3-a: #512da8; /* OL cấp 3 (= border-left-h6 purple) */
-  --li-ol3-b: #673ab7;
-  --li-ol3-glow: rgba(103, 58, 183, 0.3);
+  --li-ol3-a: #334155; /* OL cấp 3 — slate tối nhất          */
+  --li-ol3-b: #475569;
+  --li-ol3-glow: rgba(51, 65, 85, 0.12);
 
-  /* Surfaces — dùng biến system, hoạt động trên nền sáng */
-  --li-bg: rgba(155, 194, 133, 0.07); /* sage-500 alpha rất nhạt   */
-  --li-border: rgba(42, 56, 36, 0.1); /* olive-800 alpha nhẹ       */
-  --li-hover-bg: var(--color-bg-interactive-hover, rgba(230, 225, 207, 0.4));
-  --li-nested-line: rgba(42, 56, 36, 0.12); /* đường kẻ lồng nhau        */
+  /* Surfaces */
+  --li-bg: rgba(15, 23, 42, 0.025);  /* near-transparent neutral   */
+  --li-border: rgba(15, 23, 42, 0.08);
+  --li-hover-bg: var(--color-bg-interactive-hover, rgba(226, 232, 240, 0.6));
+  --li-nested-line: rgba(15, 23, 42, 0.1);
 
   /* Type */
   --li-line-height: 1.75;
@@ -88,40 +88,40 @@ html.theme-luxe .markdown-content {
   --li-nested-line: rgba(255, 255, 255, 0.08);
 }
 
-/* ── WARM THEME (.theme-fullcolor) — earthy accents ── */
+/* ── WARM THEME (.theme-fullcolor) — professional warm accents ── */
 html.theme-fullcolor .markdown-content {
-  --li-c1-a: #8a8510; /* olive gold (= border-left-h2 warm) */
-  --li-c1-b: #a8a218;
-  --li-c1-glow: rgba(181, 179, 116, 0.35);
+  --li-c1-a: #1d4ed8; /* blue chính       */
+  --li-c1-b: #1239a8;
+  --li-c1-glow: rgba(29, 78, 216, 0.12);
 
-  --li-c2-a: #0b7c98; /* teal (= border-left-h3 warm)       */
+  --li-c2-a: #0b7c98; /* teal (giữ nguyên, đủ trung tính)    */
   --li-c2-b: #148fb0;
-  --li-c2-glow: rgba(11, 124, 152, 0.3);
+  --li-c2-glow: rgba(11, 124, 152, 0.12);
 
-  --li-c3-a: #e86b1a; /* burnt orange (= border-left-h4)    */
-  --li-c3-b: #f07e35;
-  --li-c3-glow: rgba(232, 107, 26, 0.3);
+  --li-c3-a: #64748b; /* slate thay cho burnt orange          */
+  --li-c3-b: #475569;
+  --li-c3-glow: rgba(100, 116, 139, 0.12);
 
   --li-ol1-a: var(
     --color-text-link,
     #0b7c98
-  ); /* teal link warm                */
-  --li-ol1-b: var(--color-text-link-hover, #4d8b5f);
-  --li-ol1-glow: rgba(11, 124, 152, 0.35);
+  );
+  --li-ol1-b: var(--color-text-link-hover, #1d4ed8);
+  --li-ol1-glow: rgba(11, 124, 152, 0.15);
   --li-ol1-txt: #ffffff;
 
-  --li-ol2-a: #a54580; /* magenta (= border-left-h5 warm)    */
-  --li-ol2-b: #bc5e97;
-  --li-ol2-glow: rgba(165, 69, 128, 0.3);
+  --li-ol2-a: #475569; /* slate thay cho magenta               */
+  --li-ol2-b: #64748b;
+  --li-ol2-glow: rgba(71, 85, 105, 0.12);
 
-  --li-ol3-a: #6b5d4f; /* stone (= border-left-h6 warm)      */
+  --li-ol3-a: #6b5d4f; /* stone (giữ nguyên, đủ trầm)         */
   --li-ol3-b: #8a7968;
-  --li-ol3-glow: rgba(107, 93, 79, 0.3);
+  --li-ol3-glow: rgba(107, 93, 79, 0.12);
 
-  --li-bg: rgba(199, 58, 30, 0.04); /* rust tint rất nhạt               */
-  --li-border: rgba(201, 184, 154, 0.5); /* warm border                      */
-  --li-hover-bg: var(--color-bg-interactive-hover, #ffe8b8);
-  --li-nested-line: rgba(201, 184, 154, 0.4);
+  --li-bg: rgba(15, 23, 42, 0.025);
+  --li-border: rgba(201, 184, 154, 0.4);
+  --li-hover-bg: var(--color-bg-interactive-hover, #e2e8f0);
+  --li-nested-line: rgba(201, 184, 154, 0.3);
 }
 
 /* Trong markdown-content.css */
@@ -312,8 +312,8 @@ html.theme-fullcolor .markdown-content {
   word-break: break-word;
   overflow-wrap: break-word;
   hyphens: none;
-  font-size: 0.875rem;
-  line-height: 2;
+  font-size: 0.6rem;
+  line-height: 1;
 }
 
 .markdown-content table:not(.parallel-translations) th {
@@ -1909,3 +1909,4 @@ html.theme-luxe #pt-global-overlay {
     text-align: left;
   }
 }
+

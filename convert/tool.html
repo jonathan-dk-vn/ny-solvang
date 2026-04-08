@@ -130,141 +130,240 @@
             let validData = data.filter(row => row['Oprettet den'] && row['Sonavn']);
             let grouped = {};
 
+            // Cấu trúc thêm f1 (faringer lứa 1)
+            let summaryMatrix = {};
+            let allWeeksProcessed = [];
+
             validData.forEach(row => {
                 let oprettetDate = new Date(row['Oprettet den'].replace(/-/g, '/'));
                 if (isNaN(oprettetDate.getTime())) oprettetDate = new Date(row['Oprettet den']);
                 row._realDate = oprettetDate;
 
                 let year = oprettetDate.getFullYear();
-                let month = String(oprettetDate.getMonth() + 1).padStart(2, '0');
                 let week = getISOWeek(oprettetDate);
 
+                if (oprettetDate.getMonth() === 11 && week === 1) year++;
+                if (oprettetDate.getMonth() === 0 && week >= 52) year--;
+
                 if (!grouped[year]) grouped[year] = {};
-                if (!grouped[year][month]) grouped[year][month] = {};
-                if (!grouped[year][month][week]) grouped[year][month][week] = [];
-                grouped[year][month][week].push(row);
+                if (!grouped[year][week]) grouped[year][week] = [];
+                grouped[year][week].push(row);
             });
 
             document.getElementById('dashboard').classList.remove('hidden');
             const zip = new JSZip();
-
-            // Danh sách tên tháng bằng tiếng Đan Mạch
-            const danishMonths = ["Januar", "Februar", "Marts", "April", "Maj", "Juni", "Juli", "August", "September", "Oktober", "November", "December"];
+            const danishDays = ["Søndag", "Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag"];
 
             for (let year in grouped) {
                 let yearFolder = zip.folder(year);
-                for (let month in grouped[year]) {
 
-                    // Lấy tên tháng bằng tiếng Đan Mạch
-                    let monthIndex = parseInt(month) - 1;
-                    let monthNameDanish = danishMonths[monthIndex];
+                for (let week in grouped[year]) {
+                    let weekData = grouped[year][week];
+                    weekData.sort((a, b) => a._realDate - b._realDate);
 
-                    // Đặt tên folder kết hợp số và chữ (VD: "04 - April") để giữ thứ tự thời gian chuẩn xác
-                    let monthFolder = yearFolder.folder(`${month} - ${monthNameDanish}`);
-
-                    for (let week in grouped[year][month]) {
-                        let weekData = grouped[year][month][week];
-                        weekData.sort((a, b) => a._realDate - b._realDate);
-
-                        // Xử lý Thuốc (2 con đầu = Ingen)
-                        weekData.forEach((row, index) => {
-                            let kuld = parseInt(row['Kuld']);
-                            if (index < 2) row._medicinPat = "Ingen";
-                            else if (kuld >= 2) row._medicinPat = "Bimoxyl LA 0.3ml";
-                            else if (kuld === 1) row._medicinPat = "Bimoxyl LA 0.3ml + Neuton 0.3ml";
-                            row._medicinSo = "Oxytobel 2ml + Melovem 5ml";
-                        });
-
-                        // Nhóm theo ngày
-                        let daysGroup = {};
-                        weekData.forEach(row => {
-                            let dStr = `${String(row._realDate.getDate()).padStart(2, '0')}.${String(row._realDate.getMonth() + 1).padStart(2, '0')}.${row._realDate.getFullYear()}`;
-                            if (!daysGroup[dStr]) daysGroup[dStr] = [];
-                            daysGroup[dStr].push(row);
-                        });
-
-                        // Tính Toán Lũy Kế
-                        let sortedDatesAsc = Object.keys(daysGroup).sort((a, b) => {
-                            let [dA, mA, yA] = a.split('.'); let [dB, mB, yB] = b.split('.');
-                            return new Date(`${yA}-${mA}-${dA}`) - new Date(`${yB}-${mB}-${dB}`);
-                        });
-
-                        let accFaringer = 0, accLevende = 0, accDod = 0, accFaringerGylte = 0, accLevendeGylte = 0;
-                        let accData = {};
-
-                        sortedDatesAsc.forEach(dStr => {
-                            let dF = 0, dL = 0, dD = 0, dFGylte = 0, dLGylte = 0;
-                            daysGroup[dStr].forEach(r => {
-                                let k = parseInt(r['Kuld']);
-                                dF++; dL += parseInt(r['Levendefødte'] || 0); dD += parseInt(r['Dødfødte'] || 0);
-                                if (k === 1) { dFGylte++; dLGylte += parseInt(r['Levendefødte'] || 0); }
-                            });
-                            accFaringer += dF; accLevende += dL; accDod += dD; accFaringerGylte += dFGylte; accLevendeGylte += dLGylte;
-                            accData[dStr] = { accFaringer, accLevende, accDod, accFaringerGylte, accLevendeGylte };
-                        });
-
-                        // --- TẠO FILE MARKDOWN ---
-                        let md = `\n# Uge ${week} - Enterprise BI Rapport\n\n`;
-
-                        let wGnsLev = accFaringer > 0 ? accLevende / accFaringer : 0;
-                        let wGnsDod = accFaringer > 0 ? accDod / accFaringer : 0;
-                        let wGnsGylte = accFaringerGylte > 0 ? accLevendeGylte / accFaringerGylte : 0;
-
-                        md += `## 🏆 Ugens Resultat vs KPIs\n`;
-                        md += `- Faringer (Mål: ${GOAL_FARINGER}): **${accFaringer}** ` + (accFaringer >= GOAL_FARINGER ? `(🟢 Opnået)` : `(🔴 Mangler ${GOAL_FARINGER - accFaringer})`) + `\n`;
-                        md += `- Levende/kuld (Mål: ${GOAL_LEVENDE_PR_KULD}): ${formatEval(wGnsLev, GOAL_LEVENDE_PR_KULD, true)}\n`;
-                        md += `- Gylte Levende/kuld (Mål: ${GOAL_LEVENDE_1_LAEGS}): ${accFaringerGylte > 0 ? formatEval(wGnsGylte, GOAL_LEVENDE_1_LAEGS, true) : 'N/A'}\n`;
-                        md += `- Dødfødte/kuld (Max: ${GOAL_DODFODTE_PR_KULD}): ${formatEval(wGnsDod, GOAL_DODFODTE_PR_KULD, false)}\n`;
-                        md += `---\n\n`;
-
-                        [...sortedDatesAsc].reverse().forEach(dateStr => {
-                            let dayData = daysGroup[dateStr];
-                            dayData.sort((a, b) => a._realDate - b._realDate);
-
-                            md += `## 📅 Dato: ${dateStr}\n\n`;
-
-                            // Nhận diện Nái (OBS vs Top)
-                            let obsSoer = [];
-                            let topSoer = [];
-                            dayData.forEach(r => {
-                                let lev = parseInt(r['Levendefødte'] || 0);
-                                let dod = parseInt(r['Dødfødte'] || 0);
-                                if (dod >= 3 || lev <= 10) obsSoer.push(`${r['Sonavn']} (L:${lev}, D:${dod}, Lok: ${r['Faringslokation'] || r['Lokation']})`);
-                                if (lev >= 22 && dod === 0) topSoer.push(`${r['Sonavn']} (L:${lev}, Kuld: ${r['Kuld']})`);
-                            });
-
-                            md += `### 🚨 Actionable Insights\n`;
-                            if (obsSoer.length > 0) {
-                                md += `- **OBS-Søer (Kræver tjek - Høj dødelighed/Lav overlevelse):**\n`;
-                                obsSoer.forEach(s => md += `  - 🔴 So nr: **${s}**\n`);
-                            } else {
-                                md += `- **OBS-Søer:** Ingen kritiske søer i dag. Godt arbejde! ✅\n`;
-                            }
-
-                            if (topSoer.length > 0) {
-                                md += `- **Stjernesøer (Fremragende genetik >22 levende, 0 døde):**\n`;
-                                topSoer.forEach(s => md += `  - 🌟 So nr: **${s}**\n`);
-                            }
-                            md += `\n`;
-
-                            // Bảng Dữ liệu gốc
-                            md += `### 📋 Faringer Detaljer\n`;
-                            md += `| Nr. | Sonavn | Tid | Kuld | Levendefødte | Dødfødte | Lokation | Medicin (Pattegrise) | Medicin (So) |\n`;
-                            md += `| :--- | :--- | :--- | :---: | :---: | :---: | :--- | :--- | :--- |\n`;
-                            dayData.forEach((row, index) => {
-                                let nr = index + 1;
-                                let tid = `${String(row._realDate.getHours()).padStart(2, '0')}.${String(row._realDate.getMinutes()).padStart(2, '0')}`;
-                                md += `| ${nr} | **${row['Sonavn'] || ''}** | ${tid} | ${row['Kuld'] || ''} | ${row['Levendefødte'] || 0} | ${row['Dødfødte'] || 0} | ${row['Faringslokation'] || row['Lokation'] || ''} | ${row._medicinPat} | ${row._medicinSo} |\n`;
-                            });
-                            md += `\n<br><br>\n\n`;
-                        });
-                        monthFolder.file(`Uge ${week}.md`, "\uFEFF" + md);
+                    // Khởi tạo matrix thêm f1 (lứa 1)
+                    if (!summaryMatrix[week]) {
+                        summaryMatrix[week] = {
+                            1: { f: 0, f1: 0, l: 0, d: 0 }, 2: { f: 0, f1: 0, l: 0, d: 0 }, 3: { f: 0, f1: 0, l: 0, d: 0 },
+                            4: { f: 0, f1: 0, l: 0, d: 0 }, 5: { f: 0, f1: 0, l: 0, d: 0 }, 6: { f: 0, f1: 0, l: 0, d: 0 }, 7: { f: 0, f1: 0, l: 0, d: 0 }
+                        };
+                        allWeeksProcessed.push(week);
                     }
+
+                    let startDate = weekData[0]._realDate;
+                    let endDate = weekData[weekData.length - 1]._realDate;
+                    let startStr = `${String(startDate.getDate()).padStart(2, '0')}.${String(startDate.getMonth() + 1).padStart(2, '0')}.${startDate.getFullYear()}`;
+                    let endStr = `${String(endDate.getDate()).padStart(2, '0')}.${String(endDate.getMonth() + 1).padStart(2, '0')}.${endDate.getFullYear()}`;
+                    let fileName = `Uge ${week} (${startStr} - ${endStr}).md`;
+
+                    weekData.forEach((row, index) => {
+                        let kuld = parseInt(row['Kuld']);
+                        if (index < 2) row._medicinPat = "Ingen";
+                        else if (kuld >= 2) row._medicinPat = "Bimoxyl LA 0.3ml";
+                        else if (kuld === 1) row._medicinPat = "Bimoxyl LA 0.3ml + Neuton 0.3ml";
+                        row._medicinSo = "Oxytobel 2ml + Melovem 5ml";
+                    });
+
+                    let daysGroup = {};
+                    weekData.forEach(row => {
+                        let dStr = `${String(row._realDate.getDate()).padStart(2, '0')}.${String(row._realDate.getMonth() + 1).padStart(2, '0')}.${row._realDate.getFullYear()}`;
+                        if (!daysGroup[dStr]) daysGroup[dStr] = [];
+                        daysGroup[dStr].push(row);
+                    });
+
+                    let sortedDatesAsc = Object.keys(daysGroup).sort((a, b) => {
+                        let [dA, mA, yA] = a.split('.'); let [dB, mB, yB] = b.split('.');
+                        return new Date(`${yA}-${mA}-${dA}`) - new Date(`${yB}-${mB}-${dB}`);
+                    });
+
+                    let accFaringer = 0, accLevende = 0, accDod = 0, accFaringerGylte = 0, accLevendeGylte = 0;
+
+                    sortedDatesAsc.forEach(dStr => {
+                        let dF = 0, dL = 0, dD = 0, dFGylte = 0, dLGylte = 0;
+                        let currentDayJS = daysGroup[dStr][0]._realDate.getDay();
+                        let isoDay = currentDayJS === 0 ? 7 : currentDayJS;
+
+                        daysGroup[dStr].forEach(r => {
+                            let k = parseInt(r['Kuld']);
+                            dF++; dL += parseInt(r['Levendefødte'] || 0); dD += parseInt(r['Dødfødte'] || 0);
+                            if (k === 1) {
+                                dFGylte++; dLGylte += parseInt(r['Levendefødte'] || 0);
+                                summaryMatrix[week][isoDay].f1 += 1; // Đếm số lứa 1
+                            }
+                        });
+
+                        summaryMatrix[week][isoDay].f += dF;
+                        summaryMatrix[week][isoDay].l += dL;
+                        summaryMatrix[week][isoDay].d += dD;
+
+                        accFaringer += dF; accLevende += dL; accDod += dD; accFaringerGylte += dFGylte; accLevendeGylte += dLGylte;
+                    });
+
+                    let md = `\n# Uge ${week} (${startStr} - ${endStr}) - Enterprise BI Rapport\n\n`;
+                    let wGnsLev = accFaringer > 0 ? accLevende / accFaringer : 0;
+                    let wGnsDod = accFaringer > 0 ? accDod / accFaringer : 0;
+                    let wGnsGylte = accFaringerGylte > 0 ? accLevendeGylte / accFaringerGylte : 0;
+
+                    md += `## 🏆 Ugens Resultat vs KPIs\n`;
+                    md += `- Faringer (Mål: ${GOAL_FARINGER}): **${accFaringer}** ` + (accFaringer >= GOAL_FARINGER ? `(🟢 Opnået)` : `(🔴 Mangler ${GOAL_FARINGER - accFaringer})`) + `\n`;
+                    md += `- Levende/kuld (Mål: ${GOAL_LEVENDE_PR_KULD}): ${formatEval(wGnsLev, GOAL_LEVENDE_PR_KULD, true)}\n`;
+                    md += `- Gylte Levende/kuld (Mål: ${GOAL_LEVENDE_1_LAEGS}): ${accFaringerGylte > 0 ? formatEval(wGnsGylte, GOAL_LEVENDE_1_LAEGS, true) : 'N/A'}\n`;
+                    md += `- Dødfødte/kuld (Max: ${GOAL_DODFODTE_PR_KULD}): ${formatEval(wGnsDod, GOAL_DODFODTE_PR_KULD, false)}\n`;
+                    md += `---\n\n`;
+
+                    sortedDatesAsc.forEach(dateStr => {
+                        let dayData = daysGroup[dateStr];
+                        dayData.sort((a, b) => a._realDate - b._realDate);
+                        let dayOfWeekIndex = dayData[0]._realDate.getDay();
+                        let dayName = danishDays[dayOfWeekIndex];
+
+                        md += `## 📅 Dato: ${dayName}, ${dateStr}\n\n`;
+
+                        let obsSoer = [];
+                        let topSoer = [];
+                        dayData.forEach(r => {
+                            let lev = parseInt(r['Levendefødte'] || 0);
+                            let dod = parseInt(r['Dødfødte'] || 0);
+                            if (dod >= 3 || lev <= 10) obsSoer.push(`${r['Sonavn']} (L:${lev}, D:${dod}, Lok: ${r['Faringslokation'] || r['Lokation']})`);
+                            if (lev >= 22 && dod === 0) topSoer.push(`${r['Sonavn']} (L:${lev}, Kuld: ${r['Kuld']})`);
+                        });
+
+                        md += `### 🚨 Actionable Insights\n`;
+                        if (obsSoer.length > 0) {
+                            md += `- **OBS-Søer (Kræver tjek - Høj dødelighed/Lav overlevelse):**\n`;
+                            obsSoer.forEach(s => md += `  - 🔴 So nr: **${s}**\n`);
+                        } else {
+                            md += `- **OBS-Søer:** Ingen kritiske søer i dag. Godt arbejde! ✅\n`;
+                        }
+
+                        if (topSoer.length > 0) {
+                            md += `- **Stjernesøer (Fremragende genetik >22 levende, 0 døde):**\n`;
+                            topSoer.forEach(s => md += `  - 🌟 So nr: **${s}**\n`);
+                        }
+                        md += `\n`;
+
+                        md += `### 📋 Faringer Detaljer\n`;
+                        md += `| Nr. | Sonavn | Tid | Kuld | Levendefødte | Dødfødte | Lokation | Medicin (Pattegrise) | Medicin (So) |\n`;
+                        md += `| :--- | :--- | :--- | :---: | :---: | :---: | :--- | :--- | :--- |\n`;
+                        dayData.forEach((row, index) => {
+                            let nr = index + 1;
+                            let tid = `${String(row._realDate.getHours()).padStart(2, '0')}.${String(row._realDate.getMinutes()).padStart(2, '0')}`;
+                            md += `| ${nr} | **${row['Sonavn'] || ''}** | ${tid} | ${row['Kuld'] || ''} | ${row['Levendefødte'] || 0} | ${row['Dødfødte'] || 0} | ${row['Faringslokation'] || row['Lokation'] || ''} | ${row._medicinPat} | ${row._medicinSo} |\n`;
+                        });
+                        md += `\n<br><br>\n\n`;
+                    });
+
+                    yearFolder.file(fileName, "\uFEFF" + md);
                 }
             }
+
+            // ====================================================================
+            // PHẦN BẢNG TỔNG HỢP ULTIMATE (MẬT ĐỘ DỮ LIỆU CAO NHẤT)
+            // ====================================================================
+            // ====================================================================
+            // PHẦN BẢNG TỔNG HỢP ULTIMATE (TIẾNG ĐAN MẠCH)
+            // ====================================================================
+            if (allWeeksProcessed.length > 0) {
+                let sumMd = `\n# 📊 Analyse & Sammenligning af Faringer per Ugedag (Eksperttilstand)\n\n`;
+                sumMd += `> **Forklaring af datastruktur i cellerne:**\n`;
+                sumMd += `> **[Antal faringer]** *(Heraf: x gylte/1. lægs)*\n`;
+                sumMd += `> *Levende: [Gns./kuld] - Døde: [Gns./kuld]*\n`;
+                sumMd += `> *Dødelighed: [% (Døde / Totalt fødte)]*\n\n`;
+
+                sumMd += `| Uge | Mandag | Tirsdag | Onsdag | Torsdag | Fredag | Lørdag | Søndag | Ugetotal |\n`;
+                sumMd += `| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |\n`;
+
+                // Thêm f1 vào totalSummary
+                let totalSummary = {
+                    1: { f: 0, f1: 0, l: 0, d: 0, c: 0 }, 2: { f: 0, f1: 0, l: 0, d: 0, c: 0 }, 3: { f: 0, f1: 0, l: 0, d: 0, c: 0 },
+                    4: { f: 0, f1: 0, l: 0, d: 0, c: 0 }, 5: { f: 0, f1: 0, l: 0, d: 0, c: 0 }, 6: { f: 0, f1: 0, l: 0, d: 0, c: 0 }, 7: { f: 0, f1: 0, l: 0, d: 0, c: 0 }
+                };
+
+                allWeeksProcessed.sort((a, b) => parseInt(a) - parseInt(b)).forEach(w => {
+                    let wRow = `| **Uge ${w}** |`;
+                    let wTotalF = 0, wTotalF1 = 0, wTotalL = 0, wTotalD = 0;
+
+                    for (let day = 1; day <= 7; day++) {
+                        let f = summaryMatrix[w][day].f;
+                        let f1 = summaryMatrix[w][day].f1;
+                        let l = summaryMatrix[w][day].l;
+                        let d = summaryMatrix[w][day].d;
+
+                        wTotalF += f; wTotalF1 += f1; wTotalL += l; wTotalD += d;
+
+                        if (f > 0) {
+                            totalSummary[day].f += f;
+                            totalSummary[day].f1 += f1;
+                            totalSummary[day].l += l;
+                            totalSummary[day].d += d;
+                            totalSummary[day].c += 1;
+
+                            let avgLive = (l / f).toFixed(1);
+                            let avgDead = (d / f).toFixed(1);
+                            let totalBorn = l + d;
+                            let deadRate = totalBorn > 0 ? ((d / totalBorn) * 100).toFixed(1) : 0;
+
+                            wRow += ` **${f} far.** *(Gylte: ${f1})*<br>*L: ${avgLive} - D: ${avgDead}*<br>*Død.: ${deadRate}%* |`;
+                        } else {
+                            wRow += ` - |`;
+                        }
+                    }
+
+                    let wAvgL = wTotalF > 0 ? (wTotalL / wTotalF).toFixed(1) : 0;
+                    let wAvgD = wTotalF > 0 ? (wTotalD / wTotalF).toFixed(1) : 0;
+                    let wTotalBorn = wTotalL + wTotalD;
+                    let wDeadRate = wTotalBorn > 0 ? ((wTotalD / wTotalBorn) * 100).toFixed(1) : 0;
+
+                    wRow += ` **${wTotalF} far.** *(Gylte: ${wTotalF1})*<br>*L: ${wAvgL} - D: ${wAvgD}*<br>*Død.: ${wDeadRate}%* |\n`;
+                    sumMd += wRow;
+                });
+
+                // Hàng cuối: Trung bình cộng (Gennemsnit)
+                sumMd += `| **Gennemsnit** |`;
+                for (let day = 1; day <= 7; day++) {
+                    let tCount = totalSummary[day].c;
+                    if (tCount > 0) {
+                        let avgF = (totalSummary[day].f / tCount).toFixed(1);
+                        let avgF1 = (totalSummary[day].f1 / tCount).toFixed(1);
+                        let avgL = (totalSummary[day].l / totalSummary[day].f).toFixed(1);
+                        let avgD = (totalSummary[day].d / totalSummary[day].f).toFixed(1);
+
+                        let totalBornCol = totalSummary[day].l + totalSummary[day].d;
+                        let deadRateCol = totalBornCol > 0 ? ((totalSummary[day].d / totalBornCol) * 100).toFixed(1) : 0;
+
+                        sumMd += ` **~${avgF} far.** *(Gylte: ~${avgF1})*<br>*L: ${avgL} - D: ${avgD}*<br>*Død.: ${deadRateCol}%* |`;
+                    } else {
+                        sumMd += ` - |`;
+                    }
+                }
+                sumMd += ` **-** |\n`;
+
+                sumMd += `\n---\n*Automatisk genereret af Farrows Manager (Enterprise BI)*`;
+                zip.file("00_Ugentlig_Sammenligning_Ekspert.md", "\uFEFF" + sumMd);
+            }
+
             processedZip = zip;
         }
-
         document.getElementById('download-btn').addEventListener('click', function () {
             if (!processedZip) return;
             processedZip.generateAsync({ type: "blob" }).then(function (content) { saveAs(content, "Farrows-Enterprise-BI.zip"); });
