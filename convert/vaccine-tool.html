@@ -212,16 +212,16 @@
         document.getElementById('download-btn').addEventListener('click', function () {
             let md = `\n# Vaccinationsplan - Uge 15\n\n`;
 
-            // --- TEAM 3 ---
-            md += `## Team 3: Nye Gylte\n`;
+            // --- TEAM 1 ---
+            md += `## Team 1: Nye Gylte\n`;
             md += `**Samlet antal:** _________________, Vitamin E 5ml, Hyobac 1ml, Stellume 2ml.\n\n`;
             md += `---\n\n`;
 
             // Đếm số liên tục
             let globalNr = 1;
 
-            // --- TEAM 1 ---
-            md += `## Team 1: Søer løbet i uge 2\n`;
+            // --- TEAM 2 ---
+            md += `## Team 2: Søer løbet i uge 2\n`;
             md += `*Vaccine for alle drægtige søer: Vitamin E (5ml), Hyobac (1ml), Porcilcis (2ml), Sunseng (2ml)*\n\n`;
 
             md += `| Nr. | Sonavn | Kuld | Lokation | Vitamin E | Hyobac | Porcilcis | Sunseng |\n`;
@@ -237,8 +237,8 @@
             });
             md += `\n<br>\n\n`;
 
-            // --- TEAM 2 ---
-            md += `## Team 2: Søer løbet i uge 5\n`;
+            // --- TEAM 3 ---
+            md += `## Team 3: Søer løbet i uge 5\n`;
             md += `*Vaccine KUN for 1. lægs (Kuld = 1): Hyobac (1ml), Sunseng (2ml)*\n\n`;
 
             md += `| Nr. | Sonavn | Kuld | Lokation | Hyobac | Sunseng |\n`;
@@ -247,7 +247,7 @@
             week5Data.forEach((row) => {
                 let kuld = parseInt(row['Kuld'] || row['Kuld nr.'] || row['Lægs'] || row['Parity'] || -1);
 
-                if (kuld === 1) {
+                if (kuld === 0) { // <--- Đổi thành 0
                     let nr = globalNr++;
                     let sonavn = `**${escapeMd(row['Sonavn'])}**`;
                     let lokation = escapeMd(row['Lokation'] || row['Sektion'] || row['Sti'] || row['Location'] || '');
