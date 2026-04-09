@@ -594,7 +594,7 @@ function initializeDockToggle() {
 }
 
 function initializeMobileWarning() {
-  const MOBILE_BREAKPOINT = 768;
+  const MOBILE_BREAKPOINT = 1024;
   const body = document.body;
   const continueBtn = document.getElementById("mobile-warning-continue-btn");
 

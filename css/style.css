@@ -1404,8 +1404,8 @@ input[type="checkbox"] + label:hover {
     left: 0;
     bottom: 0;
     height: calc(100vh - 49px);
-    width: 10vw;
-    min-width: 200px;
+    width: 20vw;
+    min-width: 400px;
     z-index: 10;
     display: block !important;
     background-color: transparent !important;
@@ -1471,7 +1471,7 @@ input[type="checkbox"] + label:hover {
   /* Center Area: Main Content */
   #main-content {
     /* Chừa chỗ cho TOC (Table of Contents) bên trái: 10vw hoặc tối thiểu 200px */
-    margin-left: max(10vw, 200px);
+    margin-left: max(20vw, 400px);
 
     /* Bỏ khoảng trống bên phải của grammar sidebar cũ */
     margin-right: 0;
@@ -1479,7 +1479,7 @@ input[type="checkbox"] + label:hover {
     width: auto !important;
 
     /* Mở rộng chiếm trọn phần diện tích còn lại */
-    max-width: calc(100% - max(10vw, 200px));
+    max-width: calc(100% - max(20vw, 400px));
 
     flex: 1;
     min-width: 0;
@@ -1524,7 +1524,7 @@ input[type="checkbox"] + label:hover {
 }
 
 /* --- 6.2 Tablet & Mobile Layout (<= 768px) --- */
-@media (max-width: 768px) {
+@media (max-width: 1023px) {
   /* Bottom Nav (Capsule shape) */
   #bottom-nav-bar {
     position: fixed;
