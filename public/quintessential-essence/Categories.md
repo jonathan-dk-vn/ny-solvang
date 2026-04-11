@@ -71,10 +71,12 @@
 ### [Uge 12 (16.03.2026 - 22.03.2026)](#1%20Medicin%20til%20s%C3%B8er%20og%20pattegrise%2F2026%2FUge%2012%20(16.03.2026%20-%2022.03.2026))
 ### [Uge 13 (23.03.2026 - 29.03.2026)](#1%20Medicin%20til%20s%C3%B8er%20og%20pattegrise%2F2026%2FUge%2013%20(23.03.2026%20-%2029.03.2026))
 ### [Uge 14 (30.03.2026 - 05.04.2026)](#1%20Medicin%20til%20s%C3%B8er%20og%20pattegrise%2F2026%2FUge%2014%20(30.03.2026%20-%2005.04.2026))
-### [Uge 15 (06.04.2026 - 10.04.2026)](#1%20Medicin%20til%20s%C3%B8er%20og%20pattegrise%2F2026%2FUge%2015%20(06.04.2026%20-%2010.04.2026))
 ### [Uge 15 (06.04.2026 - 11.04.2026)](#1%20Medicin%20til%20s%C3%B8er%20og%20pattegrise%2F2026%2FUge%2015%20(06.04.2026%20-%2011.04.2026))
 
 # 2 Vaccination af søer 4 uger før faring
 
 ## 2026
 ### [Uge 15](#2%20Vaccination%20af%20s%C3%B8er%204%20uger%20f%C3%B8r%20faring%2F2026%2FUge%2015)
+
+# Business Intelligence
+## [SEGES 2024 Standard Sofarmstyring](#Business%20Intelligence%2FSEGES%202024%20Standard%20Sofarmstyring)
