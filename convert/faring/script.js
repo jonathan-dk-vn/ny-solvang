@@ -19,7 +19,7 @@ const CONFIG = {
   OUTPUT_DIR: "/Users/jonathan/Documents/code/ny-solvang/public/quintessential-essence/1 Medicin til søer og pattegrise",
 
   // --- Lọc năm: [] = tất cả, [2026] = chỉ năm 2026 ---
-  TARGET_YEARS: [2026],
+  TARGET_YEARS: [2025,2026],
 
   // --- KPI Mục tiêu (SEGES/DanBred 2024) ---
   KPI: {
