@@ -19,7 +19,7 @@ const CONFIG = {
   OUTPUT_DIR: "/Users/jonathan/Documents/code/ny-solvang/public/quintessential-essence/1 Medicin til søer og pattegrise",
 
   // --- Lọc năm: [] = tất cả, [2026] = chỉ năm 2026 ---
-  TARGET_YEARS: [2025,2026],
+  TARGET_YEARS: [2026],
 
   // --- KPI Mục tiêu (SEGES/DanBred 2024) ---
   KPI: {
@@ -433,6 +433,38 @@ function calcLinearRegression(yValues) {
   return { slope, intercept };
 }
 
+/**
+ * Tính "Krævet Gennemsnit" — chỉ số kỳ vọng trung bình cần đạt
+ * cho các tuần còn lại trong năm để tổng trung bình cả năm = goal.
+ *
+ * Công thức (đại số đơn giản):
+ *   goal = (sumHidtil + krævet × ugerTilbage) / totalUger
+ *   => krævet = (goal × totalUger - sumHidtil) / ugerTilbage
+ *
+ * Trả về null nếu không còn tuần nào (đã đủ 52 tuần) hoặc
+ * nếu năm chưa đủ dữ liệu để tính có nghĩa.
+ *
+ * @param {number[]} values       - Mảng giá trị thực tế các tuần đã có
+ * @param {number}   goal         - KPI mục tiêu cần đạt cuối năm
+ * @param {number}   totalUger    - Tổng số tuần trong năm (thường 52)
+ * @returns {number|null}
+ */
+function calcKrævetGennemsnit(values, goal, totalUger = 52) {
+  const ugerKørt    = values.length;
+  const ugerTilbage = totalUger - ugerKørt;
+
+  // Không còn tuần nào để cải thiện — trả về null
+  if (ugerTilbage <= 0) return null;
+
+  const sumHidtil = values.reduce((a, b) => a + b, 0);
+  const krævet    = (goal * totalUger - sumHidtil) / ugerTilbage;
+
+  // Trả về null nếu giá trị vô lý (âm hoặc quá lớn gấp 3 goal)
+  if (krævet < 0 || krævet > goal * 3) return null;
+
+  return krævet;
+}
+
 function formatStatus(val, goal, isHigherBetter = true) {
   const diff = Math.abs(val - goal).toFixed(1);
   if (isHigherBetter)
@@ -446,8 +478,12 @@ function formatStatus(val, goal, isHigherBetter = true) {
  * - Trendline hồi quy tuyến tính (màu cam)
  * - Đường trung bình (xám)
  * - Đường KPI Goal (xanh dương, nếu có)
+ * - Đường Krævet Gennemsnit (tím) — kỳ vọng cần đạt để cứu trung bình cả năm
  * - Chú giải (Legend) rõ ràng ở dưới
  * - Màu cột thông minh: xanh/vàng/đỏ
+ *
+ * @param {number|null} krævetVal  - Giá trị "Krævet Gennemsnit" từ calcKrævetGennemsnit()
+ *                                   null = không hiển thị đường này (đã đủ 52 tuần)
  */
 function generateSvgBarChart(
   historyData,
@@ -455,12 +491,20 @@ function generateSvgBarChart(
   isLowerBetter = false,
   isPercent     = false,
   kpiGoal       = null,
+  krævetVal     = null,
 ) {
   if (!historyData || historyData.length === 0) return "";
 
   const values  = historyData.map((h) => h[valueKey]);
-  const maxVal  = Math.max(...values, kpiGoal !== null ? kpiGoal : -Infinity);
-  const minVal  = Math.min(...values, kpiGoal !== null ? kpiGoal : Infinity);
+  // Đưa cả kpiGoal lẫn krævetVal vào tính max/min để trục Y không bị cắt cụt
+  const maxVal  = Math.max(...values,
+    kpiGoal   !== null ? kpiGoal   : -Infinity,
+    krævetVal !== null ? krævetVal : -Infinity,
+  );
+  const minVal  = Math.min(...values,
+    kpiGoal   !== null ? kpiGoal   : Infinity,
+    krævetVal !== null ? krævetVal : Infinity,
+  );
   const avgVal  = values.reduce((a, b) => a + b, 0) / values.length;
   const range   = maxVal - minVal || 1;
   const yMax    = maxVal + range * 0.45;
@@ -498,6 +542,23 @@ function generateSvgBarChart(
          + `stroke="#3b82f6" stroke-width="2" stroke-dasharray="5,3" opacity="0.85"/>`;
     svg += `<text x="${PAD_L + 2}" y="${ky - 5}" font-size="10" fill="#3b82f6" font-weight="700">`
          + `Mål: ${kDisplay}</text>`;
+  }
+
+  // ── Vẽ đường Krævet Gennemsnit (tím) ──────────────────────
+  // Ý nghĩa: "Các tuần còn lại cần đạt trung bình bao nhiêu để cứu KPI cả năm?"
+  // Màu tím đậm (#7c3aed), nét đứt dài — phân biệt rõ với Goal (xanh) và Avg (xám)
+  if (krævetVal !== null) {
+    const krY      = toY(krævetVal);
+    const krDisp   = isPercent ? krævetVal.toFixed(1) + "%" : krævetVal.toFixed(1);
+    // Màu tím đỏ nếu krævet > goal (cần bứt phá mạnh), tím nhạt nếu ≤ goal (đang ổn)
+    const krColor  = (isLowerBetter ? krævetVal < (kpiGoal ?? krævetVal) : krævetVal > (kpiGoal ?? krævetVal))
+      ? "#dc2626"   // Đỏ: kỳ vọng khắt khe hơn goal — phải tăng tốc
+      : "#7c3aed";  // Tím: kỳ vọng dễ hơn goal — đang tích lũy tốt
+    svg += `<line x1="${PAD_L}" y1="${krY}" x2="${SVG_W - 5}" y2="${krY}" `
+         + `stroke="${krColor}" stroke-width="2" stroke-dasharray="8,3" opacity="0.9"/>`;
+    // Label: hiển thị bên phải, tránh đè lên label KPI
+    svg += `<text x="${SVG_W - 6}" y="${krY - 5}" font-size="10" fill="${krColor}" `
+         + `font-weight="700" text-anchor="end">Krævet: ${krDisp}</text>`;
   }
 
   // ── Vẽ đường Trung bình ────────────────────────────────────
@@ -560,8 +621,16 @@ function generateSvgBarChart(
     { color: "#94a3b8", dash: true,  label: "Gennemsnit" },
     { color: trendColor, dash: false, label: "Trend (lin. reg.)" },
   ];
-  if (kpiGoal !== null)
+  if (kpiGoal   !== null)
     items.unshift({ color: "#3b82f6", dash: true, label: "KPI Mål" });
+  if (krævetVal !== null) {
+    // Xác định màu nhất quán với đường đã vẽ ở trên
+    const krColorLegend = (isLowerBetter
+      ? krævetVal < (kpiGoal ?? krævetVal)
+      : krævetVal > (kpiGoal ?? krævetVal))
+      ? "#dc2626" : "#7c3aed";
+    items.push({ color: krColorLegend, dash: true, label: "Krævet gns. (rest af år)" });
+  }
 
   let lx = PAD_L;
   items.forEach(({ color, dash, label }) => {
@@ -954,9 +1023,16 @@ function buildEnterpriseTrendAnalysis(yearData, weeksProcessed) {
   const last4   = history.slice(-4);
 
   // Biểu đồ
-  const chartF  = generateSvgBarChart(history, "f",    false, false, KPI.FARINGER_UGE);
-  const chartL  = generateSvgBarChart(history, "avgL", false, false, KPI.LEVENDE_PR_KULD);
-  const chartSB = generateSvgBarChart(history, "sb",   true,  true,  KPI.STILLBIRTH_RATE_ALERT);
+  // Tính Krævet Gennemsnit cho từng chỉ số — truyền vào chart để vẽ đường tím
+  // Năm Đan Mạch có 52 tuần ISO (đôi khi 53, nhưng 52 là chuẩn lập kế hoạch SEGES)
+  const TOTAL_UGER_AAR = 52;
+  const krævetF    = calcKrævetGennemsnit(history.map((h) => h.f),    KPI.FARINGER_UGE,        TOTAL_UGER_AAR);
+  const krævetL    = calcKrævetGennemsnit(history.map((h) => h.avgL), KPI.LEVENDE_PR_KULD,     TOTAL_UGER_AAR);
+  const krævetSB   = calcKrævetGennemsnit(history.map((h) => h.sb),   KPI.STILLBIRTH_RATE_ALERT, TOTAL_UGER_AAR);
+
+  const chartF  = generateSvgBarChart(history, "f",    false, false, KPI.FARINGER_UGE,        krævetF);
+  const chartL  = generateSvgBarChart(history, "avgL", false, false, KPI.LEVENDE_PR_KULD,     krævetL);
+  const chartSB = generateSvgBarChart(history, "sb",   true,  true,  KPI.STILLBIRTH_RATE_ALERT, krævetSB);
 
   let md = `\n## 🧠 Zooteknisk Ekspertanalyse\n\n`;
   md += `> **OVERBLIK:** Avanceret produktionsanalyse (${history.length} uger) — DanBred/SEGES standard.\n\n`;
@@ -967,6 +1043,26 @@ function buildEnterpriseTrendAnalysis(yearData, weeksProcessed) {
   md += `${chartF}\n\n`;
   md += `**Levende pr. kuld** (Seneste: **${current.avgL.toFixed(1)}** | Årsgns: ${yrAvgL.toFixed(1)})\n`;
   md += `${chartL}\n\n`;
+
+  // Kommentar til Krævet Gennemsnit — forklarer den lilla linje til ledelsen
+  if (krævetL !== null) {
+    const ugerKørt    = history.length;
+    const ugerTilbage = 52 - ugerKørt;
+    const gapVsGoal   = krævetL - KPI.LEVENDE_PR_KULD;
+    if (gapVsGoal > 0.5) {
+      md += `> 🟣 **Krævet gns. (lilla linje): ${krævetL.toFixed(2)} lev./kuld** — `
+          + `Efterslæbet kræver, at de resterende **${ugerTilbage} uger** leverer `
+          + `**${gapVsGoal.toFixed(1)} over KPI-målet** for at nå årsgennemsnittet. `
+          + `Intensiver faringshjælp og BCS-kontrol nu.\n\n`;
+    } else if (gapVsGoal < -0.5) {
+      md += `> 🟣 **Krævet gns. (lilla linje): ${krævetL.toFixed(2)} lev./kuld** — `
+          + `Besætningen er foran planen. De resterende **${ugerTilbage} uger** må falde til `
+          + `**${Math.abs(gapVsGoal).toFixed(1)} under KPI** og stadig nå årsmålet. God buffer.\n\n`;
+    } else {
+      md += `> 🟣 **Krævet gns. (lilla linje): ${krævetL.toFixed(2)} lev./kuld** — `
+          + `Besætningen er præcis på sporet. Fasthold nuværende rutiner de næste ${ugerTilbage} uger.\n\n`;
+    }
+  }
 
   // Trend-kommentar
   const { slope: slopeL } = calcLinearRegression(history.map((h) => h.avgL));
