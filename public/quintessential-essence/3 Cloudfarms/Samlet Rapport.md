@@ -6,7 +6,7 @@
 ---
 
 
-## 🐷 1. REPRODUKTION (Sinh sản)
+## 🐷 1. REPRODUKTION
 
 > Nøgletal for drægtighedsforløb og løberesultater.
 
@@ -62,7 +62,7 @@
 ---
 
 
-## 🏠 2. FARINGSLOKATION (Khu đẻ)
+## 🏠 2. FARINGSLOKATION
 
 > Nøgletal for faringsforløb, pattegrisedødelighed og fravænning.
 
