@@ -586,7 +586,7 @@ function buildChartsReport(sortedWeeks, weekData, goals) {
   md += `---\n\n`;
 
   // ── Afsnit 1: reproMetrics ──────────────────────────────────
-  md += `\n## 🐷 1. REPRODUKTION (Sinh sản)\n\n`;
+  md += `\n## 🐷 1. REPRODUKTION\n\n`;
   md += `> Nøgletal for drægtighedsforløb og løberesultater.\n\n`;
   reproMetrics.forEach(metric => {
     md += buildMetricSection(metric.label, sortedWeeks, weekData, goals);
@@ -595,7 +595,7 @@ function buildChartsReport(sortedWeeks, weekData, goals) {
   md += `---\n\n`;
 
   // ── Afsnit 2: faringMetrics ─────────────────────────────────
-  md += `\n## 🏠 2. FARINGSLOKATION (Khu đẻ)\n\n`;
+  md += `\n## 🏠 2. FARINGSLOKATION\n\n`;
   md += `> Nøgletal for faringsforløb, pattegrisedødelighed og fravænning.\n\n`;
   faringMetrics.forEach(metric => {
     md += buildMetricSection(metric.label, sortedWeeks, weekData, goals);
