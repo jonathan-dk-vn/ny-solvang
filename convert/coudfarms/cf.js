@@ -19,8 +19,9 @@ const __dirname  = path.dirname(__filename);
 // ╚══════════════════════════════════════════════════════════╝
 
 const INPUT_FOLDER = path.join(__dirname, "Input");
-const OUTPUT_FILE  = path.join(__dirname, "Samlet_Rapport.xlsx");
-const CHARTS_FILE  = path.join(__dirname, "Samlet_Rapport_Charts.md");
+const OUTPUT_DIR   = "/Users/jonathan/Documents/code/ny-solvang/public/quintessential-essence/3 Cloudfarms";
+const OUTPUT_FILE  = path.join(OUTPUT_DIR, "Samlet Rapport.xlsx");
+const CHARTS_FILE  = path.join(OUTPUT_DIR, "Samlet Rapport.md");
 
 // ── Metrics definitions (fra merge_reports.js) ──────────────
 const reproMetrics = [
@@ -241,13 +242,42 @@ function calcLinearRegression(yValues) {
 }
 
 /**
+ * Tính "Krævet Gennemsnit" — giá trị trung bình cần đạt cho các tuần còn lại
+ * trong năm để tổng trung bình cả năm = goal.
+ *
+ * Công thức:
+ *   goal = (sumHidtil + krævet × ugerTilbage) / totalUger
+ *   => krævet = (goal × totalUger − sumHidtil) / ugerTilbage
+ *
+ * Trả về null nếu: không còn tuần nào, hoặc giá trị tính ra vô lý.
+ *
+ * @param {number[]} values      - Mảng giá trị thực tế các tuần đã có
+ * @param {number}   goal        - KPI mục tiêu
+ * @param {number}   totalUger   - Tổng số tuần trong năm (mặc định 52)
+ * @returns {number|null}
+ */
+function calcKrævetGennemsnit(values, goal, totalUger = 52) {
+  const ugerKørt   = values.length;
+  const ugerTilbage = totalUger - ugerKørt;
+  if (ugerTilbage <= 0) return null;
+
+  const sumHidtil = values.reduce((a, b) => a + b, 0);
+  const krævet    = (goal * totalUger - sumHidtil) / ugerTilbage;
+
+  // Returner null hvis værdien er negativ eller urealistisk høj (> 3× mål)
+  if (krævet < 0 || krævet > goal * 3) return null;
+  return krævet;
+}
+
+/**
  * SVG Bar Chart — nâng cấp từ script.js
  * @param {Array<{week, value}>} historyData  - dữ liệu theo tuần
  * @param {boolean} isLowerBetter
  * @param {boolean} isPercent
  * @param {number|null} kpiGoal
+ * @param {number|null} krævetVal             - Krævet Gennemsnit (đường tím)
  */
-function generateSvgBarChart(historyData, isLowerBetter = false, isPercent = false, kpiGoal = null) {
+function generateSvgBarChart(historyData, isLowerBetter = false, isPercent = false, kpiGoal = null, krævetVal = null) {
   if (!historyData || historyData.length === 0) return "";
 
   const n        = historyData.length;
@@ -281,6 +311,10 @@ function generateSvgBarChart(historyData, isLowerBetter = false, isPercent = fal
   if (kpiGoal !== null) {
     if (yMin > kpiGoal) yMin = Math.floor(kpiGoal / step) * step - step;
     if (yMax < kpiGoal) yMax = Math.ceil(kpiGoal  / step) * step + step;
+  }
+  if (krævetVal !== null) {
+    if (yMin > krævetVal) yMin = Math.floor(krævetVal / step) * step - step;
+    if (yMax < krævetVal) yMax = Math.ceil(krævetVal  / step) * step + step;
   }
   yMin = parseFloat(yMin.toPrecision(12));
   yMax = parseFloat(yMax.toPrecision(12));
@@ -369,8 +403,10 @@ function generateSvgBarChart(historyData, isLowerBetter = false, isPercent = fal
     }
   });
 
-  // Lines
+  // Lines — left side: Mål + Gennemsnit  |  right side: Krævet
   const leftLabelsData  = [];
+  const rightLabelsData = [];
+
   if (kpiGoal !== null) {
     const ky = toY(kpiGoal);
     svgLines += `<line x1="${MARGIN_L}" y1="${ky}" x2="${MARGIN_L + CHART_W}" y2="${ky}" stroke="#008FFB" stroke-width="2" stroke-dasharray="6,4" opacity="0.85"/>`;
@@ -380,6 +416,21 @@ function generateSvgBarChart(historyData, isLowerBetter = false, isPercent = fal
   const avgY = toY(avgVal);
   svgLines += `<line x1="${MARGIN_L}" y1="${avgY}" x2="${MARGIN_L + CHART_W}" y2="${avgY}" stroke="#546E7A" stroke-width="2" stroke-dasharray="3,3" opacity="0.7"/>`;
   leftLabelsData.push({ y: avgY, text: `Gns: ${isPercent ? avgVal.toFixed(1) + "%" : avgVal.toFixed(1)}`, color: "#546E7A" });
+
+  // ── Krævet Gennemsnit (tím) ────────────────────────────────
+  // Màu đổi sang đỏ cam nếu krævet khắt khe hơn goal (cần cố gắng hơn)
+  let krColor = "#9333ea"; // tím mặc định
+  if (krævetVal !== null) {
+    const isStricter = isLowerBetter
+      ? krævetVal < (kpiGoal ?? krævetVal)
+      : krævetVal > (kpiGoal ?? krævetVal);
+    krColor = isStricter ? "#FF3366" : "#9333ea";
+
+    const krY = toY(krævetVal);
+    const krDisp = isPercent ? krævetVal.toFixed(1) + "%" : krævetVal.toFixed(1);
+    svgLines += `<line x1="${MARGIN_L}" y1="${krY}" x2="${MARGIN_L + CHART_W}" y2="${krY}" stroke="${krColor}" stroke-width="2" stroke-dasharray="8,4" opacity="0.85"/>`;
+    rightLabelsData.push({ y: krY, text: `Krævet: ${krDisp}`, color: krColor });
+  }
 
   const trendIsGood = isLowerBetter ? slope <= 0 : slope >= 0;
   const trendColor  = Math.abs(slope) < 0.05 ? "#A8B2C1" : trendIsGood ? "#00E396" : "#FF4560";
@@ -391,7 +442,7 @@ function generateSvgBarChart(historyData, isLowerBetter = false, isPercent = fal
   const arrowX = xLast - ux * 9, arrowY = trendY1 - uy * 9;
   svgLines += `<polygon points="${xLast},${trendY1} ${arrowX - uy * 5},${arrowY + ux * 5} ${arrowX + uy * 5},${arrowY - ux * 5}" fill="${trendColor}" opacity="0.9"/>`;
 
-  // Anti-overlap labels
+  // ── Anti-overlap labels ────────────────────────────────────
   const MIN_SPACING = 24;
   const resolveOverlap = labels => {
     if (labels.length <= 1) return;
@@ -410,18 +461,30 @@ function generateSvgBarChart(historyData, isLowerBetter = false, isPercent = fal
       if (!changed) break;
     }
   };
+
   resolveOverlap(leftLabelsData);
+  resolveOverlap(rightLabelsData);
+
+  // Nhãn bên TRÁI (Mål, Gennemsnit)
   leftLabelsData.forEach(l => {
     svgLabels += `<text x="${MARGIN_L - 12}" y="${l.y + 4}" font-size="12" fill="${l.color}" text-anchor="end" font-weight="700">${l.text}</text>`;
   });
 
-  // Legend
+  // Nhãn bên PHẢI (Krævet) — stroke trắng để nổi bật trên nền cột
+  rightLabelsData.forEach(l => {
+    svgLabels += `<text x="${MARGIN_L + CHART_W + 46}" y="${l.y + 4}" font-size="12" fill="${l.color}" text-anchor="start" font-weight="700" stroke="#ffffff" stroke-width="3" paint-order="stroke fill">${l.text}</text>`;
+  });
+
+  // ── Legend ─────────────────────────────────────────────────
   const legendY     = SVG_H - 12;
   const legendItems = [
     { color: "#008FFB", dash: true,  label: "Mål" },
     { color: "#546E7A", dash: true,  label: "Gennemsnit" },
     { color: trendColor, dash: false, label: "Trend" },
   ];
+  if (krævetVal !== null) {
+    legendItems.push({ color: krColor, dash: true, label: "Krævet" });
+  }
   const totalW = legendItems.reduce((acc, it) => acc + it.label.length * 8 + 36, 0);
   let lx = (SVG_W - totalW) / 2;
   legendItems.forEach(item => {
@@ -492,10 +555,23 @@ function buildMetricSection(metricLabel, sortedWeeks, weekData, goals) {
     ? (meta.isPercent ? kpiGoal.toFixed(1) + "%" : kpiGoal)
     : "—";
 
-  const chart = generateSvgBarChart(historyData, meta.lowerBetter, meta.isPercent, kpiGoal);
+  // ── Krævet Gennemsnit ──────────────────────────────────────
+  // Beregn den gennemsnitsværdi de resterende uger skal levere
+  // for at det samlede årsgennemsnit rammer KPI-målet (52 uger).
+  let krævetVal = null;
+  if (kpiGoal !== null) {
+    const values = historyData.map(h => h.value);
+    krævetVal = calcKrævetGennemsnit(values, kpiGoal, 52);
+  }
+
+  const krævetStr = krævetVal !== null
+    ? (meta.isPercent ? krævetVal.toFixed(1) + "%" : krævetVal.toFixed(2))
+    : "—";
+
+  const chart = generateSvgBarChart(historyData, meta.lowerBetter, meta.isPercent, kpiGoal, krævetVal);
 
   let md = `\n### 📊 ${metricLabel}\n\n`;
-  md += `> **Seneste:** ${dispLatest} | **Mål:** ${goalStr} | **Uger med data:** ${historyData.length}\n\n`;
+  md += `> **Seneste:** ${dispLatest} | **Mål:** ${goalStr} | **Krævet gns.:** ${krævetStr} | **Uger med data:** ${historyData.length}\n\n`;
   md += chart + "\n\n";
   return md;
 }
@@ -505,7 +581,7 @@ function buildMetricSection(metricLabel, sortedWeeks, weekData, goals) {
  */
 function buildChartsReport(sortedWeeks, weekData, goals) {
   const now = new Date().toLocaleDateString("da-DK");
-  let md = `\n# 📈 Samlet Rapport — Biểu đồ tổng hợp\n\n`;
+  let md = `\n# 📈 Samlet Rapport\n\n`;
   md += `> Genereret: ${now} | Uger inkluderet: ${sortedWeeks.join(", ")}\n\n`;
   md += `---\n\n`;
 
@@ -536,6 +612,12 @@ function buildChartsReport(sortedWeeks, weekData, goals) {
 
 function main() {
   console.log("\n⏳ Starter kombineret rapport-generator...\n");
+
+  // Opret output-mappe hvis den ikke findes
+  if (!fs.existsSync(OUTPUT_DIR)) {
+    fs.mkdirSync(OUTPUT_DIR, { recursive: true });
+    console.log(`📁 Output-mappe oprettet: ${OUTPUT_DIR}`);
+  }
 
   // Trin 1: Læs og flet alle XLSX-filer
   const { sortedWeeks, weekData, goals } = mergeXlsxReports();

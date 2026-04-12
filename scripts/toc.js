@@ -1,6 +1,7 @@
 /**
  * scripts/toc.js
- * IMPLEMENTATION: Render TOC theo cấu trúc Cây (Tree) với tối ưu hóa DOM (Batch Rendering)
+ * IMPLEMENTATION: Render TOC theo cấu trúc Cây (Tree) với hỗ trợ MULTIPLE ACTIVE.
+ * Tối ưu hóa DOM bằng DocumentFragment.
  */
 
 import { elements } from "./domElements.js";
@@ -12,18 +13,25 @@ import {
 } from "./util/headingUtils.js";
 
 // --- State ---
-let currentActiveHeading = null;
+let currentActiveHeading = null; // Dùng để lưu heading trên cùng (phục vụ breadcrumb)
 let headingElements = [];
 let headingDataList = [];
 let intersectionObserver = null;
 const tocModalState = { isAnimating: false };
 
-// Hàm mới: Chỉ cập nhật class active cho 1 mục cụ thể (không reset các mục khác)
+// =============================================================================
+// 1. LOGIC TRẠNG THÁI ACTIVE TỪNG MỤC (MULTI-ACTIVE)
+// =============================================================================
+
+/**
+ * Bật/tắt class 'active' cho một heading cụ thể trong TOC
+ * KHÔNG ảnh hưởng đến các heading khác (Hỗ trợ Multiple Active)
+ */
 function toggleHeadingActiveState(headingElement, isActive) {
-  if (!elements.tocModalList) return;
+  if (!elements.tocModalList || !headingElement) return;
 
   const link = elements.tocModalList.querySelector(
-    `a[data-target-id="${headingElement.id}"]`,
+    `a[data-target-id="${headingElement.id}"]`
   );
 
   if (link) {
@@ -35,28 +43,31 @@ function toggleHeadingActiveState(headingElement, isActive) {
   }
 }
 
+/**
+ * Cập nhật Breadcrumb dựa trên thẻ đang active ĐẦU TIÊN (trên cùng) trong TOC
+ */
 function updateBreadcrumbState() {
-  const firstActiveLink = elements.tocModalList?.querySelector("a.active");
+  // Lấy ra tất cả các link đang active
+  const activeLinks = elements.tocModalList?.querySelectorAll("a.active");
+  
+  // Ưu tiên link đầu tiên (nằm trên cùng của màn hình hiện tại)
+  const firstActiveLink = activeLinks && activeLinks.length > 0 ? activeLinks[0] : null;
 
   if (firstActiveLink) {
     const targetId = firstActiveLink.dataset.targetId;
-    
-    // [FIX] Chỉ tìm trong mảng heading đang hiển thị (bỏ qua view bị ẩn)
-    const activeHeadingEl = headingElements.find(el => el.id === targetId);
+    const activeHeadingEl = headingElements.find((el) => el.id === targetId);
 
+    // Nếu heading này khác với heading đang hiển thị ở breadcrumb thì cập nhật
     if (activeHeadingEl && currentActiveHeading !== activeHeadingEl) {
       currentActiveHeading = activeHeadingEl;
       updateBottomNavWithBreadcrumb(currentActiveHeading);
-
-      if (!elements.tocModal.classList.contains("hidden")) {
-        scrollToActiveItemInModal(firstActiveLink);
-      }
     }
   }
 }
 
-
-// Hàm tìm heading đang active bằng mảng DOM thật, không dùng getElementById
+/**
+ * Tìm heading đang nằm trên cùng của màn hình (Dùng cho lần load đầu tiên)
+ */
 function findCurrentActiveHeading() {
   if (!headingElements || headingElements.length === 0) return null;
   
@@ -73,88 +84,44 @@ function findCurrentActiveHeading() {
   return active;
 }
 
-
 // =============================================================================
-// 1. LOGIC HIỂN THỊ CÂY (TỐI ƯU HÓA DOM)
+// 2. KHỞI TẠO OBSERVER (BẮT SỰ KIỆN CUỘN TRANG)
 // =============================================================================
 
-function renderTreeHtml(nodes) {
-  if (!nodes || nodes.length === 0) return null;
+function setupIntersectionObserver() {
+  const options = {
+    root: null,
+    // Thu hẹp vùng theo dõi một chút (bỏ qua 5% trên và dưới) để kích hoạt chính xác hơn
+    rootMargin: "-5% 0px -5% 0px", 
+    threshold: 0, 
+  };
 
-  // [TỐI ƯU] Tạo UL container trong bộ nhớ (chưa gắn vào DOM thật)
-  const ul = document.createElement("ul");
-  ul.className = "toc-level";
+  intersectionObserver = new IntersectionObserver((entries) => {
+    let hasChanges = false;
 
-  // [TỐI ƯU] Sử dụng DocumentFragment để gom các thẻ LI trước khi append vào UL
-  const fragment = document.createDocumentFragment();
-
-  nodes.forEach((node) => {
-    const li = document.createElement("li");
-
-    // Tạo link
-    const a = document.createElement("a");
-    a.href = `#${node.id}`;
-    // Class theo level (h1, h2, h3...) khớp với CSS
-    a.className = `toc-link h${node.level}`;
-    a.textContent = node.text;
-    a.dataset.targetId = node.id;
-
-    a.addEventListener("click", (e) => {
-      e.preventDefault();
-      handleTocLinkClick(node.id);
+    entries.forEach((entry) => {
+      // 1. Thêm hoặc xóa class active ĐỘC LẬP cho từng entry
+      toggleHeadingActiveState(entry.target, entry.isIntersecting);
+      hasChanges = true;
     });
 
-    li.appendChild(a);
-
-    // Đệ quy cho children
-    if (node.children && node.children.length > 0) {
-      const childUl = renderTreeHtml(node.children);
-      // Chỉ append nếu đệ quy trả về element hợp lệ
-      if (childUl) {
-        li.appendChild(childUl);
-      }
+    // 2. Nếu có sự thay đổi trên TOC, tính toán lại Breadcrumb
+    if (hasChanges) {
+      updateBreadcrumbState();
     }
+  }, options);
 
-    fragment.appendChild(li);
-  });
-
-  // Gắn fragment vào UL (Thao tác này rất nhẹ vì UL chưa nằm trong Document)
-  ul.appendChild(fragment);
-
-  return ul;
-}
-
-// Tìm hàm này trong scripts/toc.js
-function handleTocLinkClick(targetId) {
-  if (window.innerWidth < 1024) {
-    toggleTocModal();
-  }
-
-  // [FIX] Tìm phần tử trong mảng heading đang hiển thị, tránh dùng document.getElementById
-  const targetElement = headingElements.find(el => el.id === targetId);
-  
-  if (targetElement) {
-    const headerOffset = 160;
-    const elementPosition = targetElement.getBoundingClientRect().top;
-    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-
-    window.scrollTo({
-      top: offsetPosition,
-      behavior: "smooth",
-    });
-
-    setActiveHeading(targetElement, true);
-  }
+  headingElements.forEach((heading) => intersectionObserver.observe(heading));
 }
 
 // =============================================================================
-// 2. LOGIC BREADCRUMB
+// 3. LOGIC BREADCRUMB UI (MARQUEE & TEXT)
 // =============================================================================
 
 function getHeadingBreadcrumb(activeHeadingElement) {
   if (!activeHeadingElement || headingDataList.length === 0) return "";
   const currentHeadingObj = headingDataList.find(
-    (item) => item.element === activeHeadingElement,
+    (item) => item.element === activeHeadingElement
   );
   if (!currentHeadingObj) return "";
   return buildHierarchyPath(currentHeadingObj, headingDataList).join(" › ");
@@ -184,7 +151,7 @@ function updateBottomNavWithBreadcrumb(activeHeading) {
 
     span.textContent = breadcrumbText || "";
 
-    // Tính toán Marquee
+    // Tính toán độ dài để chạy Marquee (chữ chạy ngang) nếu text quá dài
     requestAnimationFrame(() => {
       const containerWidth = wrapper.clientWidth;
       const textWidth = span.scrollWidth;
@@ -203,55 +170,86 @@ function updateBottomNavWithBreadcrumb(activeHeading) {
 }
 
 // =============================================================================
-// 3. LOGIC TRẠNG THÁI (ACTIVE STATE)
+// 4. LOGIC HIỂN THỊ CÂY HTML (TOC)
 // =============================================================================
 
-function setActiveHeading(targetHeadingElement, shouldScrollModal = false) {
-  if (currentActiveHeading === targetHeadingElement) return;
+function renderTreeHtml(nodes) {
+  if (!nodes || nodes.length === 0) return null;
 
-  if (currentActiveHeading) {
-    const oldLink = elements.tocModalList?.querySelector(
-      `a[data-target-id="${currentActiveHeading.id}"]`,
-    );
-    if (oldLink) oldLink.classList.remove("active");
-  }
+  // Sử dụng DocumentFragment để tăng tốc độ render DOM
+  const ul = document.createElement("ul");
+  ul.className = "toc-level";
+  const fragment = document.createDocumentFragment();
 
-  currentActiveHeading = targetHeadingElement;
+  nodes.forEach((node) => {
+    const li = document.createElement("li");
 
-  if (currentActiveHeading) {
-    const newLink = elements.tocModalList?.querySelector(
-      `a[data-target-id="${currentActiveHeading.id}"]`,
-    );
-    if (newLink) {
-      newLink.classList.add("active");
-      if (
-        shouldScrollModal &&
-        !elements.tocModal.classList.contains("hidden")
-      ) {
-        scrollToActiveItemInModal(newLink);
+    const a = document.createElement("a");
+    a.href = `#${node.id}`;
+    a.className = `toc-link h${node.level}`;
+    a.textContent = node.text;
+    a.dataset.targetId = node.id;
+
+    a.addEventListener("click", (e) => {
+      e.preventDefault();
+      handleTocLinkClick(node.id);
+    });
+
+    li.appendChild(a);
+
+    if (node.children && node.children.length > 0) {
+      const childUl = renderTreeHtml(node.children);
+      if (childUl) {
+        li.appendChild(childUl);
       }
     }
+
+    fragment.appendChild(li);
+  });
+
+  ul.appendChild(fragment);
+  return ul;
+}
+
+function handleTocLinkClick(targetId) {
+  // Đóng modal TOC nếu đang ở mobile
+  if (window.innerWidth < 1024) {
+    toggleTocModal();
   }
 
-  updateBottomNavWithBreadcrumb(currentActiveHeading);
+  const targetElement = headingElements.find((el) => el.id === targetId);
+  
+  if (targetElement) {
+    const headerOffset = 160;
+    const elementPosition = targetElement.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+    // Cuộn trang mượt mà
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: "smooth",
+    });
+
+    // Ép bật active tạm thời để phản hồi UI ngay lập tức (trước khi observer kịp chạy)
+    toggleHeadingActiveState(targetElement, true);
+    updateBreadcrumbState();
+  }
 }
 
 function scrollToActiveItemInModal(activeLink) {
   if (activeLink && elements.tocModalList) {
-    // Sử dụng scrollIntoView với block center để luôn giữ mục active ở giữa
     activeLink.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 }
 
 // =============================================================================
-// 4. KHỞI TẠO & CLEANUP (MAIN)
+// 5. KHỞI TẠO & DỌN DẸP
 // =============================================================================
 
 export function generateToc() {
   const tocListContainer = elements.tocModalList;
   const tocToggleBtn = elements.tocToggleBtn;
   
-  // [LƯU TRẠNG THÁI] Nhớ ID cũ đang đọc trước khi người dùng ấn nút chuyển view
   const previousActiveId = currentActiveHeading ? currentActiveHeading.id : null;
 
   const isReadingMode = document.body.classList.contains("reading-mode-active");
@@ -294,53 +292,35 @@ export function generateToc() {
     tocListContainer.appendChild(treeHtml);
   }
 
+  // Bắt đầu quan sát cuộn trang
   setupIntersectionObserver();
 
-  // [PHỤC HỒI TRẠNG THÁI] Delay 100ms đợi CSS hiển thị layout chuẩn
+  // Xử lý trạng thái ban đầu sau khi DOM render xong
   setTimeout(() => {
     let targetHeading = null;
 
-    // 1. Thử phục hồi lại ID cũ đã lưu
     if (previousActiveId) {
       targetHeading = headingElements.find(h => h.id === previousActiveId);
     }
     
-    // 2. Nếu không tìm thấy, quét xem màn hình hiện tại đang hiển thị vị trí nào
     if (!targetHeading) {
       targetHeading = findCurrentActiveHeading();
     }
 
-    // 3. Gắn class active và cuộn modal tới đúng điểm
     if (targetHeading) {
-      setActiveHeading(targetHeading, true);
-    } else {
-      setActiveHeading(headingElements[0], false);
+      toggleHeadingActiveState(targetHeading, true);
+      updateBreadcrumbState();
+      
+      // Cuộn thanh TOC đến mục đang active
+      const activeLink = elements.tocModalList?.querySelector(`a[data-target-id="${targetHeading.id}"]`);
+      scrollToActiveItemInModal(activeLink);
     }
-  }, 100);
+  }, 150);
 
   return true;
 }
 
-function setupIntersectionObserver() {
-  const options = {
-    root: null,
-    rootMargin: "-10% 0px -80% 0px", 
-    threshold: 0, 
-  };
-
-  intersectionObserver = new IntersectionObserver(() => {
-    // [FIX] Thay vì set true/false rời rạc, ta bắt nó tính lại thẻ nào chuẩn nhất đang được đọc
-    const activeHeading = findCurrentActiveHeading();
-    if (activeHeading) {
-      setActiveHeading(activeHeading, false);
-    }
-  }, options);
-
-  headingElements.forEach((heading) => intersectionObserver.observe(heading));
-}
-
 export function toggleTocModal() {
-  // [FIX] Nếu là Desktop, không cho phép Toggle ẩn/hiện (Vì Sidebar luôn cố định)
   if (window.matchMedia("(min-width: 1024px)").matches) {
     return;
   }
@@ -351,7 +331,6 @@ export function toggleTocModal() {
   if (wasHidden) {
     const container = elements.tocModalList;
     if (container) {
-      // Reset animation state
       container.style.opacity = "0";
       container.style.transform = "translateY(10px)";
 
@@ -373,29 +352,18 @@ function handleResizeState() {
   const isDesktop = window.matchMedia("(min-width: 1024px)").matches;
 
   if (isDesktop) {
-    // --- CHUYỂN TỪ MOBILE -> DESKTOP ---
-
-    // 1. Xóa class 'hidden' để đảm bảo Sidebar luôn hiện về mặt logic
-    // (Dù CSS đã ép hiện, nhưng làm sạch class giúp JS hoạt động đúng sau này)
     if (elements.tocModal) {
       elements.tocModal.classList.remove("hidden");
     }
-
-    // 2. QUAN TRỌNG: Mở khóa cuộn trang (Body Scroll)
-    // Nếu lúc nãy đang mở Modal, body bị set overflow: hidden. Giờ phải gỡ ra.
     document.body.style.overflow = "";
-    document.body.classList.remove("modal-open"); // Nếu bạn có dùng class này
+    document.body.classList.remove("modal-open");
   } else {
-    // --- CHUYỂN TỪ DESKTOP -> MOBILE ---
-
-    // Khi thu nhỏ màn hình, Sidebar nên tự động ẩn đi (thành Modal đóng)
-    // để tránh việc nội dung TOC che lấp toàn bộ màn hình nhỏ.
     if (elements.tocModal) {
       elements.tocModal.classList.add("hidden");
     }
   }
 }
-// [TỐI ƯU] Hàm dọn dẹp bộ nhớ công khai
+
 export function cleanupToc() {
   if (intersectionObserver) {
     intersectionObserver.disconnect();
@@ -416,25 +384,18 @@ export function initializeToc() {
       }
     });
   }
-  // [MỚI] Thêm Listener lắng nghe thay đổi kích thước màn hình
-  const mediaQuery = window.matchMedia("(min-width: 1024px)");
 
-  // Lắng nghe sự thay đổi (Safari/Chrome support modern addEventListener)
+  const mediaQuery = window.matchMedia("(min-width: 1024px)");
   try {
     mediaQuery.addEventListener("change", handleResizeState);
   } catch (e) {
-    // Fallback cho trình duyệt cũ
     mediaQuery.addListener(handleResizeState);
   }
 
-  // Chạy 1 lần lúc khởi tạo để set đúng trạng thái ban đầu
   handleResizeState();
-
-  // Tự động dọn dẹp khi reload/đóng tab
   window.addEventListener("beforeunload", cleanupToc);
 
   document.addEventListener("keydown", (e) => {
-    // [FIX] Nếu màn hình là Desktop (>= 1024px), không làm gì cả khi nhấn ESC
     if (window.innerWidth >= 1024) return;
 
     if (e.key === "Escape" && !elements.tocModal.classList.contains("hidden")) {
@@ -443,7 +404,6 @@ export function initializeToc() {
 
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "t") {
       e.preventDefault();
-      // [FIX] Tương tự, disable phím tắt Ctrl+T bật/tắt trên Desktop vì nó luôn hiện
       if (window.innerWidth < 1024) {
         toggleTocModal();
       }
