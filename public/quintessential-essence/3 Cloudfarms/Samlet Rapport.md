@@ -1,7 +1,7 @@
 ﻿
 # 📈 Samlet Rapport
 
-> Genereret: 12.4.2026 | Uger inkluderet: 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15
+> Genereret: 26.4.2026 | Uger inkluderet: 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15
 
 ---
 
@@ -202,4 +202,4 @@
 
 ---
 
-> *Rapport afsluttet — 12.4.2026*
+> *Rapport afsluttet — 26.4.2026*
