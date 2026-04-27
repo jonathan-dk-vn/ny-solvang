@@ -83,6 +83,12 @@
 
 ## 2026
 ### [Uge 15](#2%20Vaccination%20af%20s%C3%B8er%204%20uger%20f%C3%B8r%20faring%2F2026%2FUge%2015)
+### [Uge 19](#2%20Vaccination%20af%20s%C3%B8er%204%20uger%20f%C3%B8r%20faring%2F2026%2FUge%2019)
+### [Uge 20](#2%20Vaccination%20af%20s%C3%B8er%204%20uger%20f%C3%B8r%20faring%2F2026%2FUge%2020)
+### [Uge 21](#2%20Vaccination%20af%20s%C3%B8er%204%20uger%20f%C3%B8r%20faring%2F2026%2FUge%2021)
+### [Uge 22](#2%20Vaccination%20af%20s%C3%B8er%204%20uger%20f%C3%B8r%20faring%2F2026%2FUge%2022)
+### [Uge 23](#2%20Vaccination%20af%20s%C3%B8er%204%20uger%20f%C3%B8r%20faring%2F2026%2FUge%2023)
+### [Uge 24](#2%20Vaccination%20af%20s%C3%B8er%204%20uger%20f%C3%B8r%20faring%2F2026%2FUge%2024)
 
 # 3 Cloudfarms
 ## [Samlet Rapport](#3%20Cloudfarms%2FSamlet%20Rapport)

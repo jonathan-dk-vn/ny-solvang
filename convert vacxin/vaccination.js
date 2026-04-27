@@ -1,122 +1,184 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import * as xlsxModule from 'xlsx';
+import xlsx from 'xlsx';
 
-// 1. Cấu hình môi trường ES Module & fix lỗi Buffer của thư viện xlsx
+// Cấu hình đường dẫn cho chuẩn ES Module
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const xlsx = xlsxModule.default || xlsxModule;
 
-// Hàm làm sạch chuỗi tránh vỡ format bảng Markdown
-function cleanMD(str) {
-    return (String(str) || '').replace(/\r?\n|\r/g, ' ').replace(/\|/g, '-').trim();
+// Thư mục đầu vào 
+const inputDir = path.join(__dirname, 'Input');
+
+// Đường dẫn Output
+const outputDir = '/Users/jonathan/Documents/code/ny-solvang/public/quintessential-essence/2 Vaccination af søer 4 uger før faring/2026';
+
+// Tự động tạo thư mục nếu chưa tồn tại
+if (!fs.existsSync(outputDir)) {
+    fs.mkdirSync(outputDir, { recursive: true });
 }
 
-// --- LUỒNG XỬ LÝ CHÍNH ---
-function processVaccinationList() {
-    console.log("⏳ Đang phân tích file 'service-list-1.xlsx'...");
-    const filePath = path.join(__dirname, 'service-list-1.xlsx');
-    
+/**
+ * Hàm tính tuần phối giống dựa vào tuần tiêm và khoảng lùi (offset)
+ */
+function getMatingWeek(vaccinationWeek, offset) {
+    let week = vaccinationWeek - offset;
+    if (week <= 0) {
+        week += 52;
+    }
+    return week;
+}
+
+/**
+ * Đọc dữ liệu từ file Excel cho một tuần cụ thể
+ */
+function readExcelData(week) {
+    const fileName = `service-list-${week}.xlsx`;
+    const filePath = path.join(inputDir, fileName);
+
     if (!fs.existsSync(filePath)) {
-        console.error("❌ Lỗi: Không tìm thấy file 'service-list-1.xlsx'. Vui lòng kiểm tra lại tên file!");
-        return;
+        return null;
     }
 
-    // Đọc file thông qua Buffer
-    const fileBuffer = fs.readFileSync(filePath);
-    const workbook = xlsx.read(fileBuffer, { type: 'buffer' });
+    const workbook = xlsx.readFile(filePath);
     const sheetName = workbook.SheetNames[0];
-    const worksheet = workbook.Sheets[sheetName];
+    const sheet = workbook.Sheets[sheetName];
+    const rawData = xlsx.utils.sheet_to_json(sheet, { header: 1, defval: "" });
+
+    const sows = [];
+    for (let i = 8; i < rawData.length; i++) {
+        const row = rawData[i];
+        
+        // Bỏ qua nếu dòng rỗng
+        if (!row || !row[0] || row[0].toString().trim() === "") continue;
+
+        const sonavn = row[0].toString().trim();
+
+        // Bỏ qua dòng chân trang (chỉ chứa số 1)
+        if (sonavn === "1") continue;
+
+        sows.push({
+            Sonavn: sonavn,
+            Lokation: row[2] ? row[2].toString().trim() : "",
+            Kuld: parseInt(row[5], 10) || 0
+        });
+    }
+
+    return sows;
+}
+
+/**
+ * Tự động quét thư mục và xuất file MD
+ */
+function autoGenerate() {
+    console.log("🔍 Đang quét thư mục Input để tìm dữ liệu...");
     
-    // Lấy dữ liệu dưới dạng mảng 2 chiều
-    const rows = xlsx.utils.sheet_to_json(worksheet, { header: 1, raw: false, defval: "" });
+    const files = fs.readdirSync(inputDir);
+    const availableWeeks = new Set();
     
-    if (rows.length === 0) {
-        console.log("⚠️ File Excel đang trống!");
+    files.forEach(file => {
+        const match = file.match(/^service-list-(\d+)\.xlsx$/);
+        if (match) {
+            availableWeeks.add(parseInt(match[1], 10));
+        }
+    });
+
+    if (availableWeeks.size === 0) {
+        console.log("⚠️ Không tìm thấy file Excel nào trong thư mục Input.");
         return;
     }
 
-    // 1. Tự động tìm dòng chứa tiêu đề (Header)
-    let headerRowIdx = 0;
-    for (let i = 0; i < rows.length; i++) {
-        if (rows[i].some(cell => String(cell).toLowerCase().includes('sonavn'))) {
-            headerRowIdx = i;
-            break;
+    let generatedCount = 0;
+
+    for (let targetWeek = 1; targetWeek <= 53; targetWeek++) {
+        const team2Week = getMatingWeek(targetWeek, 13);
+        const team3Week = getMatingWeek(targetWeek, 10);
+
+        if (availableWeeks.has(team2Week) && availableWeeks.has(team3Week)) {
+            generateMarkdown(targetWeek, team2Week, team3Week);
+            generatedCount++;
         }
     }
 
-    // Làm sạch tiêu đề gốc
-    const originalHeaders = rows[headerRowIdx].map(h => cleanMD(h));
-    const finalHeaders = [...originalHeaders];
-
-    // 2. Xử lý điều kiện Cột 'Lokation'
-    let lokationIdx = finalHeaders.findIndex(h => h.toLowerCase().includes('lokation'));
-    if (lokationIdx === -1) {
-        finalHeaders.push('Lokation');
-        lokationIdx = finalHeaders.length - 1; // Cập nhật lại Index mới
-    }
-
-    // 3. Khai báo 4 cột Thuốc Vaccine
-    const newColumns = ['Vitamin E 5ml', 'Hyobac 1ml', 'Porcilcis 2ml', 'Sunseng 2 ml'];
-    finalHeaders.push(...newColumns);
-
-    // 4. Tạo thư mục Output
-    const outputDir = path.join(__dirname, 'Output', '2 Vaccination af søer 4 uger før faring');
-    if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
-
-    // 5. Build nội dung Markdown
-    let mdContent = `# Vaccination af søer 4 uger før faring\n\n`;
-    
-    // Tạo phần Header cho bảng Markdown
-    mdContent += `| Nr. | ${finalHeaders.join(' | ')} |\n`;
-    mdContent += `| :--- | ${finalHeaders.map(() => ':---').join(' | ')} |\n`;
-
-    let count = 1; // Khởi tạo số thứ tự
-
-    for (let i = headerRowIdx + 1; i < rows.length; i++) {
-        const row = rows[i];
-        
-        // Bỏ qua các dòng trống hoàn toàn
-        if (!row || row.length === 0 || !row.some(cell => String(cell).trim() !== '')) continue;
-
-        let mdRow = `| ${count++} | `;
-        
-        // Duyệt qua từng cột trong Final Headers để ánh xạ dữ liệu
-        finalHeaders.forEach((headerName, idx) => {
-            
-            // Nếu là 4 cột Thuốc -> Hiển thị icon checked
-            if (newColumns.includes(headerName)) {
-                mdRow += `✅ | `;
-            } 
-            
-            // Nếu là cột Lokation -> Kiểm tra rỗng và điền "Opdatering"
-            else if (idx === lokationIdx) {
-                const originalIdx = originalHeaders.indexOf(headerName);
-                let val = originalIdx !== -1 ? cleanMD(row[originalIdx]) : "";
-                
-                if (!val || val === '') {
-                    val = "Opdatering";
-                }
-                mdRow += `${val} | `;
-            } 
-            
-            // Các cột dữ liệu gốc thông thường
-            else {
-                const originalIdx = originalHeaders.indexOf(headerName);
-                const val = originalIdx !== -1 ? cleanMD(row[originalIdx]) : "";
-                mdRow += `${val} | `;
-            }
-        });
-
-        mdContent += mdRow + '\n';
-    }
-
-    // 6. Ghi file hoàn chỉnh
-    const outPath = path.join(outputDir, 'Vaccination_Rapport.md');
-    fs.writeFileSync(outPath, mdContent, 'utf8');
-    
-    console.log(`✅ Hoàn tất! Báo cáo tiêm phòng đã được xuất tại: ${outPath}`);
+    console.log(`\n🎉 Hoàn tất! Đã lưu ${generatedCount} file vào: \n📂 ${outputDir}`);
 }
 
-processVaccinationList();
+/**
+ * Hàm render ra nội dung file Markdown
+ */
+function generateMarkdown(targetWeek, team2Week, team3Week) {
+    const team2DataRaw = readExcelData(team2Week) || [];
+    const team3DataRaw = readExcelData(team3Week) || [];
+
+    let team2Sows = team2DataRaw; 
+    let team3Sows = team3DataRaw.filter(sow => sow.Kuld === 0);
+
+    // HÀM SẮP XẾP NÁI THEO CHUỒNG -> THEO LỨA ĐẺ
+    const sortSows = (a, b) => {
+        const locA = a.Lokation || "";
+        const locB = b.Lokation || "";
+        
+        // 1. Sắp xếp theo tên chuồng (hiểu được chuỗi số, vd "7" xếp trước "10")
+        const locCompare = locA.localeCompare(locB, undefined, { numeric: true, sensitivity: 'base' });
+        if (locCompare !== 0) {
+            return locCompare;
+        }
+        
+        // 2. Nếu cùng chuồng, xếp theo lứa đẻ (Kuld). 
+        // Đang để b.Kuld - a.Kuld (Giảm dần: nái già trước, tơ sau). 
+        // Nếu bạn muốn Tăng dần, sửa lại thành: return a.Kuld - b.Kuld;
+        return b.Kuld - a.Kuld;
+    };
+
+    // Áp dụng thuật toán sắp xếp cho cả 2 mảng
+    team2Sows.sort(sortSows);
+    team3Sows.sort(sortSows);
+
+    let mdContent = `# Vaccinationsplan - Uge ${targetWeek}\n\n`;
+
+    mdContent += `## Team 1: Nye Gylte\n\n`;
+    mdContent += `**Samlet antal:** ....., Vitamin E 5ml, Hyobac 1ml, Stellume 2ml.\n\n`;
+    mdContent += `---\n\n`;
+
+    // ---------------- TEAM 2 ----------------
+    mdContent += `## Team 2: Søer løbet i uge ${team2Week}\n\n`;
+    mdContent += `_Vaccine for alle drægtige søer: Vitamin E (5ml), Hyobac (1ml), Porcilcis (2ml), Sunseng (2ml)_\n\n`;
+    
+    let counterTeam2 = 1;
+
+    if (team2Sows.length > 0) {
+        mdContent += `| Nr. | Sonavn | Kuld | Lokation | Vitamin E | Hyobac | Porcilcis | Sunseng |\n`;
+        mdContent += `| :-- | :------- | :--: | :------- | :-------: | :----: | :-------: | :-----: |\n`;
+        team2Sows.forEach(sow => {
+            mdContent += `| ${counterTeam2} | **${sow.Sonavn}** | ${sow.Kuld} | ${sow.Lokation} | 5 ml | 1 ml | 2 ml | 2 ml |\n`;
+            counterTeam2++;
+        });
+    } else {
+        mdContent += `*(Ingen data fundet for uge ${team2Week})*\n`;
+    }
+    mdContent += `\n<br>\n\n`;
+
+    // ---------------- TEAM 3 ----------------
+    mdContent += `## Team 3: Søer løbet i uge ${team3Week}\n\n`;
+    mdContent += `_Vaccine KUN for 1. lægs (Kuld = 0): Hyobac (1ml), Sunseng (2ml)_\n\n`;
+
+    let counterTeam3 = 1;
+
+    if (team3Sows.length > 0) {
+        mdContent += `| Nr. | Sonavn | Kuld | Lokation | Hyobac | Sunseng |\n`;
+        mdContent += `| :-- | :------- | :--: | :------- | :----: | :-----: |\n`;
+        team3Sows.forEach(sow => {
+            mdContent += `| ${counterTeam3} | **${sow.Sonavn}** | ${sow.Kuld} | ${sow.Lokation} | 1 ml | 2 ml |\n`;
+            counterTeam3++;
+        });
+    } else {
+         mdContent += `*(Ingen data fundet for uge ${team3Week})*\n`;
+    }
+    mdContent += `\n<br>\n`;
+
+    const outputFilePath = path.join(outputDir, `Uge ${targetWeek}.md`);
+    fs.writeFileSync(outputFilePath, mdContent, 'utf8');
+    console.log(`✅ Đã tạo: Uge ${targetWeek}.md`);
+}
+
+autoGenerate();
