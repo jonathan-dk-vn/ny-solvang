@@ -189,6 +189,15 @@ function getShift(date) {
   return hour >= 6 && hour < 16 ? "Dag (06-16)" : "Nat (16-06)";
 }
 
+// --- Công suất nuôi con tối đa (Kapacitet) ---
+// Gylte (1) = 15; Kuld 2,3,4 = 14; Kuld 5+ = 13
+function getSowCapacity(kuld) {
+  if (kuld === 1) return 15;
+  if (kuld >= 2 && kuld <= 4) return 14;
+  if (kuld >= 5) return 13;
+  return 13; // Mặc định nếu lỗi dữ liệu
+}
+
 // --- ISO Week Number ---
 function getISOWeek(date) {
   const target = new Date(date.valueOf());
@@ -531,7 +540,7 @@ function generateSvgBarChart(
 
   const n = historyData.length;
   // Tự động phân loại thiết kế: trên 26 tuần (nửa năm) sẽ chuyển sang chế độ Compact (như 52 tuần)
-  const isCompact = n > 26; 
+  const isCompact = n > 26;
 
   const values = historyData.map((h) => h[valueKey]);
 
@@ -542,7 +551,8 @@ function generateSvgBarChart(
   // ==================== THUẬT TOÁN "NICE SCALE" ====================
   // Tự động thích ứng bước nhảy (0.1, 0.2, 0.5, 1, 2, 5...) dựa vào dải dữ liệu
   let rangeRaw = exactMax - exactMin;
-  if (rangeRaw === 0) rangeRaw = Math.abs(exactMax) > 0 ? Math.abs(exactMax) * 0.2 : 10;
+  if (rangeRaw === 0)
+    rangeRaw = Math.abs(exactMax) > 0 ? Math.abs(exactMax) * 0.2 : 10;
 
   // Tính toán bước nhảy thô (Dự kiến mật độ 8 khoảng để lưới dày như yêu cầu)
   const targetIntervals = 8;
@@ -551,7 +561,7 @@ function generateSvgBarChart(
   // Tìm Magnitude (Độ lớn: 0.01, 0.1, 1, 10...)
   const mag = Math.pow(10, Math.floor(Math.log10(roughStep)));
   const relStep = roughStep / mag;
-  
+
   // Ép về các bước nhảy "chẵn" tiêu chuẩn
   let niceRelStep;
   if (relStep < 1.5) niceRelStep = 1;
@@ -566,8 +576,8 @@ function generateSvgBarChart(
   let yMin = Math.floor(exactMin / step) * step;
   let yMax = Math.ceil(exactMax / step) * step;
 
-  if (yMin >= exactMin - (step * 0.5)) yMin -= step;
-  if (yMax <= exactMax + (step * 0.5)) yMax += step;
+  if (yMin >= exactMin - step * 0.5) yMin -= step;
+  if (yMax <= exactMax + step * 0.5) yMax += step;
 
   // Mở rộng thêm nếu có KPI hoặc Krævet nằm ngoài biên
   if (kpiGoal !== null) {
@@ -594,13 +604,13 @@ function generateSvgBarChart(
   const decCount = getDecimals(step);
 
   // ==================== BỐ CỤC FIX VIEWPORT 100% ====================
-  const SVG_W = 920; 
-  const MARGIN_L = 85; 
-  const MARGIN_R = 120; 
-  const MARGIN_T = 45; 
-  const MARGIN_B = 60; 
-  
-  const CHART_H = 320; 
+  const SVG_W = 920;
+  const MARGIN_L = 85;
+  const MARGIN_R = 120;
+  const MARGIN_T = 45;
+  const MARGIN_B = 60;
+
+  const CHART_H = 320;
   const CHART_W = SVG_W - MARGIN_L - MARGIN_R;
   const SVG_H = MARGIN_T + CHART_H + MARGIN_B;
 
@@ -609,7 +619,7 @@ function generateSvgBarChart(
 
   const toY = (v) =>
     MARGIN_T + CHART_H - ((v - yMin) / (yMax - yMin)) * CHART_H;
-    
+
   const getX = (idx) => MARGIN_L + idx * slotW + slotW / 2;
 
   const { slope, intercept } = calcLinearRegression(values);
@@ -630,11 +640,11 @@ function generateSvgBarChart(
     `width="100%" height="auto" style="font-family:system-ui,-apple-system,sans-serif;display:block;overflow:visible;">`;
 
   // --- LAYER 1: Lưới Nền (Grid & Baseline) ---
-  for(let i = 0; i <= numIntervals; i++) {
+  for (let i = 0; i <= numIntervals; i++) {
     const gridY = MARGIN_T + (CHART_H * i) / numIntervals;
-    let gridVal = yMax - i * step; 
+    let gridVal = yMax - i * step;
     gridVal = parseFloat(gridVal.toPrecision(12));
-    
+
     // Tự động format số chữ số thập phân tương ứng với bước nhảy
     let dispGridVal = gridVal.toFixed(decCount);
     if (isPercent) dispGridVal += "%";
@@ -646,7 +656,8 @@ function generateSvgBarChart(
 
   // Trục Zero (hoặc baseline thấp nhất)
   let baselineY = toY(0);
-  if (baselineY > MARGIN_T + CHART_H || yMin >= 0) baselineY = MARGIN_T + CHART_H;
+  if (baselineY > MARGIN_T + CHART_H || yMin >= 0)
+    baselineY = MARGIN_T + CHART_H;
   svgGrid += `<line x1="${MARGIN_L}" y1="${baselineY}" x2="${MARGIN_L + CHART_W}" y2="${baselineY}" stroke="#94a3b8" stroke-width="2"/>`;
 
   // --- LAYER 2: Cột (Được vẽ trước Line để nằm dưới Line) ---
@@ -655,7 +666,7 @@ function generateSvgBarChart(
     const xCenter = getX(idx);
     const xRect = xCenter - BAR_W / 2;
     const yVal = toY(val);
-    
+
     let barH, y;
     if (val >= 0) {
       barH = Math.max(4, baselineY - yVal);
@@ -666,21 +677,37 @@ function generateSvgBarChart(
     }
 
     const margin = range * 0.12;
-    const isGood = isLowerBetter ? val <= avgVal - margin : val >= avgVal + margin;
-    const isBad = isLowerBetter ? val >= avgVal + margin : val <= avgVal - margin;
+    const isGood = isLowerBetter
+      ? val <= avgVal - margin
+      : val >= avgVal + margin;
+    const isBad = isLowerBetter
+      ? val >= avgVal + margin
+      : val <= avgVal - margin;
     const isCurrent = idx === n - 1;
 
     let color = isCurrent
-      ? (isGood ? "#00E396" : isBad ? "#FF4560" : "#FEB019") 
-      : (isGood ? "#69F0AE" : isBad ? "#FF8A80" : "#FFE57F"); 
+      ? isGood
+        ? "#00E396"
+        : isBad
+          ? "#FF4560"
+          : "#FEB019"
+      : isGood
+        ? "#69F0AE"
+        : isBad
+          ? "#FF8A80"
+          : "#FFE57F";
 
-    const dispVal = isPercent ? val.toFixed(1) + "%" : (Number.isInteger(val) ? val : val.toFixed(1));
+    const dispVal = isPercent
+      ? val.toFixed(1) + "%"
+      : Number.isInteger(val)
+        ? val
+        : val.toFixed(1);
 
     svgBars += `<rect x="${xRect}" y="${y}" width="${BAR_W}" height="${barH}" rx="0.5" fill="${color}" stroke="${color}" stroke-width="0.5" opacity="0.95"/>`;
-    
+
     if (isCompact) {
       if (isCurrent || val === exactMax || val === exactMin) {
-        svgLabels += `<text x="${xCenter}" y="${y - 8}" font-size="11.5" fill="${isCurrent ? '#0f172a' : '#64748b'}" text-anchor="middle" font-weight="${isCurrent ? '800' : '600'}">${dispVal}</text>`;
+        svgLabels += `<text x="${xCenter}" y="${y - 8}" font-size="11.5" fill="${isCurrent ? "#0f172a" : "#64748b"}" text-anchor="middle" font-weight="${isCurrent ? "800" : "600"}">${dispVal}</text>`;
       }
       if (idx % 4 === 0 || isCurrent) {
         svgLabels += `<text x="${xCenter}" y="${baselineY + 20}" font-size="11" fill="#64748b" text-anchor="middle" font-weight="600">U${h.week}</text>`;
@@ -700,37 +727,53 @@ function generateSvgBarChart(
     const isStricter = isLowerBetter
       ? krævetVal < (kpiGoal ?? krævetVal)
       : krævetVal > (kpiGoal ?? krævetVal);
-    krColor = isStricter ? "#FF3366" : "#9333ea"; 
+    krColor = isStricter ? "#FF3366" : "#9333ea";
   }
 
   if (kpiGoal !== null) {
     const ky = toY(kpiGoal);
     svgLines += `<line x1="${MARGIN_L}" y1="${ky}" x2="${MARGIN_L + CHART_W}" y2="${ky}" stroke="#008FFB" stroke-width="2" stroke-dasharray="6,4" opacity="0.85"/>`;
-    leftLabelsData.push({ y: ky, text: `Mål: ${isPercent ? kpiGoal.toFixed(1) + "%" : kpiGoal}`, color: "#008FFB" });
+    leftLabelsData.push({
+      y: ky,
+      text: `Mål: ${isPercent ? kpiGoal.toFixed(1) + "%" : kpiGoal}`,
+      color: "#008FFB",
+    });
   }
 
   const avgY = toY(avgVal);
   svgLines += `<line x1="${MARGIN_L}" y1="${avgY}" x2="${MARGIN_L + CHART_W}" y2="${avgY}" stroke="#546E7A" stroke-width="2" stroke-dasharray="3,3" opacity="0.7"/>`;
-  leftLabelsData.push({ y: avgY, text: `Gns: ${isPercent ? avgVal.toFixed(1) + "%" : avgVal.toFixed(1)}`, color: "#546E7A" });
+  leftLabelsData.push({
+    y: avgY,
+    text: `Gns: ${isPercent ? avgVal.toFixed(1) + "%" : avgVal.toFixed(1)}`,
+    color: "#546E7A",
+  });
 
   if (krævetVal !== null) {
     const krY = toY(krævetVal);
     svgLines += `<line x1="${MARGIN_L}" y1="${krY}" x2="${MARGIN_L + CHART_W}" y2="${krY}" stroke="${krColor}" stroke-width="2" stroke-dasharray="8,4" opacity="0.85"/>`;
-    rightLabelsData.push({ y: krY, text: `Krævet: ${isPercent ? krævetVal.toFixed(1) + "%" : krævetVal.toFixed(1)}`, color: krColor });
+    rightLabelsData.push({
+      y: krY,
+      text: `Krævet: ${isPercent ? krævetVal.toFixed(1) + "%" : krævetVal.toFixed(1)}`,
+      color: krColor,
+    });
   }
 
   const trendIsGood = isLowerBetter ? slope <= 0 : slope >= 0;
-  const trendColor = Math.abs(slope) < 0.05 ? "#A8B2C1" : trendIsGood ? "#00E396" : "#FF4560";
+  const trendColor =
+    Math.abs(slope) < 0.05 ? "#A8B2C1" : trendIsGood ? "#00E396" : "#FF4560";
   svgLines += `<line x1="${xFirst}" y1="${trendY0}" x2="${xLast}" y2="${trendY1}" stroke="${trendColor}" stroke-width="3" opacity="0.9"/>`;
 
-  const dx = xLast - xFirst, dy = trendY1 - trendY0;
+  const dx = xLast - xFirst,
+    dy = trendY1 - trendY0;
   const len = Math.sqrt(dx * dx + dy * dy) || 1;
-  const ux = dx / len, uy = dy / len;
-  const arrowX = xLast - ux * 9, arrowY = trendY1 - uy * 9;
+  const ux = dx / len,
+    uy = dy / len;
+  const arrowX = xLast - ux * 9,
+    arrowY = trendY1 - uy * 9;
   svgLines += `<polygon points="${xLast},${trendY1} ${arrowX - uy * 5},${arrowY + ux * 5} ${arrowX + uy * 5},${arrowY - ux * 5}" fill="${trendColor}" opacity="0.9"/>`;
 
   // --- LAYER 4: Xử lý Overlap Nhãn Chữ (Vẽ cuối cùng để nổi bật) ---
-  const MIN_SPACING = 24; 
+  const MIN_SPACING = 24;
   const resolveMarginOverlap = (labels) => {
     if (labels.length <= 1) return labels;
     labels.sort((a, b) => a.y - b.y);
@@ -757,7 +800,7 @@ function generateSvgBarChart(
   leftLabelsData.forEach((l) => {
     svgLabels += `<text x="${MARGIN_L - 12}" y="${l.y + 4}" font-size="12" fill="${l.color}" text-anchor="end" font-weight="700">${l.text}</text>`;
   });
-  
+
   rightLabelsData.forEach((l) => {
     svgLabels += `<text x="${MARGIN_L + CHART_W + 46}" y="${l.y + 4}" font-size="12" fill="${l.color}" text-anchor="start" font-weight="700" stroke="#ffffff" stroke-width="3" paint-order="stroke fill">${l.text}</text>`;
   });
@@ -773,8 +816,11 @@ function generateSvgBarChart(
     legendItems.push({ color: krColor, dash: true, label: "Krævet" });
   }
 
-  const totalLegendW = legendItems.reduce((acc, item) => acc + item.label.length * 8 + 36, 0);
-  let lx = (SVG_W - totalLegendW) / 2; 
+  const totalLegendW = legendItems.reduce(
+    (acc, item) => acc + item.label.length * 8 + 36,
+    0,
+  );
+  let lx = (SVG_W - totalLegendW) / 2;
 
   legendItems.forEach((item) => {
     if (item.dash) {
@@ -786,7 +832,8 @@ function generateSvgBarChart(
     lx += item.label.length * 8 + 36;
   });
 
-  let svg = svgCore + svgGrid + svgBars + svgLines + svgLabels + svgLegend + `</svg>`;
+  let svg =
+    svgCore + svgGrid + svgBars + svgLines + svgLabels + svgLegend + `</svg>`;
 
   return (
     `<div style="width:100%;box-sizing:border-box;background:#ffffff;border:1px solid #cbd5e1;border-radius:16px;padding:24px 16px;margin:16px 0;box-shadow:0 10px 15px -3px rgba(0,0,0,.08), 0 4px 6px -2px rgba(0,0,0,.04);">` +
@@ -881,11 +928,15 @@ function buildExecutiveSummary(
  *   🟡 8–15% : Forhøjet
  *   🟢 < 8%  : Acceptabel
  */
+/**
+ * Heatmap Lịch đẻ: cho thấy ngày nào / ca nào trong tuần có tỷ lệ tử vong cao nhất.
+ * Tích hợp tính toán số lượng heo Extra (Overskudsgrise) để chuẩn bị nái ghép.
+ */
 function buildWeeklyHeatmap(daysGroup, sortedDatesAsc) {
   let md = `\n### 📅 Faringskalender — Heatmap (Personaleplanlægning)\n\n`;
   md += `> Farveindikator: 🔴 Kritisk SB% (>15%) | 🟡 Forhøjet (8–15%) | 🟢 OK (<8%)\n\n`;
-  md += `| Dag | Dato | Dag-vagt (06-16) | Nat-vagt (16-06) | Faringer i alt | SB% |\n`;
-  md += `| :--- | :---: | :---: | :---: | :---: | :---: |\n`;
+  md += `| Dag | Dato | Dag-vagt (06-16) | Nat-vagt (16-06) | Faringer | SB% | 🍼 Extra Grise |\n`;
+  md += `| :--- | :---: | :---: | :---: | :---: | :---: | :---: |\n`;
 
   sortedDatesAsc.forEach((dateStr) => {
     const dayData = daysGroup[dateStr];
@@ -899,14 +950,19 @@ function buildWeeklyHeatmap(daysGroup, sortedDatesAsc) {
       natL = 0,
       natD = 0;
     let totL = 0,
-      totD = 0;
+      totD = 0,
+      totCap = 0;
 
     dayData.forEach((r) => {
       const lev = parseInt(r["Levendefødte"] || 0);
       const dod = parseInt(r["Dødfødte"] || 0);
+      const kuld = parseInt(r["Kuld"]) || 0;
       const shift = getShift(r._realDate);
+
       totL += lev;
       totD += dod;
+      totCap += getSowCapacity(kuld); // Cộng dồn công suất nuôi của ngày
+
       if (shift.startsWith("Dag")) {
         dagF++;
         dagL += lev;
@@ -920,21 +976,23 @@ function buildWeeklyHeatmap(daysGroup, sortedDatesAsc) {
 
     const totalF = dagF + natF;
     const sbTotal = calcStillbirthRate(totL, totD);
-
     const sbIcon = sbTotal > 15 ? "🔴" : sbTotal > 8 ? "🟡" : "🟢";
 
-    // Cell dag-vagt
+    // Tính số heo con dư thừa (Extra)
+    const extraGrise = totL - totCap;
+    const extraDisplay =
+      extraGrise > 0 ? `**+${extraGrise}** 🔴` : `${extraGrise} 🟢`; // Số âm nghĩa là đang dư vú nuôi
+
     const dagCell =
       dagF > 0
         ? `${dagF} far. | SB:${calcStillbirthRate(dagL, dagD).toFixed(0)}%`
         : "—";
-    // Cell nat-vagt
     const natCell =
       natF > 0
         ? `${natF} far. | SB:${calcStillbirthRate(natL, natD).toFixed(0)}%`
         : "—";
 
-    md += `| **${dayName}** | ${dateStr} | ${dagCell} | ${natCell} | **${totalF}** | ${sbIcon} ${sbTotal.toFixed(1)}% |\n`;
+    md += `| **${dayName}** | ${dateStr} | ${dagCell} | ${natCell} | **${totalF}** | ${sbIcon} ${sbTotal.toFixed(1)}% | ${extraDisplay} |\n`;
   });
 
   return md + "\n";
@@ -1554,6 +1612,28 @@ function main() {
         const dayName = DANISH_DAYS[dayOfWeekIndex];
 
         md += `\n### ${dayName}, ${dateStr}\n\n`;
+
+        // === NEW LOGIC: Tính toán Extra heo con mỗi ngày ===
+        let dagligKapacitet = 0;
+        let dagligLevende = 0;
+
+        dayData.forEach((r) => {
+          const kuld = parseInt(r["Kuld"]) || 0;
+          const lev = parseInt(r["Levendefødte"]) || 0;
+          dagligKapacitet += getSowCapacity(kuld);
+          dagligLevende += lev;
+        });
+
+        const extraGrise = dagligLevende - dagligKapacitet;
+
+        if (extraGrise > 0) {
+          md += `> 🍼 **OVERSKUDSGRISE (EXTRA): +${extraGrise} grise**<br>\n`;
+          md += `> _Kapacitet i dag: ${dagligKapacitet} grise | Født levende: ${dagligLevende} grise._ Kræver oprettelse af ammesøer (nurse sows)!\n\n`;
+        } else {
+          md += `> 🟢 **OVERSKUDSGRISE: Ingen (+0)**<br>\n`;
+          md += `> _Kapacitet i dag: ${dagligKapacitet} grise | Født levende: ${dagligLevende} grise._ Der er **${Math.abs(extraGrise)} ledige patter** til at modtage grise fra andre sektioner.\n\n`;
+        }
+        // === END NEW LOGIC ===
 
         const obsSoer = getObsSoer(dayData);
         const topSoer = dayData.filter(
