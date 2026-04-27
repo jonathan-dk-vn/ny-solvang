@@ -2,6 +2,7 @@
 
 ## 2025
 ### [00 Ugentlig Sammenligning Ekspert 2025](#1%20Medicin%20til%20s%C3%B8er%20og%20pattegrise%2F2025%2F00%20Ugentlig%20Sammenligning%20Ekspert%202025)
+### [Uge 1 (01.01.2025 - 05.01.2025)](#1%20Medicin%20til%20s%C3%B8er%20og%20pattegrise%2F2025%2FUge%201%20(01.01.2025%20-%2005.01.2025))
 ### [Uge 1 (30.12.2024 - 05.01.2025)](#1%20Medicin%20til%20s%C3%B8er%20og%20pattegrise%2F2025%2FUge%201%20(30.12.2024%20-%2005.01.2025))
 ### [Uge 2 (06.01.2025 - 12.01.2025)](#1%20Medicin%20til%20s%C3%B8er%20og%20pattegrise%2F2025%2FUge%202%20(06.01.2025%20-%2012.01.2025))
 ### [Uge 3 (13.01.2025 - 19.01.2025)](#1%20Medicin%20til%20s%C3%B8er%20og%20pattegrise%2F2025%2FUge%203%20(13.01.2025%20-%2019.01.2025))
@@ -75,6 +76,8 @@
 ### [Uge 15 (06.04.2026 - 12.04.2026)](#1%20Medicin%20til%20s%C3%B8er%20og%20pattegrise%2F2026%2FUge%2015%20(06.04.2026%20-%2012.04.2026))
 ### [Uge 16 (13.04.2026 - 19.04.2026)](#1%20Medicin%20til%20s%C3%B8er%20og%20pattegrise%2F2026%2FUge%2016%20(13.04.2026%20-%2019.04.2026))
 ### [Uge 17 (20.04.2026 - 23.04.2026)](#1%20Medicin%20til%20s%C3%B8er%20og%20pattegrise%2F2026%2FUge%2017%20(20.04.2026%20-%2023.04.2026))
+### [Uge 17 (20.04.2026 - 26.04.2026)](#1%20Medicin%20til%20s%C3%B8er%20og%20pattegrise%2F2026%2FUge%2017%20(20.04.2026%20-%2026.04.2026))
+### [Uge 18 (27.04.2026 - 27.04.2026)](#1%20Medicin%20til%20s%C3%B8er%20og%20pattegrise%2F2026%2FUge%2018%20(27.04.2026%20-%2027.04.2026))
 
 # 2 Vaccination af søer 4 uger før faring
 
