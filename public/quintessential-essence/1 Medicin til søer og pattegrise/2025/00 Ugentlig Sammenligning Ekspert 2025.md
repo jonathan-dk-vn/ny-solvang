@@ -1,7 +1,7 @@
 ﻿
 # 📊 Årsrapport 2025 — Zooteknisk BI Dashboard
 
-> Genereret: 27.4.2026 | Standard: DanBred/SEGES 2024
+> Genereret: 28.4.2026 | Standard: DanBred/SEGES 2024
 
 
 ## 🧠 Zooteknisk Ekspertanalyse

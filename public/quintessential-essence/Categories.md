@@ -78,11 +78,13 @@
 ### [Uge 17 (20.04.2026 - 23.04.2026)](#1%20Medicin%20til%20s%C3%B8er%20og%20pattegrise%2F2026%2FUge%2017%20(20.04.2026%20-%2023.04.2026))
 ### [Uge 17 (20.04.2026 - 26.04.2026)](#1%20Medicin%20til%20s%C3%B8er%20og%20pattegrise%2F2026%2FUge%2017%20(20.04.2026%20-%2026.04.2026))
 ### [Uge 18 (27.04.2026 - 27.04.2026)](#1%20Medicin%20til%20s%C3%B8er%20og%20pattegrise%2F2026%2FUge%2018%20(27.04.2026%20-%2027.04.2026))
+### [Uge 18 (27.04.2026 - 28.04.2026)](#1%20Medicin%20til%20s%C3%B8er%20og%20pattegrise%2F2026%2FUge%2018%20(27.04.2026%20-%2028.04.2026))
 
 # 2 Vaccination af søer 4 uger før faring
 
 ## 2026
 ### [Uge 15](#2%20Vaccination%20af%20s%C3%B8er%204%20uger%20f%C3%B8r%20faring%2F2026%2FUge%2015)
+### [Uge 17](#2%20Vaccination%20af%20s%C3%B8er%204%20uger%20f%C3%B8r%20faring%2F2026%2FUge%2017)
 ### [Uge 19](#2%20Vaccination%20af%20s%C3%B8er%204%20uger%20f%C3%B8r%20faring%2F2026%2FUge%2019)
 ### [Uge 20](#2%20Vaccination%20af%20s%C3%B8er%204%20uger%20f%C3%B8r%20faring%2F2026%2FUge%2020)
 ### [Uge 21](#2%20Vaccination%20af%20s%C3%B8er%204%20uger%20f%C3%B8r%20faring%2F2026%2FUge%2021)
